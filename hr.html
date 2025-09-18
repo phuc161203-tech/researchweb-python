@@ -1,0 +1,1547 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quản Lý Nhân Sự – Thông Tin Nhân Viên</title>
+
+  <!-- Bootstrap 5 CSS (bỏ integrity cho dev để không bị block) -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <!-- Font Awesome CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  />
+
+  <style>
+    :root {
+      --accent: #ff6f61;
+      --accent-light: #ffeaea;
+      --secondary-bg: #f4f7fa;
+      --text-dark: #2c3e50;
+      --text-muted: #6c757d;
+      --card-bg: #ffffff;
+      --card-shadow: rgba(0, 0, 0, 0.05);
+      --input-border: #ced4da;
+      --input-focus: #ff6f61;
+      --heading-color: #ff6f61;
+      --transition: 0.3s;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      background-color: var(--secondary-bg);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text-dark);
+      height: 100%;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; }
+
+    /* ======= Sidebar ======= */
+    #sidebar {
+      position: fixed; top: 0; left: 0;
+      width: 250px; height: 100vh;
+      background-color: #fff;
+      border-right: 1px solid #e0e0e0;
+      padding-top: 1.5rem;
+      transition: transform var(--transition) ease;
+      z-index: 1001;
+    }
+    #sidebar.hidden { transform: translateX(-260px); }
+
+    #sidebar .sidebar-brand {
+      font-size: 1.5rem; font-weight: 700; text-align: center;
+      margin-bottom: 1.5rem; color: var(--accent);
+    }
+    #sidebar .nav-link {
+      color: var(--text-dark);
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      transition: background-color var(--transition) ease;
+    }
+    #sidebar .nav-link:hover,
+    #sidebar .nav-link.active {
+      background-color: var(--accent-light);
+      color: var(--accent);
+    }
+    #sidebar .nav-link i { margin-right: 0.75rem; }
+    #sidebar .bottom-logout {
+      position: absolute; bottom: 1rem; width: 100%; text-align: center;
+    }
+    #sidebar .bottom-logout a {
+      color: #dc3545; font-weight: 500;
+    }
+    #sidebar .bottom-logout a:hover { color: #a71d2a; }
+
+    /* ======= Topbar ======= */
+    #topbar {
+      position: fixed;
+      top: 0; left: 250px; right: 0;
+      height: 60px;
+      background: linear-gradient(90deg, #ff6f61, #ff8a75);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.5rem;
+      z-index: 1000;
+      transition: left var(--transition) ease;
+    }
+    #topbar.expanded { left: 0; }
+    #topbar .brand-text {
+      font-size: 1.25rem; font-weight: 600; color: #ffffff;
+    }
+    #topbar .topbar-button {
+      color: #ffffff;
+      background-color: transparent;
+      border: 1px solid rgba(255,255,255,0.6);
+      border-radius: 0.5rem;
+      padding: 0.4rem 0.7rem;
+      transition: background-color var(--transition) ease;
+    }
+    #topbar .topbar-button:hover {
+      background-color: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.8);
+    }
+
+    /* ======= Main Content ======= */
+    #content {
+      margin-top: 60px;
+      margin-left: 250px;
+      padding: 2rem;
+      transition: margin-left var(--transition) ease;
+    }
+    #content.expanded { margin-left: 0; }
+
+    /* ======= Card Form ======= */
+    .form-card {
+      background-color: var(--card-bg);
+      border-radius: 1rem;
+      box-shadow: 0 2px 12px var(--card-shadow);
+      padding: 2.5rem 3rem;
+      margin-bottom: 2.5rem;
+    }
+    .form-card .card-title {
+      font-size: 2rem; font-weight: 700; margin-bottom: 2rem;
+      color: var(--heading-color); text-align: center;
+    }
+    .form-section {
+      margin-top: 2.5rem; margin-bottom: 1.25rem;
+      font-weight: 700; color: var(--accent);
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 0.5rem; font-size: 1.2rem;
+    }
+    .form-label {
+      font-size: 0.95rem; color: var(--text-dark);
+      margin-bottom: 0.25rem;
+    }
+    .form-control-sm, .form-select-sm {
+      font-size: 0.9rem;
+      padding: 0.6rem 0.8rem;
+      background-color: #fff;
+      border: 1px solid var(--input-border);
+      border-radius: 0.5rem;
+      transition: border-color var(--transition) ease, box-shadow var(--transition) ease;
+    }
+    .form-control-sm:focus, .form-select-sm:focus {
+      border-color: var(--input-focus);
+      box-shadow: 0 0 0 0.2rem rgba(255,111,97,0.25);
+      background-color: #fff; outline: none;
+    }
+    .btn-primary, .btn-secondary, .btn-outline-info {
+      border-radius: 0.5rem;
+      transition: background-color var(--transition) ease,
+                  border-color var(--transition) ease,
+                  color var(--transition) ease;
+      padding: 0.5rem 1.2rem;
+      font-size: 0.95rem; font-weight: 500;
+    }
+    .btn-primary {
+      background-color: var(--accent); border-color: var(--accent); color: #ffffff;
+    }
+    .btn-primary:hover {
+      background-color: #e65b4f; border-color: #e65b4f;
+    }
+    .btn-secondary {
+      background-color: #adb5bd; border-color: #adb5bd; color: #ffffff;
+    }
+    .btn-secondary:hover {
+      background-color: #8c9aa3; border-color: #8c9aa3;
+    }
+    .btn-outline-info {
+      color: #ffffff; border-color: var(--accent); background-color: var(--accent);
+    }
+    .btn-outline-info:hover {
+      background-color: #e65b4f; border-color: #e65b4f;
+    }
+
+    /* Khoảng cách giữa các hàng/cột */
+    .form-card .row { row-gap: 2rem; column-gap: 2rem; }
+
+    /* Danh sách & Chi tiết Nhân Viên */
+    #employeeListSection, #employeeDetailSection {
+      margin-top: 2rem;
+      background-color: var(--card-bg);
+      border-radius: 1rem;
+      box-shadow: 0 2px 12px var(--card-shadow);
+      padding: 2.5rem 3rem;
+    }
+    #employeeListSection .card-title,
+    #employeeDetailSection .card-title {
+      font-size: 1.5rem; font-weight: 600;
+      color: var(--heading-color);
+      text-align: center; margin-bottom: 1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      #sidebar { transform: translateX(-260px); }
+      #topbar { left: 0; }
+      #content { margin-left: 0; padding: 1rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ======= Sidebar ======= -->
+  <nav id="sidebar">
+    <div class="sidebar-brand mb-4">
+      <i class="fas fa-users-cog me-2" style="color: var(--accent);"></i>
+      <span>HR Manager</span>
+    </div>
+
+    <ul class="nav flex-column mb-4">
+      <li class="nav-item mb-2">
+        <a class="nav-link active" href="{% url 'app_work:hr_manage' %}">
+          <i class="fas fa-user-friends"></i> Thông Tin Nhân Viên
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link" href="{% url 'app_work:hr_dashboard' %}">
+          <i class="fas fa-chart-pie"></i> Dashboard HR
+        </a>
+      </li>
+
+
+    <li><a href="{% url 'blogScience:new-index' %}" class="nav-link text-dark">Thông tin Báo chí  </a></li>
+    <li><a href="{% url 'blogScience:article-blog' %}" class="nav-link text-dark">Thông tin Nghiên cứu  </a></li>
+    <li><a href="{% url 'blogScience:article-about' %}" class="nav-link text-dark">Thông tin Sự kiện  </a></li>
+    <li><a href="{% url 'blogScience:sale-courses' %}" class="nav-link text-dark">Thông tin Khóa học   </a></li>
+    <li><a href="{% url 'app_customer:home' %}" class="nav-link text-dark">Thông tin Khóa học   </a></li>
+    <li>      <a href="{% url 'logistics:customer_order' %}" class="nav-link text-dark">HPExpress</a></li>
+
+    </ul>
+
+    <div class="bottom-logout">
+      <a href="{% url 'logout' %}" class="nav-link">
+        <i class="fas fa-sign-out-alt me-1"></i> Đăng Xuất
+      </a>
+    </div>
+  </nav>
+      
+
+  <!-- ======= End Sidebar ======= -->
+
+  <!-- ======= Topbar ======= -->
+  <header id="topbar">
+    <button id="btnToggleSidebar" class="btn btn-outline-light btn-sm d-lg-none topbar-button">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="d-flex align-items-center">
+      <span class="brand-text">Chào mừng, <span class="fw-bold">{{ request.user.username }}</span>!</span>
+    </div>
+  </header>
+  <!-- ======= End Topbar ======= -->
+
+  <!-- ======= Main Content ======= -->
+  <main id="content">
+    <!-- === Form Nhân Viên === -->
+    <div id="employeeFormSection" class="form-card mx-auto" style="max-width: 1100px;">
+      <div class="card-title">Thêm / Cập Nhật Nhân Viên</div>
+      <form id="employeeForm" enctype="multipart/form-data"
+            method="post" action="{% url 'app_work:hr_save_employee' %}">
+        {% csrf_token %}
+
+        <!-- SECTION 1: Thông tin cá nhân cơ bản -->
+        <div class="form-section">1. Thông tin cá nhân cơ bản</div>
+        <div class="row">
+          <div class="col-lg-4 col-md-6">
+            <label for="employee_id" class="form-label">Mã nhân viên</label>
+            <input type="text" class="form-control form-control-sm" id="employee_id"
+                   name="employee_id" placeholder="Nhập mã nhân viên" required>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="full_name" class="form-label">Họ và tên</label>
+            <input type="text" class="form-control form-control-sm" id="full_name"
+                   name="full_name" placeholder="Nhập họ và tên" required>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="dob" class="form-label">Ngày sinh</label>
+            <input type="date" class="form-control form-control-sm" id="dob"
+                   name="dob">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="gender" class="form-label">Giới tính</label>
+            <select class="form-select form-select-sm" id="gender" name="gender">
+              <option value="" selected disabled>Chọn giới tính</option>
+              <option value="Male">Nam</option>
+              <option value="Female">Nữ</option>
+              <option value="Other">Khác</option>
+            </select>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="id_number" class="form-label">Số CMND/CCCD</label>
+            <input type="text" class="form-control form-control-sm" id="id_number"
+                   name="id_number" placeholder="Nhập số CMND/CCCD">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="id_issue_date" class="form-label">Ngày cấp CMND/CCCD</label>
+            <input type="date" class="form-control form-control-sm" id="id_issue_date"
+                   name="id_issue_date">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="id_issue_place" class="form-label">Nơi cấp CMND/CCCD</label>
+            <input type="text" class="form-control form-control-sm" id="id_issue_place"
+                   name="id_issue_place" placeholder="Nhập nơi cấp">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="criminal_record" class="form-label">Lý lịch tư pháp</label>
+            <select class="form-select form-select-sm" id="criminal_record"
+                    name="criminal_record">
+              <option value="" selected disabled>Chọn tình trạng</option>
+              <option value="Clear">Không tiền án, tiền sự</option>
+              <option value="HasRecord">Có tiền án, tiền sự</option>
+            </select>
+          </div>
+          <div class="col-lg-8 col-md-6">
+            <label for="police_opinion" class="form-label">Ý kiến của cơ quan công an</label>
+            <textarea class="form-control form-control-sm" id="police_opinion"
+                      name="police_opinion" rows="2"
+                      placeholder="Nhập ý kiến (nếu có)"></textarea>
+          </div>
+        </div>
+
+        <!-- SECTION 2: Thông tin y tế & sức khỏe -->
+        <div class="form-section">2. Thông tin y tế &amp; sức khỏe</div>
+        <div class="row">
+          <div class="col-lg-4 col-md-6">
+            <label for="health_check_date" class="form-label">Sức khỏe định kỳ</label>
+            <input type="date" class="form-control form-control-sm" id="health_check_date"
+                   name="health_check_date">
+          </div>
+          <div class="col-lg-8 col-md-6">
+            <label for="health_result" class="form-label">Kết quả sức khỏe</label>
+            <select class="form-select form-select-sm" id="health_result"
+                    name="health_result">
+              <option value="" selected disabled>Chọn kết quả</option>
+              <option value="Normal">Bình thường</option>
+              <option value="NeedsFollowUp">Cần theo dõi</option>
+              <option value="NotFit">Không đủ điều kiện</option>
+            </select>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="blood_type" class="form-label">Nhóm máu</label>
+            <select class="form-select form-select-sm" id="blood_type"
+                    name="blood_type">
+              <option value="" selected disabled>Chọn nhóm máu</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+            </select>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="height" class="form-label">Chiều cao (cm)</label>
+            <input type="number" class="form-control form-control-sm" id="height"
+                   name="height" placeholder="Nhập chiều cao">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="weight" class="form-label">Cân nặng (kg)</label>
+            <input type="number" class="form-control form-control-sm" id="weight"
+                   name="weight" placeholder="Nhập cân nặng">
+          </div>
+          <div class="col-lg-12">
+            <label for="other_health_info" class="form-label">Thông tin y tế bổ sung</label>
+            <textarea class="form-control form-control-sm" id="other_health_info"
+                      name="other_health_info" rows="2"
+                      placeholder="Thông tin bổ sung về y tế, dị ứng, tiền sử bệnh..."></textarea>
+          </div>
+        </div>
+
+        <!-- SECTION 3: Thông tin liên lạc -->
+        <div class="form-section">3. Thông tin liên lạc</div>
+        <div class="row">
+          <div class="col-lg-4 col-md-6">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control form-control-sm" id="email"
+                   name="email" placeholder="Nhập email">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="phone" class="form-label">Số điện thoại</label>
+            <input type="tel" class="form-control form-control-sm" id="phone"
+                   name="phone" placeholder="Nhập số điện thoại">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="permanent_address" class="form-label">Địa chỉ thường trú</label>
+            <input type="text" class="form-control form-control-sm" id="permanent_address"
+                   name="permanent_address" placeholder="Nhập địa chỉ thường trú">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="temporary_address" class="form-label">Địa chỉ tạm trú</label>
+            <input type="text" class="form-control form-control-sm" id="temporary_address"
+                   name="temporary_address" placeholder="Nhập địa chỉ tạm trú">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="marital_status" class="form-label">Tình trạng hôn nhân</label>
+            <select class="form-select form-select-sm" id="marital_status"
+                    name="marital_status">
+              <option value="" selected disabled>Chọn tình trạng</option>
+              <option value="Single">Độc thân</option>
+              <option value="Married">Đã kết hôn</option>
+              <option value="Divorced">Ly dị</option>
+              <option value="Widowed">Góa</option>
+            </select>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="dependents" class="form-label">Số người phụ thuộc</label>
+            <input type="number" class="form-control form-control-sm" id="dependents"
+                   name="dependents" placeholder="Nhập số người phụ thuộc">
+          </div>
+        </div>
+
+        <!-- SECTION 4: Thông tin học vấn & kỹ năng -->
+        <div class="form-section">4. Thông tin học vấn &amp; kỹ năng</div>
+        <div class="row">
+          <div class="col-lg-4 col-md-6">
+            <label for="education_level" class="form-label">Trình độ học vấn</label>
+            <select class="form-select form-select-sm" id="education_level"
+                    name="education_level">
+              <option value="" selected disabled>Chọn trình độ</option>
+              <option value="HighSchool">Trung học phổ thông</option>
+              <option value="College">Cao đẳng</option>
+              <option value="Bachelor">Cử nhân</option>
+              <option value="Master">Thạc sĩ</option>
+              <option value="PhD">Tiến sĩ</option>
+            </select>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="major" class="form-label">Chuyên ngành</label>
+            <input type="text" class="form-control form-control-sm" id="major"
+                   name="major" placeholder="Nhập chuyên ngành">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="institution" class="form-label">Nơi đào tạo</label>
+            <input type="text" class="form-control form-control-sm" id="institution"
+                   name="institution" placeholder="Nhập trường đào tạo">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="graduation_date" class="form-label">Ngày tốt nghiệp</label>
+            <input type="date" class="form-control form-control-sm" id="graduation_date"
+                   name="graduation_date">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="languages" class="form-label">Ngoại ngữ</label>
+            <input type="text" class="form-control form-control-sm" id="languages"
+                   name="languages" placeholder="Ví dụ: Tiếng Anh, Tiếng Nhật,...">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="certifications" class="form-label">Chứng chỉ</label>
+            <input type="text" class="form-control form-control-sm" id="certifications"
+                   name="certifications" placeholder="Liệt kê chứng chỉ (nếu có)">
+          </div>
+          <div class="col-lg-12">
+            <label for="skills" class="form-label">Kỹ năng chuyên môn</label>
+            <textarea class="form-control form-control-sm" id="skills"
+                      name="skills" rows="2"
+                      placeholder="Nhập kỹ năng chuyên môn"></textarea>
+          </div>
+        </div>
+
+        <!-- SECTION 5: Thông tin hợp đồng & lương -->
+        <div class="form-section">5. Thông tin hợp đồng &amp; lương</div>
+        <div class="row">
+          <div class="col-lg-4 col-md-6">
+            <label for="hire_date" class="form-label">Ngày tuyển dụng</label>
+            <input type="date" class="form-control form-control-sm" id="hire_date"
+                   name="hire_date">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="contract_type" class="form-label">Loại hợp đồng</label>
+            <select class="form-select form-select-sm" id="contract_type"
+                    name="contract_type">
+              <option value="" selected disabled>Chọn loại hợp đồng</option>
+              <option value="FullTime">Toàn thời gian</option>
+              <option value="PartTime">Bán thời gian</option>
+              <option value="Internship">Thực tập</option>
+              <option value="Probation">Thử việc</option>
+            </select>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="contract_start_date" class="form-label">Ngày bắt đầu hợp đồng</label>
+            <input type="date" class="form-control form-control-sm" id="contract_start_date"
+                   name="contract_start_date">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="contract_end_date" class="form-label">Ngày kết thúc hợp đồng</label>
+            <input type="date" class="form-control form-control-sm" id="contract_end_date"
+                   name="contract_end_date">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="department" class="form-label">Phòng ban</label>
+            <select class="form-select form-select-sm" id="department"
+                    name="department">
+              <option value="" selected disabled>Chọn phòng ban</option>
+              <option value="Engineering">Kỹ thuật</option>
+              <option value="HR">Nhân sự</option>
+              <option value="Finance">Tài chính</option>
+              <option value="Sales">Kinh doanh</option>
+            </select>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="position" class="form-label">Chức vụ</label>
+            <input type="text" class="form-control form-control-sm" id="position"
+                   name="position" placeholder="Nhập chức vụ">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="rank" class="form-label">Cấp bậc</label>
+            <select class="form-select form-select-sm" id="rank" name="rank">
+              <option value="" selected disabled>Chọn cấp bậc</option>
+              <option value="Junior">Junior</option>
+              <option value="Mid">Mid</option>
+              <option value="Senior">Senior</option>
+              <option value="Lead">Lead</option>
+              <option value="Manager">Manager</option>
+            </select>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="base_salary" class="form-label">Mức lương cơ bản</label>
+            <input type="number" class="form-control form-control-sm" id="base_salary"
+                   name="base_salary" placeholder="Nhập lương cơ bản">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="allowances" class="form-label">Phụ cấp</label>
+            <input type="number" class="form-control form-control-sm" id="allowances"
+                   name="allowances" placeholder="Nhập phụ cấp">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="bonuses" class="form-label">Thưởng</label>
+            <input type="number" class="form-control form-control-sm" id="bonuses"
+                   name="bonuses" placeholder="Nhập số tiền thưởng">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="penalties" class="form-label">Phạt</label>
+            <input type="number" class="form-control form-control-sm" id="penalties"
+                   name="penalties" placeholder="Nhập số tiền phạt (nếu có)">
+          </div>
+          <div class="col-lg-8 col-md-6">
+            <label for="salary_history" class="form-label">Lịch sử lương</label>
+            <textarea class="form-control form-control-sm" id="salary_history"
+                      name="salary_history" rows="2"
+                      placeholder="Nhập các mốc thay đổi lương, thời gian, lý do"></textarea>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="last_raise_date" class="form-label">Ngày tăng lương gần nhất</label>
+            <input type="date" class="form-control form-control-sm" id="last_raise_date"
+                   name="last_raise_date">
+          </div>
+        </div>
+
+        <!-- SECTION 6: Thông tin bảo hiểm & thuế -->
+        <div class="form-section">6. Thông tin bảo hiểm &amp; thuế</div>
+        <div class="row">
+          <div class="col-lg-4 col-md-6">
+            <label for="social_insurance_no" class="form-label">Bảo hiểm xã hội (Mã số)</label>
+            <input type="text" class="form-control form-control-sm" id="social_insurance_no"
+                   name="social_insurance_no" placeholder="Nhập Mã BHXH">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="health_insurance_no" class="form-label">Bảo hiểm y tế (Mã số)</label>
+            <input type="text" class="form-control form-control-sm" id="health_insurance_no"
+                   name="health_insurance_no" placeholder="Nhập Mã BHYT">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="unemployment_insurance_no" class="form-label">Bảo hiểm thất nghiệp (Mã số)</label>
+            <input type="text" class="form-control form-control-sm" id="unemployment_insurance_no"
+                   name="unemployment_insurance_no" placeholder="Nhập Mã BHTN">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="tax_id" class="form-label">Mã số thuế cá nhân</label>
+            <input type="text" class="form-control form-control-sm" id="tax_id"
+                   name="tax_id" placeholder="Nhập Mã số thuế">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="bank_name" class="form-label">Tên ngân hàng</label>
+            <input type="text" class="form-control form-control-sm" id="bank_name"
+                   name="bank_name" placeholder="Nhập tên ngân hàng">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="bank_branch" class="form-label">Chi nhánh ngân hàng</label>
+            <input type="text" class="form-control form-control-sm" id="bank_branch"
+                   name="bank_branch" placeholder="Nhập chi nhánh ngân hàng">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="bank_account" class="form-label">Tài khoản ngân hàng</label>
+            <input type="text" class="form-control form-control-sm" id="bank_account"
+                   name="bank_account" placeholder="Nhập số tài khoản">
+          </div>
+        </div>
+
+        <!-- SECTION 7: Thông tin gia đình & khẩn cấp -->
+        <div class="form-section">7. Thông tin gia đình &amp; khẩn cấp</div>
+        <div class="row">
+          <div class="col-lg-4 col-md-6">
+            <label for="emergency_contact_name" class="form-label">Người liên hệ khẩn cấp</label>
+            <input type="text" class="form-control form-control-sm" id="emergency_contact_name"
+                   name="emergency_contact_name" placeholder="Nhập tên người liên hệ">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="emergency_relation" class="form-label">Quan hệ với người liên hệ</label>
+            <input type="text" class="form-control form-control-sm" id="emergency_relation"
+                   name="emergency_relation" placeholder="Ví dụ: Vợ, Chồng, Cha mẹ...">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="emergency_phone" class="form-label">Điện thoại liên hệ khẩn cấp</label>
+            <input type="tel" class="form-control form-control-sm" id="emergency_phone"
+                   name="emergency_phone" placeholder="Nhập số điện thoại">
+          </div>
+          <div class="col-lg-12">
+            <label for="emergency_address" class="form-label">Địa chỉ liên hệ khẩn cấp</label>
+            <input type="text" class="form-control form-control-sm" id="emergency_address"
+                   name="emergency_address" placeholder="Nhập địa chỉ">
+          </div>
+        </div>
+
+        <!-- SECTION 8: Thông tin công việc & hiệu suất -->
+        <div class="form-section">8. Thông tin công việc &amp; hiệu suất</div>
+        <div class="row">
+          <div class="col-lg-4 col-md-6">
+            <label for="work_status" class="form-label">Tình trạng làm việc</label>
+            <select class="form-select form-select-sm" id="work_status" name="work_status">
+              <option value="" selected disabled>Chọn tình trạng</option>
+              <option value="Active">Đang làm việc</option>
+              <option value="OnLeave">Đang nghỉ phép</option>
+              <option value="Inactive">Ngưng làm</option>
+              <option value="Onboarding">Đang thử việc</option>
+            </select>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="probation_period" class="form-label">Thời gian thử việc (tháng)</label>
+            <input type="number" class="form-control form-control-sm" id="probation_period"
+                   name="probation_period" placeholder="Nhập số tháng thử việc">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="probation_end_date" class="form-label">Ngày kết thúc thử việc</label>
+            <input type="date" class="form-control form-control-sm" id="probation_end_date"
+                   name="probation_end_date">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="last_performance_eval" class="form-label">Ngày đánh giá hiệu suất gần nhất</label>
+            <input type="date" class="form-control form-control-sm" id="last_performance_eval"
+                   name="last_performance_eval">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="performance_score" class="form-label">Điểm đánh giá</label>
+            <input type="number" class="form-control form-control-sm" id="performance_score"
+                   name="performance_score" placeholder="Nhập điểm (0-100)">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="productivity_metric" class="form-label">Năng suất (KPI)</label>
+            <input type="text" class="form-control form-control-sm" id="productivity_metric"
+                   name="productivity_metric" placeholder="Ví dụ: 120% KPI">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="leave_days_used" class="form-label">Tổng số ngày nghỉ phép đã sử dụng</label>
+            <input type="number" class="form-control form-control-sm" id="leave_days_used"
+                   name="leave_days_used" placeholder="Nhập số ngày">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="sick_days_used" class="form-label">Tổng số ngày nghỉ bệnh đã sử dụng</label>
+            <input type="number" class="form-control form-control-sm" id="sick_days_used"
+                   name="sick_days_used" placeholder="Nhập số ngày">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="remaining_leave_days" class="form-label">Ngày nghỉ phép còn lại</label>
+            <input type="number" class="form-control form-control-sm" id="remaining_leave_days"
+                   name="remaining_leave_days" placeholder="Nhập số ngày">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="remaining_sick_days" class="form-label">Ngày nghỉ bệnh còn lại</label>
+            <input type="number" class="form-control form-control-sm" id="remaining_sick_days"
+                   name="remaining_sick_days" placeholder="Nhập số ngày">
+          </div>
+          <div class="col-lg-8 col-md-6">
+            <label for="disciplinary_actions" class="form-label">Kỷ luật</label>
+            <textarea class="form-control form-control-sm" id="disciplinary_actions"
+                      name="disciplinary_actions" rows="2"
+                      placeholder="Nhập hành vi sai phạm &amp; hình thức kỷ luật"></textarea>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="disciplinary_notes" class="form-label">Ghi chú kỷ luật</label>
+            <textarea class="form-control form-control-sm" id="disciplinary_notes"
+                      name="disciplinary_notes" rows="2"
+                      placeholder="Ghi chú chi tiết (nếu có)"></textarea>
+          </div>
+        </div>
+
+        <!-- SECTION 9: Dự án, quản lý & giám sát -->
+        <div class="form-section">9. Dự án, quản lý &amp; giám sát</div>
+        <div class="row">
+          <div class="col-lg-4 col-md-6">
+            <label for="projects_involved" class="form-label">Dự án tham gia</label>
+            <input type="text" class="form-control form-control-sm" id="projects_involved"
+                   name="projects_involved" placeholder="Liệt kê dự án (nếu có)">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="project_role" class="form-label">Vai trò trong dự án</label>
+            <input type="text" class="form-control form-control-sm" id="project_role"
+                   name="project_role" placeholder="Nhập vai trò (Leader, Member...)">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="supervisor" class="form-label">Người giám sát trực tiếp</label>
+            <input type="text" class="form-control form-control-sm" id="supervisor"
+                   name="supervisor" placeholder="Nhập tên người giám sát">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="review_date" class="form-label">Ngày kiểm tra định kỳ</label>
+            <input type="date" class="form-control form-control-sm" id="review_date"
+                   name="review_date">
+          </div>
+          <div class="col-lg-8 col-md-6">
+            <label for="review_result" class="form-label">Kết quả kiểm tra định kỳ</label>
+            <textarea class="form-control form-control-sm" id="review_result"
+                      name="review_result" rows="2"
+                      placeholder="Nhập kết quả, đánh giá"></textarea>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="overtime_hours" class="form-label">Thời gian làm thêm (giờ)</label>
+            <input type="number" class="form-control form-control-sm" id="overtime_hours"
+                   name="overtime_hours" placeholder="Nhập tổng giờ OT">
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="business_trip_days" class="form-label">Số ngày đi công tác</label>
+            <input type="number" class="form-control form-control-sm" id="business_trip_days"
+                   name="business_trip_days" placeholder="Nhập số ngày CT">
+          </div>
+          <div class="col-lg-8 col-md-6">
+            <label for="training_plan" class="form-label">Kế hoạch đào tạo</label>
+            <textarea class="form-control form-control-sm" id="training_plan"
+                      name="training_plan" rows="2"
+                      placeholder="Nội dung, thời gian, người đào tạo..."></textarea>
+          </div>
+        </div>
+
+        <!-- SECTION 10: Hồ sơ giấy tờ & lưu trữ -->
+        <div class="form-section">10. Hồ sơ giấy tờ &amp; lưu trữ</div>
+        <div class="row">
+          <div class="col-lg-4 col-md-6">
+            <label for="employee_photo" class="form-label">Ảnh nhân viên</label>
+            <input class="form-control form-control-sm" type="file" id="employee_photo"
+                   name="employee_photo" accept="image/*">
+          </div>
+          <div class="col-lg-8 col-md-6">
+            <label for="contract_documents" class="form-label">Các văn bản hợp đồng</label>
+            <input class="form-control form-control-sm" type="file"
+                   id="contract_documents" name="contract_documents" multiple>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="contract_signing_date" class="form-label">Ngày ký hợp đồng</label>
+            <input type="date" class="form-control form-control-sm" id="contract_signing_date"
+                   name="contract_signing_date">
+          </div>
+          <div class="col-lg-8 col-md-6">
+            <label for="contract_notes" class="form-label">Ghi chú hợp đồng</label>
+            <textarea class="form-control form-control-sm" id="contract_notes"
+                      name="contract_notes" rows="2"
+                      placeholder="Ghi chú về hợp đồng (điều khoản, ràng buộc...)"></textarea>
+          </div>
+          <div class="col-lg-12">
+            <label for="other_documents" class="form-label">Thông tin giấy tờ khác</label>
+            <textarea class="form-control form-control-sm" id="other_documents"
+                      name="other_documents" rows="2"
+                      placeholder="Các giấy tờ liên quan khác (bằng cấp, chứng nhận...)"></textarea>
+          </div>
+        </div>
+
+        <!-- SECTION 11: Thông tin khác & lưu trữ lâu dài -->
+        <div class="form-section">11. Thông tin khác &amp; lưu trữ lâu dài</div>
+        <div class="row">
+          <div class="col-lg-12">
+            <label for="security_clearance" class="form-label">Thông tin bảo mật / an ninh</label>
+            <textarea class="form-control form-control-sm" id="security_clearance"
+                      name="security_clearance" rows="2"
+                      placeholder="Thông tin cấp độ bảo mật, giấy phép..."></textarea>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="work_location" class="form-label">Địa điểm làm việc</label>
+            <input type="text" class="form-control form-control-sm" id="work_location"
+                   name="work_location" placeholder="Ví dụ: Văn phòng HCM, CN Hà Nội">
+          </div>
+          <div class="col-lg-8 col-md-6">
+            <label for="trip_schedule" class="form-label">Lịch công tác dự kiến</label>
+            <textarea class="form-control form-control-sm" id="trip_schedule"
+                      name="trip_schedule" rows="2"
+                      placeholder="Lịch dự kiến (nơi, ngày, mục đích)"></textarea>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="retirement_status" class="form-label">Tình trạng nghỉ hưu</label>
+            <select class="form-select form-select-sm" id="retirement_status"
+                    name="retirement_status">
+              <option value="" selected disabled>Chọn tình trạng</option>
+              <option value="Active">Đang làm việc</option>
+              <option value="Retired">Đã nghỉ hưu</option>
+              <option value="AboutToRetire">Sắp nghỉ hưu</option>
+            </select>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <label for="retirement_date" class="form-label">Ngày nghỉ hưu</label>
+            <input type="date" class="form-control form-control-sm" id="retirement_date"
+                   name="retirement_date">
+          </div>
+          <div class="col-lg-12">
+            <label for="long_term_notes" class="form-label">Ghi chú lưu trữ lâu dài</label>
+            <textarea class="form-control form-control-sm" id="long_term_notes"
+                      name="long_term_notes" rows="2"
+                      placeholder="Ghi chú, lưu ý khi lưu trữ lâu dài"></textarea>
+          </div>
+          <div class="col-lg-12">
+            <label for="profile_summary" class="form-label">Tóm tắt hồ sơ</label>
+            <textarea class="form-control form-control-sm" id="profile_summary"
+                      name="profile_summary" rows="3"
+                      placeholder="Tóm tắt toàn bộ thông tin nhân viên"></textarea>
+          </div>
+        </div>
+
+        <!-- Nút Hủy / Xuất PDF / Lưu -->
+        <div class="mt-4 text-center">
+          <button type="reset" class="btn btn-secondary btn-sm me-2" id="btnResetForm">
+            <i class="fas fa-times me-1"></i>Hủy
+          </button>
+          <button type="button" class="btn btn-outline-info btn-sm me-2" onclick="exportPDF()">
+            <i class="fas fa-file-pdf me-1"></i>Xuất PDF
+          </button>
+          <button type="submit" class="btn btn-primary btn-sm" id="btnSaveForm">
+            <i class="fas fa-save me-1"></i>Lưu thông tin
+          </button>
+        </div>
+      </form>
+    </div>
+    <!-- === End Form === -->
+
+    <!-- === Danh sách Nhân viên đã nhập === -->
+    <div id="employeeListSection" class="form-card mx-auto" style="max-width: 1100px;">
+      <div class="card-title">Danh sách nhân viên đã nhập</div>
+      <ul id="employeeList" class="list-group">
+        <!-- JavaScript sẽ đổ dữ liệu vào đây -->
+      </ul>
+    </div>
+    <!-- === End Danh sách Nhân viên === -->
+
+    <!-- === Chi tiết Nhân viên === -->
+    <div id="employeeDetailSection" class="form-card mx-auto" style="max-width: 1100px;">
+      <div class="card-title">Chi tiết nhân viên</div>
+      <div class="row">
+        <!-- Header: ảnh + tên -->
+        <div class="col-lg-12 d-flex align-items-center mb-4">
+          <img id="detailPhoto"
+               src="{% static 'images/avatar-placeholder.png' %}"
+               alt="Ảnh nhân viên"
+               class="rounded-circle me-3"
+               width="100" height="100"
+               style="object-fit: cover;">
+          <div>
+            <h4 id="detailFullName" class="mb-0">–</h4>
+            <small id="detailEmployeeId" class="text-muted">Mã NV: –</small>
+          </div>
+        </div>
+
+        <!-- SECTION 1 -->
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngày sinh:</strong>
+          <p id="detailDob">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Giới tính:</strong>
+          <p id="detailGender">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Số CMND/CCCD:</strong>
+          <p id="detailIdNumber">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngày cấp CCCD:</strong>
+          <p id="detailIdIssueDate">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Nơi cấp CCCD:</strong>
+          <p id="detailIdIssuePlace">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Lý lịch tư pháp:</strong>
+          <p id="detailCriminalRecord">–</p>
+        </div>
+        <div class="col-lg-8 col-md-6">
+          <strong>Ý kiến cơ quan công an:</strong>
+          <p id="detailPoliceOpinion">–</p>
+        </div>
+
+        <!-- SECTION 2 -->
+        <div class="col-lg-4 col-md-6">
+          <strong>Sức khỏe định kỳ:</strong>
+          <p id="detailHealthCheckDate">–</p>
+        </div>
+        <div class="col-lg-8 col-md-6">
+          <strong>Kết quả sức khỏe:</strong>
+          <p id="detailHealthResult">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Nhóm máu:</strong>
+          <p id="detailBloodType">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Chiều cao:</strong>
+          <p id="detailHeight">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Cân nặng:</strong>
+          <p id="detailWeight">–</p>
+        </div>
+        <div class="col-lg-12">
+          <strong>Thông tin y tế bổ sung:</strong>
+          <p id="detailOtherHealthInfo">–</p>
+        </div>
+
+        <!-- SECTION 3 -->
+        <div class="col-lg-4 col-md-6">
+          <strong>Email:</strong>
+          <p id="detailEmail">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Điện thoại:</strong>
+          <p id="detailPhone">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Địa chỉ thường trú:</strong>
+          <p id="detailPermanentAddress">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Địa chỉ tạm trú:</strong>
+          <p id="detailTemporaryAddress">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Tình trạng hôn nhân:</strong>
+          <p id="detailMaritalStatus">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Số người phụ thuộc:</strong>
+          <p id="detailDependents">–</p>
+        </div>
+
+        <!-- SECTION 4 -->
+        <div class="col-lg-4 col-md-6">
+          <strong>Học vấn:</strong>
+          <p id="detailEducationLevel">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Chuyên ngành:</strong>
+          <p id="detailMajor">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Nơi đào tạo:</strong>
+          <p id="detailInstitution">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngày tốt nghiệp:</strong>
+          <p id="detailGraduationDate">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngoại ngữ:</strong>
+          <p id="detailLanguages">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Chứng chỉ:</strong>
+          <p id="detailCertifications">–</p>
+        </div>
+        <div class="col-lg-12">
+          <strong>Kỹ năng chuyên môn:</strong>
+          <p id="detailSkills">–</p>
+        </div>
+
+        <!-- SECTION 5 -->
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngày tuyển dụng:</strong>
+          <p id="detailHireDate">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Loại hợp đồng:</strong>
+          <p id="detailContractType">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngày bắt đầu hợp đồng:</strong>
+          <p id="detailContractStartDate">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngày kết thúc hợp đồng:</strong>
+          <p id="detailContractEndDate">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Phòng ban:</strong>
+          <p id="detailDepartment">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Chức vụ:</strong>
+          <p id="detailPosition">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Cấp bậc:</strong>
+          <p id="detailRank">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Lương cơ bản:</strong>
+          <p id="detailBaseSalary">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Phụ cấp:</strong>
+          <p id="detailAllowances">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Thưởng:</strong>
+          <p id="detailBonuses">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Phạt:</strong>
+          <p id="detailPenalties">–</p>
+        </div>
+        <div class="col-lg-8 col-md-6">
+          <strong>Lịch sử lương:</strong>
+          <p id="detailSalaryHistory">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngày tăng lương gần nhất:</strong>
+          <p id="detailLastRaiseDate">–</p>
+        </div>
+
+        <!-- SECTION 6 -->
+        <div class="col-lg-4 col-md-6">
+          <strong>Bảo hiểm xã hội:</strong>
+          <p id="detailSocialInsuranceNo">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Bảo hiểm y tế:</strong>
+          <p id="detailHealthInsuranceNo">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Bảo hiểm thất nghiệp:</strong>
+          <p id="detailUnemploymentInsuranceNo">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Mã số thuế:</strong>
+          <p id="detailTaxId">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngân hàng:</strong>
+          <p id="detailBankName">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Chi nhánh ngân hàng:</strong>
+          <p id="detailBankBranch">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Tài khoản ngân hàng:</strong>
+          <p id="detailBankAccount">–</p>
+        </div>
+
+        <!-- SECTION 7 -->
+        <div class="col-lg-4 col-md-6">
+          <strong>Người liên hệ khẩn cấp:</strong>
+          <p id="detailEmergencyContactName">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Quan hệ:</strong>
+          <p id="detailEmergencyRelation">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Điện thoại khẩn cấp:</strong>
+          <p id="detailEmergencyPhone">–</p>
+        </div>
+        <div class="col-lg-12">
+          <strong>Địa chỉ khẩn cấp:</strong>
+          <p id="detailEmergencyAddress">–</p>
+        </div>
+
+        <!-- SECTION 8 -->
+        <div class="col-lg-4 col-md-6">
+          <strong>Tình trạng làm việc:</strong>
+          <p id="detailWorkStatus">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Thời gian thử việc:</strong>
+          <p id="detailProbationPeriod">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngày kết thúc thử việc:</strong>
+          <p id="detailProbationEndDate">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Đánh giá hiệu suất gần nhất:</strong>
+          <p id="detailLastPerformanceEval">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Điểm đánh giá:</strong>
+          <p id="detailPerformanceScore">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Năng suất (KPI):</strong>
+          <p id="detailProductivityMetric">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngày nghỉ phép đã sử dụng:</strong>
+          <p id="detailLeaveDaysUsed">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngày nghỉ bệnh đã sử dụng:</strong>
+          <p id="detailSickDaysUsed">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngày nghỉ phép còn lại:</strong>
+          <p id="detailRemainingLeaveDays">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngày nghỉ bệnh còn lại:</strong>
+          <p id="detailRemainingSickDays">–</p>
+        </div>
+        <div class="col-lg-8 col-md-6">
+          <strong>Kỷ luật:</strong>
+          <p id="detailDisciplinaryActions">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ghi chú kỷ luật:</strong>
+          <p id="detailDisciplinaryNotes">–</p>
+        </div>
+
+        <!-- SECTION 9 -->
+        <div class="col-lg-4 col-md-6">
+          <strong>Dự án tham gia:</strong>
+          <p id="detailProjectsInvolved">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Vai trò dự án:</strong>
+          <p id="detailProjectRole">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Giám sát trực tiếp:</strong>
+          <p id="detailSupervisor">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngày kiểm tra định kỳ:</strong>
+          <p id="detailReviewDate">–</p>
+        </div>
+        <div class="col-lg-8 col-md-6">
+          <strong>Kết quả kiểm tra:</strong>
+          <p id="detailReviewResult">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Giờ làm thêm:</strong>
+          <p id="detailOvertimeHours">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngày đi công tác:</strong>
+          <p id="detailBusinessTripDays">–</p>
+        </div>
+        <div class="col-lg-8 col-md-6">
+          <strong>Kế hoạch đào tạo:</strong>
+          <p id="detailTrainingPlan">–</p>
+        </div>
+
+        <!-- SECTION 10 -->
+        <div class="col-lg-4 col-md-6">
+          <strong>Ảnh nhân viên:</strong><br>
+          <img id="detailEmployeePhoto"
+               src="{% static 'images/avatar-placeholder.png' %}"
+               alt="Ảnh NV"
+               width="120" height="120"
+               class="rounded" style="object-fit: cover;">
+        </div>
+        <div class="col-lg-8 col-md-6">
+          <strong>Văn bản hợp đồng:</strong>
+          <ul id="detailContractDocuments" class="ps-3 mb-0">
+            <!-- JavaScript sẽ đổ các <li><a> ...</a></li> nếu có -->
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngày ký hợp đồng:</strong>
+          <p id="detailContractSigningDate">–</p>
+        </div>
+        <div class="col-lg-8 col-md-6">
+          <strong>Ghi chú hợp đồng:</strong>
+          <p id="detailContractNotes">–</p>
+        </div>
+        <div class="col-lg-12">
+          <strong>Thông tin giấy tờ khác:</strong>
+          <p id="detailOtherDocuments">–</p>
+        </div>
+
+        <!-- SECTION 11 -->
+        <div class="col-lg-12">
+          <strong>Thông tin bảo mật / an ninh:</strong>
+          <p id="detailSecurityClearance">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Địa điểm làm việc:</strong>
+          <p id="detailWorkLocation">–</p>
+        </div>
+        <div class="col-lg-8 col-md-6">
+          <strong>Lịch công tác dự kiến:</strong>
+          <p id="detailTripSchedule">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Tình trạng nghỉ hưu:</strong>
+          <p id="detailRetirementStatus">–</p>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <strong>Ngày nghỉ hưu:</strong>
+          <p id="detailRetirementDate">–</p>
+        </div>
+        <div class="col-lg-12">
+          <strong>Ghi chú lưu trữ lâu dài:</strong>
+          <p id="detailLongTermNotes">–</p>
+        </div>
+        <div class="col-lg-12">
+          <strong>Tóm tắt hồ sơ:</strong>
+          <p id="detailProfileSummary">–</p>
+        </div>
+      </div>
+    </div>
+    <!-- === End Chi tiết Nhân viên === -->
+  </main>
+  <!-- ======= End Main Content ======= -->
+
+  <!-- ======= Thư viện JS ======= -->
+  <!-- jQuery (phải load trước script dùng $) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Bootstrap Bundle JS (Popper + Bootstrap) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- html2pdf.js (nếu cần xuất PDF) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+  <!-- ======= JavaScript Tùy Biến ======= -->
+  <script>
+    $(document).ready(function() {
+      // Khi DOM load xong, load danh sách nhân viên
+      loadEmployeeList();
+    });
+
+    /**
+     * Gọi API hr_employee_list để lấy JSON danh sách
+     * rồi append vào <ul id="employeeList">
+     */
+    function loadEmployeeList() {
+      console.log("Gọi API hr_employee_list …");
+      $.ajax({
+        url: "{% url 'app_work:hr_employee_list' %}",  // Ví dụ: "/work/hr/api/list/"
+        method: "GET",
+        dataType: "json",
+        success: function(response) {
+          console.log("API trả về:", response);
+          const listContainer = $("#employeeList");
+          listContainer.empty();
+
+          if (response && response.length) {
+            response.forEach(emp => {
+              const li = $(`
+                <li class="list-group-item d-flex align-items-center justify-content-between px-3" data-id="${emp.id}">
+                  <div>
+                    <span class="employee-name">${emp.full_name}</span><br>
+                    <small class="employee-id">Mã NV: ${emp.employee_id}</small>
+                  </div>
+                  <i class="fas fa-chevron-right text-secondary"></i>
+                </li>
+              `);
+              // Khi click vào, sẽ load chi tiết & điền form
+              li.on('click', function() {
+                const empId = $(this).data('id');
+                showEmployeeDetail(empId);
+                populateFormForEdit(empId);
+              });
+              listContainer.append(li);
+            });
+          } else {
+            listContainer.append('<li class="list-group-item">Chưa có nhân viên nào.</li>');
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error("Lỗi khi gọi hr_employee_list:", status, error);
+          $("#employeeList").empty().append('<li class="list-group-item text-danger">Lỗi tải dữ liệu.</li>');
+        }
+      });
+    }
+
+    /**
+     * Gọi API hr_employee_detail để lấy chi tiết nhân viên,
+     * rồi đổ vào phần hiển thị “Chi tiết nhân viên” bên dưới.
+     */
+    function showEmployeeDetail(empId) {
+      let detailUrl = "{% url 'app_work:hr_employee_detail' 0 %}".replace('/0/', `/${empId}/`);
+      $.ajax({
+        url: detailUrl,
+        method: "GET",
+        dataType: "json",
+        success: function(emp) {
+          $("#detailPhoto").attr('src', emp.employee_photo_url || "{% static 'images/avatar-placeholder.png' %}");
+          $("#detailFullName").text(emp.full_name || '–');
+          $("#detailEmployeeId").text("Mã NV: " + (emp.employee_id || '–'));
+          $("#detailDob").text(emp.dob || '–');
+          $("#detailGender").text(emp.gender || '–');
+          $("#detailIdNumber").text(emp.id_number || '–');
+          $("#detailIdIssueDate").text(emp.id_issue_date || '–');
+          $("#detailIdIssuePlace").text(emp.id_issue_place || '–');
+          $("#detailCriminalRecord").text(emp.criminal_record || '–');
+          $("#detailPoliceOpinion").text(emp.police_opinion || '–');
+
+          $("#detailHealthCheckDate").text(emp.health_check_date || '–');
+          $("#detailHealthResult").text(emp.health_result || '–');
+          $("#detailBloodType").text(emp.blood_type || '–');
+          $("#detailHeight").text(emp.height ? emp.height + " cm" : '–');
+          $("#detailWeight").text(emp.weight ? emp.weight + " kg" : '–');
+          $("#detailOtherHealthInfo").text(emp.other_health_info || '–');
+
+          $("#detailEmail").text(emp.email || '–');
+          $("#detailPhone").text(emp.phone || '–');
+          $("#detailPermanentAddress").text(emp.permanent_address || '–');
+          $("#detailTemporaryAddress").text(emp.temporary_address || '–');
+          $("#detailMaritalStatus").text(emp.marital_status || '–');
+          $("#detailDependents").text(emp.dependents || '–');
+
+          $("#detailEducationLevel").text(emp.education_level || '–');
+          $("#detailMajor").text(emp.major || '–');
+          $("#detailInstitution").text(emp.institution || '–');
+          $("#detailGraduationDate").text(emp.graduation_date || '–');
+          $("#detailLanguages").text(emp.languages || '–');
+          $("#detailCertifications").text(emp.certifications || '–');
+          $("#detailSkills").text(emp.skills || '–');
+
+          $("#detailHireDate").text(emp.hire_date || '–');
+          $("#detailContractType").text(emp.contract_type || '–');
+          $("#detailContractStartDate").text(emp.contract_start_date || '–');
+          $("#detailContractEndDate").text(emp.contract_end_date || '–');
+          $("#detailDepartment").text(emp.department || '–');
+          $("#detailPosition").text(emp.position || '–');
+          $("#detailRank").text(emp.rank || '–');
+          $("#detailBaseSalary").text(emp.base_salary ? emp.base_salary + " ₫" : '–');
+          $("#detailAllowances").text(emp.allowances ? emp.allowances + " ₫" : '–');
+          $("#detailBonuses").text(emp.bonuses ? emp.bonuses + " ₫" : '–');
+          $("#detailPenalties").text(emp.penalties ? emp.penalties + " ₫" : '–');
+          $("#detailSalaryHistory").text(emp.salary_history || '–');
+          $("#detailLastRaiseDate").text(emp.last_raise_date || '–');
+
+          $("#detailSocialInsuranceNo").text(emp.social_insurance_no || '–');
+          $("#detailHealthInsuranceNo").text(emp.health_insurance_no || '–');
+          $("#detailUnemploymentInsuranceNo").text(emp.unemployment_insurance_no || '–');
+          $("#detailTaxId").text(emp.tax_id || '–');
+          $("#detailBankName").text(emp.bank_name || '–');
+          $("#detailBankBranch").text(emp.bank_branch || '–');
+          $("#detailBankAccount").text(emp.bank_account || '–');
+
+          $("#detailEmergencyContactName").text(emp.emergency_contact_name || '–');
+          $("#detailEmergencyRelation").text(emp.emergency_relation || '–');
+          $("#detailEmergencyPhone").text(emp.emergency_phone || '–');
+          $("#detailEmergencyAddress").text(emp.emergency_address || '–');
+
+          $("#detailWorkStatus").text(emp.work_status || '–');
+          $("#detailProbationPeriod").text(emp.probation_period ? emp.probation_period + " tháng" : '–');
+          $("#detailProbationEndDate").text(emp.probation_end_date || '–');
+          $("#detailLastPerformanceEval").text(emp.last_performance_eval || '–');
+          $("#detailPerformanceScore").text(emp.performance_score || '–');
+          $("#detailProductivityMetric").text(emp.productivity_metric || '–');
+          $("#detailLeaveDaysUsed").text(emp.leave_days_used || '–');
+          $("#detailSickDaysUsed").text(emp.sick_days_used || '–');
+          $("#detailRemainingLeaveDays").text(emp.remaining_leave_days || '–');
+          $("#detailRemainingSickDays").text(emp.remaining_sick_days || '–');
+          $("#detailDisciplinaryActions").text(emp.disciplinary_actions || '–');
+          $("#detailDisciplinaryNotes").text(emp.disciplinary_notes || '–');
+
+          $("#detailProjectsInvolved").text(emp.projects_involved || '–');
+          $("#detailProjectRole").text(emp.project_role || '–');
+          $("#detailSupervisor").text(emp.supervisor || '–');
+          $("#detailReviewDate").text(emp.review_date || '–');
+          $("#detailReviewResult").text(emp.review_result || '–');
+          $("#detailOvertimeHours").text(emp.overtime_hours ? emp.overtime_hours + " giờ" : '–');
+          $("#detailBusinessTripDays").text(emp.business_trip_days ? emp.business_trip_days + " ngày" : '–');
+          $("#detailTrainingPlan").text(emp.training_plan || '–');
+
+          // Hiển thị danh sách file hợp đồng (nếu có)
+          const docList = $("#detailContractDocuments");
+          docList.empty();
+          if (emp.contract_documents && emp.contract_documents.length) {
+            emp.contract_documents.forEach(fileObj => {
+              const li = $(`<li><a href="${fileObj.url}" target="_blank">${fileObj.name}</a></li>`);
+              docList.append(li);
+            });
+          } else {
+            docList.append('<li>–</li>');
+          }
+          $("#detailContractSigningDate").text(emp.contract_signing_date || '–');
+          $("#detailContractNotes").text(emp.contract_notes || '–');
+          $("#detailOtherDocuments").text(emp.other_documents || '–');
+
+          $("#detailSecurityClearance").text(emp.security_clearance || '–');
+          $("#detailWorkLocation").text(emp.work_location || '–');
+          $("#detailTripSchedule").text(emp.trip_schedule || '–');
+          $("#detailRetirementStatus").text(emp.retirement_status || '–');
+          $("#detailRetirementDate").text(emp.retirement_date || '–');
+          $("#detailLongTermNotes").text(emp.long_term_notes || '–');
+          $("#detailProfileSummary").text(emp.profile_summary || '–');
+
+          // Scroll xuống phần detail (nếu muốn)
+          $('html, body').animate({
+            scrollTop: $("#employeeDetailSection").offset().top - 60
+          }, 500);
+        },
+        error: function(xhr, status, error) {
+          console.error("Lỗi khi gọi hr_employee_detail:", status, error);
+          alert("Không thể tải chi tiết nhân viên.");
+        }
+      });
+    }
+
+    /**
+     * Hàm này điền dữ liệu vào form để chỉnh sửa.
+     * Mỗi khi click một nhân viên trong danh sách, sẽ gọi API detail
+     * và fill form tương ứng. Bạn có thể tùy chỉnh thêm rule: 
+     * ví dụ disable field employee_id nếu không muốn cho sửa mã.
+     */
+    function populateFormForEdit(empId) {
+      let detailUrl = "{% url 'app_work:hr_employee_detail' 0 %}".replace('/0/', `/${empId}/`);
+      $.ajax({
+        url: detailUrl,
+        method: "GET",
+        dataType: "json",
+        success: function(emp) {
+          // Điền dữ liệu lên form input/select/textarea
+          $("#employee_id").val(emp.employee_id || "").prop("readonly", true);
+          $("#full_name").val(emp.full_name || "");
+          $("#dob").val(emp.dob || "");
+          $("#gender").val(emp.gender || "");
+          $("#id_number").val(emp.id_number || "");
+          $("#id_issue_date").val(emp.id_issue_date || "");
+          $("#id_issue_place").val(emp.id_issue_place || "");
+          $("#criminal_record").val(emp.criminal_record || "");
+          $("#police_opinion").val(emp.police_opinion || "");
+
+          $("#health_check_date").val(emp.health_check_date || "");
+          $("#health_result").val(emp.health_result || "");
+          $("#blood_type").val(emp.blood_type || "");
+          $("#height").val(emp.height || "");
+          $("#weight").val(emp.weight || "");
+          $("#other_health_info").val(emp.other_health_info || "");
+
+          $("#email").val(emp.email || "");
+          $("#phone").val(emp.phone || "");
+          $("#permanent_address").val(emp.permanent_address || "");
+          $("#temporary_address").val(emp.temporary_address || "");
+          $("#marital_status").val(emp.marital_status || "");
+          $("#dependents").val(emp.dependents || "");
+
+          $("#education_level").val(emp.education_level || "");
+          $("#major").val(emp.major || "");
+          $("#institution").val(emp.institution || "");
+          $("#graduation_date").val(emp.graduation_date || "");
+          $("#languages").val(emp.languages || "");
+          $("#certifications").val(emp.certifications || "");
+          $("#skills").val(emp.skills || "");
+
+          $("#hire_date").val(emp.hire_date || "");
+          $("#contract_type").val(emp.contract_type || "");
+          $("#contract_start_date").val(emp.contract_start_date || "");
+          $("#contract_end_date").val(emp.contract_end_date || "");
+          $("#department").val(emp.department || "");
+          $("#position").val(emp.position || "");
+          $("#rank").val(emp.rank || "");
+          $("#base_salary").val(emp.base_salary || "");
+          $("#allowances").val(emp.allowances || "");
+          $("#bonuses").val(emp.bonuses || "");
+          $("#penalties").val(emp.penalties || "");
+          $("#salary_history").val(emp.salary_history || "");
+          $("#last_raise_date").val(emp.last_raise_date || "");
+
+          $("#social_insurance_no").val(emp.social_insurance_no || "");
+          $("#health_insurance_no").val(emp.health_insurance_no || "");
+          $("#unemployment_insurance_no").val(emp.unemployment_insurance_no || "");
+          $("#tax_id").val(emp.tax_id || "");
+          $("#bank_name").val(emp.bank_name || "");
+          $("#bank_branch").val(emp.bank_branch || "");
+          $("#bank_account").val(emp.bank_account || "");
+
+          $("#emergency_contact_name").val(emp.emergency_contact_name || "");
+          $("#emergency_relation").val(emp.emergency_relation || "");
+          $("#emergency_phone").val(emp.emergency_phone || "");
+          $("#emergency_address").val(emp.emergency_address || "");
+
+          $("#work_status").val(emp.work_status || "");
+          $("#probation_period").val(emp.probation_period || "");
+          $("#probation_end_date").val(emp.probation_end_date || "");
+          $("#last_performance_eval").val(emp.last_performance_eval || "");
+          $("#performance_score").val(emp.performance_score || "");
+          $("#productivity_metric").val(emp.productivity_metric || "");
+          $("#leave_days_used").val(emp.leave_days_used || "");
+          $("#sick_days_used").val(emp.sick_days_used || "");
+          $("#remaining_leave_days").val(emp.remaining_leave_days || "");
+          $("#remaining_sick_days").val(emp.remaining_sick_days || "");
+          $("#disciplinary_actions").val(emp.disciplinary_actions || "");
+          $("#disciplinary_notes").val(emp.disciplinary_notes || "");
+
+          $("#projects_involved").val(emp.projects_involved || "");
+          $("#project_role").val(emp.project_role || "");
+          $("#supervisor").val(emp.supervisor || "");
+          $("#review_date").val(emp.review_date || "");
+          $("#review_result").val(emp.review_result || "");
+          $("#overtime_hours").val(emp.overtime_hours || "");
+          $("#business_trip_days").val(emp.business_trip_days || "");
+          $("#training_plan").val(emp.training_plan || "");
+
+          $("#contract_signing_date").val(emp.contract_signing_date || "");
+          $("#contract_notes").val(emp.contract_notes || "");
+          $("#other_documents").val(emp.other_documents || "");
+
+          $("#security_clearance").val(emp.security_clearance || "");
+          $("#work_location").val(emp.work_location || "");
+          $("#trip_schedule").val(emp.trip_schedule || "");
+          $("#retirement_status").val(emp.retirement_status || "");
+          $("#retirement_date").val(emp.retirement_date || "");
+          $("#long_term_notes").val(emp.long_term_notes || "");
+          $("#profile_summary").val(emp.profile_summary || "");
+        },
+        error: function(xhr, status, error) {
+          console.error("Lỗi khi lấy data cho form:", status, error);
+        }
+      });
+      // Cuộn form lên nếu ở xa
+      $('html, body').animate({
+        scrollTop: $("#employeeFormSection").offset().top - 60
+      }, 500);
+    }
+
+    // Khi click “Hủy” (reset), sẽ clear hoàn toàn form và cho phép edit lại
+    $("#btnResetForm").on('click', function() {
+      // Bỏ readonly nếu trước đó đã edit
+      $("#employee_id").prop("readonly", false);
+      // Clear tất cả input/select/textarea
+      $("#employeeForm")[0].reset();
+    });
+
+    // Hàm xuất PDF (chỉ lấy form làm ví dụ)
+    function exportPDF() {
+      const element = document.getElementById('employeeFormSection');
+      if (!element) return;
+      html2pdf().set({ margin: 1, filename: 'nhanvien.pdf' }).from(element).save();
+    }
+  </script>
+</body>
+</html>

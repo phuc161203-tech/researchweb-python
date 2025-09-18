@@ -1,0 +1,128 @@
+{% extends "news247/_Base.html" %}
+{% load static %}
+{% block main_content %}
+<div class="container mt-4 mb-5">
+    <div class="row">
+        <!-- PHẦN NỘI DUNG BÀI BÁO -->
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h1 class="card-title text-primary font-weight-bold mb-3">
+                        {{ article.Ten_bai_bao }}
+                    </h1>
+                    <div class="mb-2 text-muted">
+                        <span>
+                            <i class="fa fa-user"></i>
+                            {{ article.Ten_bao }}
+                        </span>
+                        <span class="ml-3">
+                            <i class="fa fa-calendar"></i>
+                            {{ article.Ngay_dang }}
+                        </span>
+                        <span class="ml-3">
+                            <i class="fa fa-folder-open"></i>
+                            {{ article.Link_bai_bao }}
+                        </span>
+                    </div>
+                    <hr>
+                        <img src="{{ article.Link_hinh_minh_hoa }}" class="img-fluid mb-4" alt="Hình minh họa">
+                    <div class="mb-3 font-italic text-secondary">
+                        {{ article.Tom_tat }}
+                    </div>
+                    <div class="article-content">
+                        {{ article.Noi_dung_bai_viet|safe }}
+                    </div>
+                </div>
+            </div>
+            <!-- Bình luận -->
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Bình luận bài báo</h5>
+                </div>
+                <div class="card-body">
+                    
+{% if user.is_authenticated %}
+  <form method="post">
+    {% csrf_token %}
+    {# Hiển thị tên và email dưới dạng văn bản #}
+    <div class="mb-2">
+      <strong>Họ và tên:</strong> {{ user.get_full_name }}
+    </div>
+    <div class="mb-2">
+      <strong>Email:</strong> {{ user.email }}
+    </div>
+
+    {# Giữ giá trị này trong các hidden input để form vẫn gửi lên #}
+    <input type="hidden" name="name"  value="{{ user.get_full_name }}">
+    <input type="hidden" name="email" value="{{ user.email }}">
+
+    <textarea name="message"
+              required
+              placeholder="Nội dung bình luận"
+              class="form-control mb-2"
+              rows="4"></textarea>
+
+    <button type="submit" class="btn btn-primary">Gửi bình luận</button>
+  </form>
+{% else %}
+  <li>
+    <a class="nav-link text-dark" href="{% url 'app_customer:dang-nhap' %}">
+      Đăng ký/Đăng nhập để bình luận
+    </a>
+  </li>
+{% endif %}
+                    <div>
+                        <br>
+                        <br>
+                        <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Bình luận ({{ comments.count }})</h5>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            {% if comments %}
+                            {% for c in comments %}
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>{{ c.name }}</strong>
+                                    <span class="text-muted small ml-2">{{ c.created_at|date:"d/m/Y H:i" }}</span>
+                                </div>
+                                </div>
+                                <div class="mt-2">
+                                {{ c.message|linebreaksbr }}
+                                </div>
+                            </li>
+                            {% endfor %}
+                            {% else %}
+                            <li class="list-group-item text-muted">Chưa có bình luận nào.</li>
+                            {% endif %}
+                        </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- PHẦN BÀI LIÊN QUAN -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Bài cùng chuyên mục</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for rel in related_articles %}
+                        <li class="list-group-item">
+                            <a href="{% url 'blogScience:new-details' rel.pk %}" class="black-color">{{ rel.title }}</a>
+                            <br>
+                            <small class="text-muted">{{ rel.Ngay_dang|date:"d/m/Y" }}</small>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item text-muted">Chưa có bài liên quan.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <!-- Có thể thêm các widget, tin nổi bật, tag... ở đây -->
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Event Timeline</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #ffffff;
+            padding: 40px 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: auto;
+        }
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            background: linear-gradient(to bottom, #ff5722, #00bcd4);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -4px;
+            border-radius: 4px;
+        }
+        .timeline-container {
+            padding: 20px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-container.left {
+            left: 0;
+        }
+        .timeline-container.right {
+            left: 50%;
+        }
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            top: 30px;
+            z-index: 1;
+            border: 4px solid #0d1117;
+        }
+        .timeline-container.left::before {
+            right: -12px;
+        }
+        .timeline-container.right::before {
+            left: -12px;
+        }
+        .timeline-content {
+            padding: 20px;
+            background-color: #161b22;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .event-date {
+            font-weight: bold;
+            color: #00bcd4;
+        }
+        .event-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #ff9800;
+        }
+        .event-image {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .btn-register {
+            background-color: #009688;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            transition: background-color 0.3s;
+        }
+        .btn-register:hover {
+            background-color: #00796b;
+        }
+    </style>
+</head>
+<body>
+
+<div style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 1rem; background-color: #fff;">
+  <ul style="list-style: none; margin: 0; padding: 0; display: flex; margin-left: auto; align-items: center;">
+    <li style="margin-right: 1rem;">
+      <a href="{% url 'blogScience:new-index' %}"
+         style="
+           text-decoration: none;
+           color: #000;
+           padding: .5rem 1rem;
+           display: block;
+           {% if request.path == '/article-contact/' %}
+             font-weight: bold;
+             color: #007bff;
+           {% endif %}
+         ">
+        Thông tin Báo chí
+      </a>
+    </li>
+    <li style="margin-right: 1rem;">
+      <a href="{% url 'blogScience:article-blog' %}"
+         style="
+           text-decoration: none;
+           color: #000;
+           padding: .5rem 1rem;
+           display: block;
+           {% if request.path == '/article-blog/' %}
+             font-weight: bold;
+             color: #007bff;
+           {% endif %}
+         ">
+        Thông tin Nghiên cứu
+      </a>
+    </li>
+    <li style="margin-right: 1rem;">
+      <a href="{% url 'blogScience:article-about' %}"
+         style="
+           text-decoration: none;
+           color: #000;
+           padding: .5rem 1rem;
+           display: block;
+           {% if request.path == '/article-about/' %}
+             font-weight: bold;
+             color: #007bff;
+           {% endif %}
+         ">
+        Thông tin Sự kiện
+      </a>
+    </li>
+    <li style="margin-right: 1rem;">
+      <a href="{% url 'blogScience:sale-courses' %}"
+         style="
+           text-decoration: none;
+           color: #000;
+           padding: .5rem 1rem;
+           display: block;
+           {% if request.path == '/sale-courses/' %}
+             font-weight: bold;
+             color: #007bff;
+           {% endif %}
+         ">
+        Thông tin Khóa học
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div class="container mb-4">
+    <select id="month-select" class="form-select" onchange="filterEvents()">
+        <option value="all">Tất cả các tháng</option>
+        <option value="01">Tháng 1</option>
+        <option value="02">Tháng 2</option>
+        <option value="03">Tháng 3</option>
+        <option value="04">Tháng 4</option>
+        <option value="05">Tháng 5</option>
+        <option value="06">Tháng 6</option>
+        <option value="07">Tháng 7</option>
+        <option value="08">Tháng 8</option>
+        <option value="09">Tháng 9</option>
+        <option value="10">Tháng 10</option>
+        <option value="11">Tháng 11</option>
+        <option value="12">Tháng 12</option>
+    </select>
+</div>
+
+<div class="timeline">
+    {% for event in events %}
+    <div class="timeline-container {% cycle 'left' 'right' %}" data-month="{{ event.datetime|date:'m' }}">
+        <div class="timeline-content">
+            <img src="{{ event.image }}" alt="{{ event.title }}" class="event-image">
+            <div class="event-title">{{ event.title }}</div>
+            <div class="event-date">{{ event.datetime|date:"d M Y, H:i" }}</div>
+            <p>{{ event.description }}</p>
+        </div>
+    </div>
+    {% empty %}
+    <div class="timeline-container">
+        <div class="timeline-content text-center">Không có sự kiện nào.</div>
+    </div>
+    {% endfor %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function filterEvents() {
+        const selectedMonth = document.getElementById('month-select').value;
+        document.querySelectorAll('.timeline-container').forEach(container => {
+            if (selectedMonth === 'all' || container.getAttribute('data-month') === selectedMonth) {
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

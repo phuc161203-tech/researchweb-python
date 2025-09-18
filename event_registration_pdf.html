@@ -1,0 +1,20 @@
+<div class="p-4">
+  <h4>Đăng ký tham gia sự kiện thành công!</h4>
+  <table class="table table-bordered mt-3">
+    <tr><th>Sự kiện</th><td>{{ reg.event }}</td></tr>
+    <tr><th>Họ tên</th><td>{{ reg.prefix }} {{ reg.first_name }} {{ reg.last_name }}</td></tr>
+    <tr><th>Email</th><td>{{ reg.email }}</td></tr>
+    <tr><th>Công ty</th><td>{{ reg.company }}</td></tr>
+    <tr><th>Địa chỉ</th><td>{{ reg.address }}</td></tr>
+    <tr><th>Website</th><td>{{ reg.website }}</td></tr>
+    <tr><th>Mô tả</th><td>{{ reg.company_desc }}</td></tr>
+    <tr><th>Sản phẩm trưng bày</th><td>{{ reg.products }}</td></tr>
+    <tr><th>Loại gian hàng</th><td>{{ reg.get_booth_type_display }}</td></tr>
+    <tr><th>Staff</th><td>{{ reg.staff_list }}</td></tr>
+    <tr><th>Cạnh tranh</th><td>{{ reg.competitors }}</td></tr>
+    <tr><th>Thời gian đăng ký</th><td>{{ reg.submitted_at }}</td></tr>
+  </table>
+  <div class="alert alert-info">
+    Bạn đã được gửi email xác nhận kèm PDF thông tin đăng ký. Vui lòng kiểm tra hộp thư!
+  </div>
+</div>

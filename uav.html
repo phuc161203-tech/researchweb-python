@@ -1,0 +1,512 @@
+{% extends 'contestTem/_Base.html' %}
+
+{% block header_class %}exam-hide{% endblock %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>6‑DOF Drone Simulation & Visualization Dashboard</title>
+
+    <!-- ============[ External Libraries ]=========== -->
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- MathJax for LaTeX rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+    <!-- ============[ Custom Styles ]=========== -->
+    <style>
+        /* Typography & Layout */
+        body {
+            background-color: #f8fafc;
+            font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.05rem;
+        }
+        h3.topic-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .chart-container {
+            position: relative;
+            height: 320px;
+            width: 100%;
+        }
+        .param-input {
+            max-width: 120px;
+        }
+        code {
+            background: #e7ecef;
+            padding: 0.2rem 0.35rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        /* Darker accordion shadow for depth */
+        .accordion-item {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.075);
+            border-radius: 0.65rem !important;
+        }
+        .accordion-button:not(.collapsed) {
+            color: #0d6efd;
+            background-color: #e9f3ff;
+            font-weight: 600;
+        }
+        /* Responsive tweak for parameter forms */
+        @media (min-width: 576px) {
+            .param-group {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ============[ NavBar ]=========== -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Drone&nbsp;6‑DOF&nbsp;Dashboard</a>
+            <span class="navbar-text small">Interactive models • Real‑time plots • Educational lab</span>
+        </div>
+    </nav>
+
+    <div class="container mb-5">
+        <p class="lead">Mô phỏng, minh hoạ và khảo sát <strong>12&nbsp;chủ&nbsp;đề</strong> trọng tâm trong điều khiển UAV cánh cố định. Điền tham&nbsp;số → nhấn <em>Run</em> để xem đồ&nbsp;thị thời&nbsp;gian, tương&nbsp;quan &amp; kết quả.</p>
+
+        <!-- ============[ Accordion Master ]=========== -->
+        <div class="accordion" id="accordionTopics">
+            <!-- ===================[ 1. 6‑DOF Dynamics ]=================== -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading1">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                        1. Mô hình động lực <span class="ms-1 fw-bold">6 DOF</span>
+                    </button>
+                </h2>
+                <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="heading1" data-bs-parent="#accordionTopics">
+                    <div class="accordion-body">
+                        <h3 class="topic-title mb-3">Phương trình Newton &amp; Euler</h3>
+                        <p>\(m\,\dot{\mathbf v}_b = \mathbf F_{\text{total}} - m\,\boldsymbol\omega \times \mathbf v_b\)<br>
+                           \(\mathbf I\,\dot{\boldsymbol\omega}+\boldsymbol\omega \times (\mathbf I\boldsymbol\omega)=\mathbf M_{\text{total}}\)</p>
+                        <!-- ===== Parameters ===== -->
+                        <div class="border rounded p-3 mb-3 bg-light-subtle">
+                            <div class="param-group">
+                                <div>
+                                    <label class="form-label">Khối lượng m (kg)</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="m_mass" value="2" />
+                                </div>
+                                <div>
+                                    <label class="form-label">Lực X (N)</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="Fx" value="0" />
+                                </div>
+                                <div>
+                                    <label class="form-label">Lực Z (N)</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="Fz" value="9.8" />
+                                </div>
+                                <div>
+                                    <label class="form-label">Thời gian mô phỏng (s)</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="simTime1" value="10" />
+                                </div>
+                                <div class="align-self-end">
+                                    <button class="btn btn-primary btn-sm" id="runSim1">Run</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ===== Chart ===== -->
+                        <div class="chart-container">
+                            <canvas id="chart1"></canvas>
+                        </div>
+                        <p class="small text-muted mt-2">*Mô phỏng đơn&nbsp;giản chỉ trục Z: \(a=F_z/m\). Anh/chị có&nbsp;thể mở rộng hàm <code>integrate6DOF()</code> cho 6&nbsp;trục đầy&nbsp;đủ.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================[ 2. Fixed‑Wing Aerodynamics ]=================== -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading2">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                        2. Khí động học cánh cố định – Lift &amp; Drag
+                    </button>
+                </h2>
+                <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2" data-bs-parent="#accordionTopics">
+                    <div class="accordion-body">
+                        <h3 class="topic-title mb-3">Đường cong \(C_L\) &amp; \(C_D\)</h3>
+                        <p>\(L=\tfrac12\rho V^2 S C_L(\alpha)\), &ensp; \(D=\tfrac12\rho V^2 S C_D(\alpha)\)</p>
+                        <!-- Parameters -->
+                        <div class="border rounded p-3 mb-3 bg-light-subtle">
+                            <div class="param-group">
+                                <div>
+                                    <label class="form-label">Diện tích cánh S (m²)</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="wingArea" value="0.5" />
+                                </div>
+                                <div>
+                                    <label class="form-label">Mật độ không khí ρ (kg/m³)</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="rho" value="1.225" />
+                                </div>
+                                <div>
+                                    <label class="form-label">Tốc độ V (m/s)</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="V_air" value="15" />
+                                </div>
+                                <div>
+                                    <label class="form-label">Sườn a (rad⁻¹)</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="a_slope" value="5.7" />
+                                </div>
+                                <div class="align-self-end">
+                                    <button class="btn btn-primary btn-sm" id="runSim2">Run</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Chart -->
+                        <div class="chart-container">
+                            <canvas id="chart2"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================[ 3. ISA Atmosphere ]=================== -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading3">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                        3. Mô hình khí quyển ISA
+                    </button>
+                </h2>
+                <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3" data-bs-parent="#accordionTopics">
+                    <div class="accordion-body">
+                        <h3 class="topic-title mb-3">Nhiệt độ, áp suất, mật&nbsp;độ vs độ&nbsp;cao</h3>
+                        <p>\(T=288.15-0.0065h\) (0–11&nbsp;km)</p>
+                        <div class="border rounded p-3 mb-3 bg-light-subtle">
+                            <div class="param-group">
+                                <div>
+                                    <label class="form-label">Độ cao tối đa (m)</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="h_max" value="11000" />
+                                </div>
+                                <div class="align-self-end">
+                                    <button class="btn btn-primary btn-sm" id="runSim3">Run</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-container mb-3">
+                            <canvas id="chart3a"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="chart3b"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================[ 4. Wind & Disturbances ]=================== -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading4">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
+                        4. Gió &amp; nhiễu môi trường
+                    </button>
+                </h2>
+                <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="heading4" data-bs-parent="#accordionTopics">
+                    <div class="accordion-body">
+                        <h3 class="topic-title mb-3">Nhiễu sinus + Gaussian</h3>
+                        <div class="border rounded p-3 mb-3 bg-light-subtle">
+                            <div class="param-group">
+                                <div>
+                                    <label class="form-label">Biên độ W₀ (m/s)</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="W0" value="3" />
+                                </div>
+                                <div>
+                                    <label class="form-label">Tần số f (Hz)</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="freq" value="0.2" />
+                                </div>
+                                <div>
+                                    <label class="form-label">σ Gaussian</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="sigma" value="0.5" />
+                                </div>
+                                <div>
+                                    <label class="form-label">Thời gian (s)</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="simTime4" value="30" />
+                                </div>
+                                <div class="align-self-end">
+                                    <button class="btn btn-primary btn-sm" id="runSim4">Run</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="chart4"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================[ 5. Sensor Model ]=================== -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading5">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
+                        5. Mô hình cảm biến (IMU, GPS, Baro)
+                    </button>
+                </h2>
+                <div id="collapse5" class="accordion-collapse collapse" aria-labelledby="heading5" data-bs-parent="#accordionTopics">
+                    <div class="accordion-body">
+                        <h3 class="topic-title mb-3">IMU 3‑trục ± noise</h3>
+                        <div class="border rounded p-3 mb-3 bg-light-subtle">
+                            <div class="param-group">
+                                <div>
+                                    <label class="form-label">σ gia tốc (m/s²)</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="sigma_acc" value="0.05" />
+                                </div>
+                                <div>
+                                    <label class="form-label">Thời gian (s)</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="simTime5" value="5" />
+                                </div>
+                                <div class="align-self-end">
+                                    <button class="btn btn-primary btn-sm" id="runSim5">Run</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="chart5"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================[ 6. Engine & Actuators ]=================== -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading6">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6">
+                        6. Động cơ &amp; cơ cấu chấp hành
+                    </button>
+                </h2>
+                <div id="collapse6" class="accordion-collapse collapse" aria-labelledby="heading6" data-bs-parent="#accordionTopics">
+                    <div class="accordion-body">
+                        <h3 class="topic-title mb-3">Thrust vs RPM</h3>
+                        <p>\(T=C_T \rho n^2 D^4\)</p>
+                        <div class="border rounded p-3 mb-3 bg-light-subtle">
+                            <div class="param-group">
+                                <div>
+                                    <label class="form-label">Cₜ</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="Ct" value="0.1" step="0.01" />
+                                </div>
+                                <div>
+                                    <label class="form-label">Đường kính D (m)</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="diameter" value="0.3" />
+                                </div>
+                                <div>
+                                    <label class="form-label">Mật độ ρ (kg/m³)</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="rho6" value="1.225" />
+                                </div>
+                                <div>
+                                    <label class="form-label">RPM max</label>
+                                    <input type="number" class="form-control form-control-sm param-input" id="rpm_max" value="8000" />
+                                </div>
+                                <div class="align-self-end">
+                                    <button class="btn btn-primary btn-sm" id="runSim6">Run</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="chart6"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== Remaining topics (7‑12) placeholder quick‑look cards ========== -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading7">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7" aria-expanded="false" aria-controls="collapse7">
+                        7‑12. Vòng điều khiển • EKF • ROS • Tune • Test‑bench • Khung tọa độ
+                    </button>
+                </h2>
+                <div id="collapse7" class="accordion-collapse collapse" aria-labelledby="heading7" data-bs-parent="#accordionTopics">
+                    <div class="accordion-body">
+                        <p class="mb-2">Các panel chuyên sâu đang trong giai đoạn demo. Bạn có&nbsp;thể mở rộng file JS theo gợi&nbsp;ý:</p>
+                        <ul>
+                            <li><strong>PID / LQR Sandbox:</strong> nhập thông&nbsp;số PID, mô phỏng step‑response ➜ đồ&nbsp;thị overshoot &amp; settling‑time.</li>
+                            <li><strong>EKF Visualizer:</strong> sinh quỹ đạo 2‑D có&nbsp;nhiễu &amp; biểu&nbsp;đồ sai&nbsp;số vị&nbsp;trí theo thời&nbsp;gian.</li>
+                            <li><strong>ROS Node Map:</strong> chèn <code>&lt;pre&gt;</code> Mermaid hoặc SVG mô&nbsp;tả luồng MAVLink &lt;‑&gt; Gazebo.</li>
+                        </ul>
+                        <p class="text-muted small">*Placeholder giúp giữ tài&nbsp;liệu gọn. Phần mở rộng sẽ tăng độ phủ đủ 12&nbsp;chủ&nbsp;đề.*</p>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- /accordion -->
+    </div><!-- /container -->
+
+    <!-- ============[ JavaScript Logic ]=========== -->
+    <script>
+        /* ----------------- Helper: Euler 1‑D Integrator ----------------- */
+        function euler1D(aFunc, x0, dt, steps) {
+            const arr = [x0];
+            for (let i = 1; i <= steps; i++) {
+                arr.push(arr[i - 1] + aFunc(i * dt) * dt);
+            }
+            return arr;
+        }
+
+        /* ----------------- 1. Simple Vertical Dynamics ----------------- */
+        document.getElementById("runSim1").addEventListener("click", () => {
+            const m = parseFloat(document.getElementById("m_mass").value);
+            const Fz = parseFloat(document.getElementById("Fz").value);
+            const T = parseFloat(document.getElementById("simTime1").value);
+            const dt = 0.02;
+            const steps = Math.floor(T / dt);
+            const acc = Fz / m;
+            const vel = euler1D(() => acc, 0, dt, steps);
+            const tAxis = [...Array(steps + 1).keys()].map(i => i * dt);
+
+            renderLineChart("chart1", tAxis, vel, "Vertical velocity (m/s)");
+        });
+
+        /* ----------------- 2. Lift & Drag Sweep ----------------- */
+        document.getElementById("runSim2").addEventListener("click", () => {
+            const S = parseFloat(document.getElementById("wingArea").value);
+            const rho = parseFloat(document.getElementById("rho").value);
+            const V = parseFloat(document.getElementById("V_air").value);
+            const a = parseFloat(document.getElementById("a_slope").value);
+            const CD0 = 0.02;
+            const k = 0.05;
+            const alphaDeg = Array.from({ length: 25 }, (_, i) => i - 5);
+            const alphaRad = alphaDeg.map(deg => deg * Math.PI / 180);
+            const CL = alphaRad.map(al => a * al);
+            const CD = CL.map(cl => CD0 + k * cl * cl);
+            const L = CL.map(cl => 0.5 * rho * V * V * S * cl);
+            const D = CD.map(cd => 0.5 * rho * V * V * S * cd);
+
+            renderDualChart("chart2", alphaDeg, L, D, "Lift & Drag vs α (deg)", "L (N)", "D (N)");
+        });
+
+        /* ----------------- 3. ISA Atmosphere ----------------- */
+        document.getElementById("runSim3").addEventListener("click", () => {
+            const hMax = parseFloat(document.getElementById("h_max").value);
+            const h = Array.from({ length: hMax / 100 }, (_, i) => i * 100);
+            const T = h.map(H => 288.15 - 0.0065 * H);
+            const p = h.map((H, idx) => 101325 * Math.pow(T[idx] / 288.15, 5.2561));
+            const rho = h.map((H, idx) => p[idx] / (287.05 * T[idx]));
+
+            renderLineChart("chart3a", h, T, "Nhiệt độ T (K)");
+            renderLineChart("chart3b", h, rho, "Mật độ ρ (kg/m³)");
+        });
+
+        /* ----------------- 4. Wind Disturbance ----------------- */
+        document.getElementById("runSim4").addEventListener("click", () => {
+            const W0 = parseFloat(document.getElementById("W0").value);
+            const f = parseFloat(document.getElementById("freq").value);
+            const sigma = parseFloat(document.getElementById("sigma").value);
+            const T = parseFloat(document.getElementById("simTime4").value);
+            const dt = 0.05;
+            const steps = Math.floor(T / dt);
+            const tAxis = [...Array(steps + 1).keys()].map(i => i * dt);
+            const wind = tAxis.map(t => W0 * Math.sin(2 * Math.PI * f * t) + randn_bm() * sigma);
+
+            renderLineChart("chart4", tAxis, wind, "Wind speed (m/s)");
+        });
+
+        /* ----------------- 5. IMU Noise ----------------- */
+        document.getElementById("runSim5").addEventListener("click", () => {
+            const sigma = parseFloat(document.getElementById("sigma_acc").value);
+            const T = parseFloat(document.getElementById("simTime5").value);
+            const dt = 0.01;
+            const steps = Math.floor(T / dt);
+            const tAxis = [...Array(steps + 1).keys()].map(i => i * dt);
+            const accel = tAxis.map(() => randn_bm() * sigma);
+            renderLineChart("chart5", tAxis, accel, "Accel X (m/s²)");
+        });
+
+        /* ----------------- 6. Thrust vs RPM ----------------- */
+        document.getElementById("runSim6").addEventListener("click", () => {
+            const Ct = parseFloat(document.getElementById("Ct").value);
+            const D = parseFloat(document.getElementById("diameter").value);
+            const rho = parseFloat(document.getElementById("rho6").value);
+            const rpmMax = parseFloat(document.getElementById("rpm_max").value);
+            const nArr = Array.from({ length: 15 }, (_, i) => (i + 1) * rpmMax / 15 / 60); // rev/s
+            const rpmArr = nArr.map(n => n * 60);
+            const thrust = nArr.map(n => Ct * rho * n * n * Math.pow(D, 4));
+            renderLineChart("chart6", rpmArr, thrust, "Thrust (N)");
+        });
+
+        /* ----------------- Chart Helpers ----------------- */
+        const chartRefs = {};
+        function renderLineChart(canvasId, xData, yData, labelY) {
+            const ctx = document.getElementById(canvasId).getContext("2d");
+            if (chartRefs[canvasId]) chartRefs[canvasId].destroy();
+            chartRefs[canvasId] = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: xData,
+                    datasets: [{
+                        label: labelY,
+                        data: yData,
+                        fill: false,
+                        tension: 0.25,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { title: { display: true, text: "t / α / h / RPM" } },
+                        y: { title: { display: true, text: labelY } }
+                    },
+                    plugins: {
+                        legend: { display: true }
+                    }
+                }
+            });
+        }
+
+        function renderDualChart(canvasId, xData, y1, y2, title, label1, label2) {
+            const ctx = document.getElementById(canvasId).getContext("2d");
+            if (chartRefs[canvasId]) chartRefs[canvasId].destroy();
+            chartRefs[canvasId] = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: xData,
+                    datasets: [
+                        {
+                            label: label1,
+                            data: y1,
+                            borderWidth: 2,
+                            tension: 0.25,
+                            yAxisID: "y1"
+                        },
+                        {
+                            label: label2,
+                            data: y2,
+                            borderWidth: 2,
+                            tension: 0.25,
+                            yAxisID: "y2"
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { title: { display: true, text: "Angle of attack α (deg)" } },
+                        y1: { type: "linear", position: "left", title: { display: true, text: label1 } },
+                        y2: { type: "linear", position: "right", title: { display: true, text: label2 }, grid: { drawOnChartArea: false } }
+                    },
+                    plugins: {
+                        title: { display: true, text: title },
+                        legend: { display: true }
+                    }
+                }
+            });
+        }
+
+        /* ----------------- Gaussian random ----------------- */
+        function randn_bm() {
+            let u = 0, v = 0;
+            while (u === 0) u = Math.random();
+            while (v === 0) v = Math.random();
+            return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+        }
+    </script>
+
+    <!-- ============[ Bootstrap Bundle JS ]=========== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+{% endblock %}

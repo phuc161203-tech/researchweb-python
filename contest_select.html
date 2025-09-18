@@ -1,0 +1,32 @@
+{% extends 'contestTem/_Base.html' %}
+{% block title %}Chọn Cuộc Thi{% endblock %}
+{% block content %}
+  <div class="container" style="max-width:500px; margin:50px auto;">
+    <h2>Chọn Cuộc Thi</h2>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="exam_code">Bài Thi</label>
+        <select name="exam_code" id="exam_code" class="form-control" required>
+          <option value="" disabled selected>-- Chọn đề thi --</option>
+          {% for ex in exams %}
+            <option value="{{ ex.code }}">{{ ex.title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group" style="margin-top:1em;">
+        <label for="password">Mật Khẩu</label>
+        <input type="password" name="password" id="password"
+               class="form-control" placeholder="Nhập mật khẩu" required>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top:1em;">
+        Tiếp tục
+      </button>
+      {% for message in messages %}
+        <div class="alert alert-danger" style="margin-top:1em;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </form>
+  </div>
+{% endblock %}

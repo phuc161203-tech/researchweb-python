@@ -1,0 +1,1369 @@
+{% extends 'contestTem/_Base.html' %}
+
+{% block header_class %}exam-hide{% endblock %}
+
+{% block content %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hóa Học Lý Thuyết và Mô Phỏng Tương Tác</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-9ndCyUa6mY5jvZbU5ryJ1poXJJp5YBlGmXK0p+z3Gk8eRB1nEjFKkHYuW+0bQ5Zm"
+    crossorigin="anonymous"
+  />
+
+  <!-- Chart.js -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"
+    integrity="sha384-GNFdMla032BrH2RvCfhPnIYRvGOPNjecHT+z1hi1uHYSmi25yNXPQ/EJxfVAt+hN"
+    crossorigin="anonymous"
+  ></script>
+
+  <!-- MathJax for rendering công thức hóa học -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+  <!-- Custom CSS -->
+  <style>
+    body {
+      background-color: #f0f2f5;
+      color: #212529;
+    }
+    .navbar-brand {
+      font-weight: 600;
+    }
+    .chapter-card {
+      margin-bottom: 2rem;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      background-color: #ffffff;
+    }
+    .chapter-card .card-header {
+      background-color: #1e3a8a;
+      color: #ffffff;
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+    .chapter-card .card-body {
+      padding: 1.5rem;
+    }
+    .chapter-heading {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      border-bottom: 3px solid #1e3a8a;
+      padding-bottom: 0.5rem;
+      color: #1e3a8a;
+    }
+    .input-group-text {
+      width: 7rem;
+      justify-content: center;
+    }
+    .result-display {
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+    canvas {
+      margin-top: 1rem;
+      max-height: 300px;
+    }
+    @media (max-width: 576px) {
+      .input-group-text {
+        width: 5rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Hóa Học Mô Phỏng</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarContent"
+        aria-controls="navbarContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="#chapter1">Chương 1</a></li>
+          <li class="nav-item"><a class="nav-link" href="#chapter2">Chương 2</a></li>
+          <li class="nav-item"><a class="nav-link" href="#chapter3">Chương 3</a></li>
+          <li class="nav-item"><a class="nav-link" href="#chapter4">Chương 4</a></li>
+          <li class="nav-item"><a class="nav-link" href="#chapter5">Chương 5</a></li>
+          <li class="nav-item"><a class="nav-link" href="#chapter6">Chương 6</a></li>
+          <li class="nav-item"><a class="nav-link" href="#chapter7">Chương 7</a></li>
+          <li class="nav-item"><a class="nav-link" href="#chapter8">Chương 8</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Container -->
+  <div class="container-fluid mt-4 mb-5">
+    <!-- Chương 1: ESTER – LIPID – XÀ PHÒNG VÀ CHẤT GIẶT RỬA TỔNG HỢP -->
+    <section id="chapter1" class="mb-5">
+      <h2 class="chapter-heading">Chương 1: ESTER – LIPID – XÀ PHÒNG VÀ CHẤT GIẶT RỬA TỔNG HỢP</h2>
+      <div class="row">
+        <!-- Card 1.1: Phương trình phản ứng tạo este -->
+        <div class="col-12 col-md-6">
+          <div class="card chapter-card">
+            <div class="card-header">1.1 Phản ứng este hóa</div>
+            <div class="card-body">
+              <p><strong>Phương trình tổng quát:</strong></p>
+              <p>
+                $\displaystyle RCOOH + R'OH \;\xrightleftharpoons[k_\mathrm{rev}]{k_\mathrm{fwd}}\; RCOOR' + H_2O$
+              </p>
+              <p>Trong đó:</p>
+              <ul>
+                <li>$RCOOH$: Axit cacboxylic</li>
+                <li>$R'OH$: Ancol</li>
+                <li>$RCOOR'$: Este</li>
+              </ul>
+              <hr />
+              <!-- Mô phỏng tính cân bằng hóa học -->
+              <div class="input-group mb-2">
+                <span class="input-group-text">[Axit]₀</span>
+                <input type="number" step="any" class="form-control" id="ch1-axi0" placeholder="mol/L" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">[Ancol]₀</span>
+                <input type="number" step="any" class="form-control" id="ch1-anc0" placeholder="mol/L" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">K<sub>eq</sub></span>
+                <input type="number" step="any" class="form-control" id="ch1-keq" placeholder="–" />
+              </div>
+              <button class="btn btn-success mt-2" onclick="calcEsterEq()">Tính cân bằng</button>
+              <div id="ch1-result" class="result-display text-primary"></div>
+              <!-- Biểu đồ cực trị cân bằng -->
+              <canvas id="ch1-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 1.2: Tính giá trị xà phòng hóa (SV) -->
+        <div class="col-12 col-md-6">
+          <div class="card chapter-card">
+            <div class="card-header">1.2 Tính giá trị xà phòng hóa (SV)</div>
+            <div class="card-body">
+              <p><strong>Công thức:</strong></p>
+              <p>
+                $\displaystyle SV = \frac{56.1 \times N}{W}$<br />
+                Với:<br />
+                &nbsp;&nbsp;&ndash; $SV$: Giá trị xà phòng hóa (mg KOH/g mẫu)<br />
+                &nbsp;&nbsp;&ndash; $N$: Nồng độ dung dịch KOH chuẩn (mol/L)<br />
+                &nbsp;&nbsp;&ndash; $W$: Khối lượng mẫu (g)
+              </p>
+              <hr />
+              <div class="input-group mb-2">
+                <span class="input-group-text">N (mol/L)</span>
+                <input type="number" step="any" class="form-control" id="ch1-n" placeholder="mol/L" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">W (g)</span>
+                <input type="number" step="any" class="form-control" id="ch1-w" placeholder="g" />
+              </div>
+              <button class="btn btn-success mt-2" onclick="calcSV()">Tính SV</button>
+              <div id="ch1-sv-result" class="result-display text-primary"></div>
+              <!-- Biểu đồ diễn biến SV với W -->
+              <canvas id="ch1-sv-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chương 2: CARBOHYDRATE -->
+    <section id="chapter2" class="mb-5 bg-light py-4">
+      <h2 class="chapter-heading">Chương 2: CARBOHYDRATE</h2>
+      <div class="row">
+        <!-- Card 2.1: Tính khối lượng mol của carbohydrate -->
+        <div class="col-12 col-md-6">
+          <div class="card chapter-card">
+            <div class="card-header">2.1 Tính khối lượng mol (M<sub>m</sub>)</div>
+            <div class="card-body">
+              <p><strong>Công thức:</strong></p>
+              <p>
+                Cho công thức phân tử chung của đường đơn: $C_nH_{2n}O_n$, khối lượng mol:<br />
+                $\displaystyle M_m = n \times 12.01 + 2n \times 1.008 + n \times 16.00$
+              </p>
+              <hr />
+              <div class="input-group mb-2">
+                <span class="input-group-text">n</span>
+                <input type="number" step="1" min="1" class="form-control" id="ch2-n" placeholder="số nguyên" />
+              </div>
+              <button class="btn btn-success mt-2" onclick="calcMolCarb()">Tính M<sub>m</sub></button>
+              <div id="ch2-mm-result" class="result-display text-primary"></div>
+              <!-- Biểu đồ M_m theo n -->
+              <canvas id="ch2-mm-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2.2: Đường chuẩn hấp thụ UV (Giả lập) -->
+        <div class="col-12 col-md-6">
+          <div class="card chapter-card">
+            <div class="card-header">2.2 Đường chuẩn hấp thụ UV (Giả lập)</div>
+            <div class="card-body">
+              <p>Mô phỏng đường chuẩn: A = ε · l · c</p>
+              <p>Nhập hệ số $\varepsilon$ (L·mol<sup>–1</sup>·cm<sup>–1</sup>) và dải nồng độ để vẽ đường chuẩn.</p>
+              <div class="input-group mb-2">
+                <span class="input-group-text">ε (L·mol⁻¹·cm⁻¹)</span>
+                <input type="number" step="any" class="form-control" id="ch2-eps" placeholder="nhập ε" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">l (cm)</span>
+                <input type="number" step="any" class="form-control" id="ch2-l" placeholder="chiều dài tế bào" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">C tối thiểu</span>
+                <input type="number" step="any" class="form-control" id="ch2-cmin" placeholder="mol/L" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">C tối đa</span>
+                <input type="number" step="any" class="form-control" id="ch2-cmax" placeholder="mol/L" />
+              </div>
+              <button class="btn btn-success mt-2" onclick="plotUVCurve()">Vẽ đồ thị đường chuẩn</button>
+              <canvas id="ch2-uv-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chương 3: HỢP CHẤT CHỨA NITROGEN -->
+    <section id="chapter3" class="mb-5">
+      <h2 class="chapter-heading">Chương 3: HỢP CHẤT CHỨA NITROGEN</h2>
+      <div class="row">
+        <!-- Card 3.1: Tính khối lượng mol của amin -->
+        <div class="col-12 col-md-6">
+          <div class="card chapter-card">
+            <div class="card-header">3.1 Tính khối lượng mol amin đơn chức</div>
+            <div class="card-body">
+              <p>Cho công thức chung: $R-NH_2$</p>
+              <p>Khi $R = C_nH_{2n+1}$, khối lượng mol:</p>
+              <p>
+                $\displaystyle M_m = n \times 12.01 + (2n+1)\times1.008 + 14.01 + 2\times1.008$
+              </p>
+              <hr />
+              <div class="input-group mb-2">
+                <span class="input-group-text">n</span>
+                <input type="number" step="1" min="1" class="form-control" id="ch3-n" placeholder="số nguyên" />
+              </div>
+              <button class="btn btn-success mt-2" onclick="calcMolAmin()">Tính M<sub>m</sub> amin</button>
+              <div id="ch3-mm-result" class="result-display text-primary"></div>
+              <!-- Biểu đồ M_m amin theo n -->
+              <canvas id="ch3-mm-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3.2: Tính độ pH dung dịch amoniac (NH3/NH4+) -->
+        <div class="col-12 col-md-6">
+          <div class="card chapter-card">
+            <div class="card-header">3.2 Tính pH dung dịch NH<sub>3</sub>/NH<sub>4</sub><sup>+</sup></div>
+            <div class="card-body">
+              <p>Cho $K_b$ của NH<sub>3</sub> và nồng độ ban đầu $C_0$, pH được tính từ cân bằng:</p>
+              <p>
+                \[
+                  K_b = \frac{[NH_4^+][OH^-]}{[NH_3]} \quad
+                  [NH_3] = C_0 - x,\quad [NH_4^+] = x,\quad [OH^-] = x
+                \]
+                \[
+                  x = \sqrt{K_b \, C_0}
+                \]
+                \[
+                  pOH = -\log_{10} x,\quad pH = 14 - pOH
+                \]
+              </p>
+              <hr />
+              <div class="input-group mb-2">
+                <span class="input-group-text">C₀ (mol/L)</span>
+                <input type="number" step="any" class="form-control" id="ch3-c0" placeholder="mol/L" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">K<sub>b</sub></span>
+                <input type="number" step="any" class="form-control" id="ch3-kb" placeholder="–" />
+              </div>
+              <button class="btn btn-success mt-2" onclick="calcAminPH()">Tính pH</button>
+              <div id="ch3-ph-result" class="result-display text-primary"></div>
+              <!-- Biểu đồ pH theo C₀ -->
+              <canvas id="ch3-ph-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chương 4: POLYMER VÀ VẬT LIỆU POLYMER -->
+    <section id="chapter4" class="mb-5 bg-light py-4">
+      <h2 class="chapter-heading">Chương 4: POLYMER VÀ VẬT LIỆU POLYMER</h2>
+      <div class="row">
+        <!-- Card 4.1: Tính độ polymer hóa (DP) -->
+        <div class="col-12 col-md-6">
+          <div class="card chapter-card">
+            <div class="card-header">4.1 Độ polymer hóa (DP)</div>
+            <div class="card-body">
+              <p><strong>Công thức:</strong></p>
+              <p>
+                $\displaystyle DP = \frac{M_n}{M_0}$<br />
+                Với:<br />
+                &nbsp;&nbsp;&ndash; $M_n$: Khối lượng mol số trung bình của polymer (g/mol)<br />
+                &nbsp;&nbsp;&ndash; $M_0$: Khối lượng mol monomer (g/mol)
+              </p>
+              <hr />
+              <div class="input-group mb-2">
+                <span class="input-group-text">M<sub>n</sub> (g/mol)</span>
+                <input type="number" step="any" class="form-control" id="ch4-mn" placeholder="g/mol" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">M<sub>0</sub> (g/mol)</span>
+                <input type="number" step="any" class="form-control" id="ch4-m0" placeholder="g/mol" />
+              </div>
+              <button class="btn btn-success mt-2" onclick="calcDP()">Tính DP</button>
+              <div id="ch4-dp-result" class="result-display text-primary"></div>
+              <!-- Biểu đồ DP theo Mₙ -->
+              <canvas id="ch4-dp-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4.2: Đồ thị ứng suất-biến dạng (Mẫu giả lập) -->
+        <div class="col-12 col-md-6">
+          <div class="card chapter-card">
+            <div class="card-header">4.2 Ứng suất – Biến dạng</div>
+            <div class="card-body">
+              <p>Giả lập đường cong ứng suất – biến dạng đơn giản cho polymer:</p>
+              <button class="btn btn-success mb-3" onclick="plotStressStrain()">Vẽ đồ thị ứng suất – biến dạng</button>
+              <canvas id="ch4-ss-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chương 5: PIN ĐIỆN VÀ ĐIỆN PHÂN -->
+    <section id="chapter5" class="mb-5">
+      <h2 class="chapter-heading">Chương 5: PIN ĐIỆN VÀ ĐIỆN PHÂN</h2>
+      <div class="row">
+        <!-- Card 5.1: Công thức Nernst -->
+        <div class="col-12 col-md-6">
+          <div class="card chapter-card">
+            <div class="card-header">5.1 Công thức Nernst</div>
+            <div class="card-body">
+              <p><strong>Công thức:</strong></p>
+              <p>
+                $\displaystyle E = E^\circ - \frac{RT}{nF} \ln Q$
+              </p>
+              <p>Với:<br />
+              &nbsp;&nbsp;&ndash; $E^\circ$: Điện thế chuẩn (V)<br />
+              &nbsp;&nbsp;&ndash; $R = 8.314\ \mathrm{J·mol^{-1}·K^{-1}}$<br />
+              &nbsp;&nbsp;&ndash; $T$: Nhiệt độ (K)<br />
+              &nbsp;&nbsp;&ndash; $n$: Số electron trao đổi<br />
+              &nbsp;&nbsp;&ndash; $F = 96485\ \mathrm{C·mol^{-1}}$<br />
+              &nbsp;&nbsp;&ndash; $Q$: Thương số phản ứng
+              </p>
+              <hr />
+              <div class="input-group mb-2">
+                <span class="input-group-text">E&#xb0; (V)</span>
+                <input type="number" step="any" class="form-control" id="ch5-e0" placeholder="V" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">T (K)</span>
+                <input type="number" step="any" class="form-control" id="ch5-t" placeholder="K" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">n</span>
+                <input type="number" step="1" min="1" class="form-control" id="ch5-n" placeholder="–" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">Q</span>
+                <input type="number" step="any" class="form-control" id="ch5-q" placeholder="–" />
+              </div>
+              <button class="btn btn-success mt-2" onclick="calcNernst()">Tính E</button>
+              <div id="ch5-e-result" class="result-display text-primary"></div>
+              <!-- Biểu đồ E theo Q -->
+              <canvas id="ch5-e-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5.2: Điện phân nước -->
+        <div class="col-12 col-md-6">
+          <div class="card chapter-card">
+            <div class="card-header">5.2 Thể tích khí sinh ra khi điện phân</div>
+            <div class="card-body">
+              <p>Điện phân nước sinh ra H<sub>2</sub> và O<sub>2</sub> (ở $T = 25^\circ C$, 1 atm):</p>
+              <p>Công thức: $V_{\mathrm{H_2}} = \frac{It}{nF} \times 22.414\ \mathrm{L}$</p>
+              <p>Với: <br />
+              &nbsp;&nbsp;&ndash; $I$: Dòng điện (A)<br />
+              &nbsp;&nbsp;&ndash; $t$: Thời gian (s)<br />
+              &nbsp;&nbsp;&ndash; $n = 2$ (số electron để sinh ra 1 mol H<sub>2</sub>)<br />
+              &nbsp;&nbsp;&ndash; $F$: Hằng số Faraday
+              </p>
+              <hr />
+              <div class="input-group mb-2">
+                <span class="input-group-text">I (A)</span>
+                <input type="number" step="any" class="form-control" id="ch5-i" placeholder="A" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">t (s)</span>
+                <input type="number" step="any" class="form-control" id="ch5-t2" placeholder="s" />
+              </div>
+              <button class="btn btn-success mt-2" onclick="calcElectrolysis()">Tính V(H₂)</button>
+              <div id="ch5-h2-result" class="result-display text-primary"></div>
+              <!-- Biểu đồ V(H₂) theo I -->
+              <canvas id="ch5-h2-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chương 6: ĐẠI CƯƠNG KIM LOẠI -->
+    <section id="chapter6" class="mb-5 bg-light py-4">
+      <h2 class="chapter-heading">Chương 6: ĐẠI CƯƠNG KIM LOẠI</h2>
+      <div class="row">
+        <!-- Card 6.1: Tính hiệu suất thu hồi kim loại -->
+        <div class="col-12 col-md-6">
+          <div class="card chapter-card">
+            <div class="card-header">6.1 Hiệu suất thu hồi kim loại</div>
+            <div class="card-body">
+              <p><strong>Công thức:</strong></p>
+              <p>
+                $\displaystyle \eta = \frac{m_{\mathrm{thu hồi}}}{m_{\mathrm{ban đầu}}} \times 100\%$
+              </p>
+              <hr />
+              <div class="input-group mb-2">
+                <span class="input-group-text">m ban đầu (g)</span>
+                <input type="number" step="any" class="form-control" id="ch6-m0" placeholder="g" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">m thu hồi (g)</span>
+                <input type="number" step="any" class="form-control" id="ch6-mr" placeholder="g" />
+              </div>
+              <button class="btn btn-success mt-2" onclick="calcRecovery()">Tính η (%)</button>
+              <div id="ch6-recovery-result" class="result-display text-primary"></div>
+              <!-- Biểu đồ η theo m thu hồi -->
+              <canvas id="ch6-recovery-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6.2: Tiềm năng khử (Phân loại kim loại theo E°) -->
+        <div class="col-12 col-md-6">
+          <div class="card chapter-card">
+            <div class="card-header">6.2 Tiềm năng khử tiêu chuẩn</div>
+            <div class="card-body">
+              <p>Nhập E° (V) để hiển thị vị trí kim loại trong dãy hoạt động:</p>
+              <div class="input-group mb-2">
+                <span class="input-group-text">E&#xb0; (V)</span>
+                <input type="number" step="any" class="form-control" id="ch6-e0" placeholder="V" />
+              </div>
+              <button class="btn btn-success mt-2" onclick="locateMetal()">Xác định kim loại</button>
+              <div id="ch6-metal-result" class="result-display text-primary"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chương 7: KIM LOẠI NHÓM I VÀ KIM LOẠI NHÓM II -->
+    <section id="chapter7" class="mb-5">
+      <h2 class="chapter-heading">Chương 7: KIM LOẠI NHÓM I VÀ KIM LOẠI NHÓM II</h2>
+      <div class="row">
+        <!-- Card 7.1: Tính bán kính ion (Giả định) -->
+        <div class="col-12 col-md-6">
+          <div class="card chapter-card">
+            <div class="card-header">7.1 Bán kính ion nhóm I và II</div>
+            <div class="card-body">
+              <p>Giả sử bán kính ion $r$ thay đổi theo hằng số:</p>
+              <p>
+                Giả lập giá trị $r$ (Å) để so sánh giữa $Na^+$, $K^+$, $Ca^{2+}$, $Mg^{2+}$.
+              </p>
+              <hr />
+              <div class="input-group mb-2">
+                <span class="input-group-text">Chọn ion</span>
+                <select class="form-select" id="ch7-ion-select">
+                  <option value="Na">Na⁺</option>
+                  <option value="K">K⁺</option>
+                  <option value="Ca">Ca²⁺</option>
+                  <option value="Mg">Mg²⁺</option>
+                </select>
+              </div>
+              <button class="btn btn-success mt-2" onclick="showIonRadius()">Hiển thị bán kính</button>
+              <div id="ch7-radius-result" class="result-display text-primary"></div>
+              <!-- Biểu đồ so sánh bán kính ion -->
+              <canvas id="ch7-radius-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 7.2: Tính độ hòa tan hydroxide nhóm I/II -->
+        <div class="col-12 col-md-6">
+          <div class="card chapter-card">
+            <div class="card-header">7.2 Độ hòa tan hydroxide</div>
+            <div class="card-body">
+              <p>Cho $K_{sp}$ của $M(OH)_2$ (M = Ca, Mg) và nồng độ ban đầu $C_0$, tính $S$:</p>
+              <p>
+                $\displaystyle K_{sp} = [M^{2+}][OH^-]^2 = S (2S)^2 = 4S^3$<br />
+                $\displaystyle S = \sqrt[3]{\frac{K_{sp}}{4}}$
+              </p>
+              <hr />
+              <div class="input-group mb-2">
+                <span class="input-group-text">Chọn hydroxide</span>
+                <select class="form-select" id="ch7-hydroxide-select">
+                  <option value="Ca">Ca(OH)₂</option>
+                  <option value="Mg">Mg(OH)₂</option>
+                </select>
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">K<sub>sp</sub></span>
+                <input type="number" step="any" class="form-control" id="ch7-ksp" placeholder="–" />
+              </div>
+              <button class="btn btn-success mt-2" onclick="calcSolubility()">Tính độ hòa tan S</button>
+              <div id="ch7-sol-result" class="result-display text-primary"></div>
+              <!-- Biểu đồ S theo Ksp -->
+              <canvas id="ch7-sol-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chương 8: SƠ LƯỢC VỀ DÃY KIM LOẠI CHUYỂN TIẾP THỨ NHẤT VÀ PHỨC CHẤT -->
+    <section id="chapter8" class="mb-5 bg-light py-4">
+      <h2 class="chapter-heading">Chương 8: SƠ LƯỢC VỀ DÃY KIM LOẠI CHUYỂN TIẾP THỨ NHẤT VÀ PHỨC CHẤT</h2>
+      <div class="row">
+        <!-- Card 8.1: Tính splitting energy Δ<sub>o</sub> FSC (giả lập) -->
+        <div class="col-12 col-md-6">
+          <div class="card chapter-card">
+            <div class="card-header">8.1 Tính Splitting Energy Δ<sub>o</sub> (giả lập)</div>
+            <div class="card-body">
+              <p>Cho hằng số Ligand Field $Δ_o^0$ và nồng độ phức chất, tính Δ<sub>o</sub>:</p>
+              <p>
+                $\displaystyle Δ_o = Δ_o^0 \times \frac{[ML_n]}{[M^{m+}]}$
+              </p>
+              <hr />
+              <div class="input-group mb-2">
+                <span class="input-group-text">$Δ_o^0$ (kJ/mol)</span>
+                <input type="number" step="any" class="form-control" id="ch8-do0" placeholder="kJ/mol" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">[MLₙ] (mol/L)</span>
+                <input type="number" step="any" class="form-control" id="ch8-complex" placeholder="mol/L" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">[Mᵐ⁺] (mol/L)</span>
+                <input type="number" step="any" class="form-control" id="ch8-metal" placeholder="mol/L" />
+              </div>
+              <button class="btn btn-success mt-2" onclick="calcDeltaO()">Tính Δ<sub>o</sub></button>
+              <div id="ch8-do-result" class="result-display text-primary"></div>
+              <!-- Biểu đồ Δo theo [MLn] -->
+              <canvas id="ch8-do-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 8.2: Biểu đồ quang phổ phức chất (giả lập) -->
+        <div class="col-12 col-md-6">
+          <div class="card chapter-card">
+            <div class="card-header">8.2 Biểu đồ quang phổ phức chất</div>
+            <div class="card-body">
+              <p>Giả lập quang phổ hấp thụ: A(λ) = A<sub>max</sub>·exp−( (λ − λ<sub>max</sub>)² / 2σ² )</p>
+              <div class="input-group mb-2">
+                <span class="input-group-text">A<sub>max</sub></span>
+                <input type="number" step="any" class="form-control" id="ch8-amax" placeholder="absorbance" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">λ<sub>max</sub> (nm)</span>
+                <input type="number" step="any" class="form-control" id="ch8-lmax" placeholder="nm" />
+              </div>
+              <div class="input-group mb-2">
+                <span class="input-group-text">σ (nm)</span>
+                <input type="number" step="any" class="form-control" id="ch8-sigma" placeholder="nm" />
+              </div>
+              <button class="btn btn-success mt-2" onclick="plotSpectrum()">Vẽ quang phổ</button>
+              <canvas id="ch8-spectrum-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Bootstrap JS & Dependencies -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeo0hFjHcAIDhVTAfG1x8vZVquV4GIKzIEq3FmGd9bfn3c"
+    crossorigin="anonymous"
+  ></script>
+
+  <!-- Custom JS -->
+  <script>
+    // CHƯƠNG 1: ESTER – LIPID – XÀ PHÒNG
+    function calcEsterEq() {
+      const axi0 = parseFloat(document.getElementById("ch1-axi0").value);
+      const anc0 = parseFloat(document.getElementById("ch1-anc0").value);
+      const keq = parseFloat(document.getElementById("ch1-keq").value);
+      if (isNaN(axi0) || isNaN(anc0) || isNaN(keq)) {
+        document.getElementById("ch1-result").textContent = "Nhập đầy đủ và đúng định dạng.";
+        return;
+      }
+      // Giả sử phản ứng 1:1
+      // Tại cân bằng: [Este] = x, [H2O] = x, [Axit] = axi0 - x, [Ancol] = anc0 - x
+      // Keq = x·x / ((axi0 - x)(anc0 - x))
+      // Giải phương trình bậc hai để tìm x.
+      const a = 1;
+      const b = -(keq * (axi0 + anc0) + 2);
+      const c = keq * axi0 * anc0;
+      const disc = b * b - 4 * a * c;
+      let x;
+      if (disc < 0) {
+        x = 0;
+      } else {
+        const root1 = (-b + Math.sqrt(disc)) / (2 * a);
+        const root2 = (-b - Math.sqrt(disc)) / (2 * a);
+        x = root1 > 0 && root1 < Math.min(axi0, anc0) ? root1 : root2;
+      }
+      const axe = x;
+      const axit_eq = axi0 - x;
+      const ancol_eq = anc0 - x;
+      document.getElementById("ch1-result").textContent =
+        `Tại cân bằng: [Este] = ${axe.toFixed(4)} M; [Axit] = ${axit_eq.toFixed(4)} M; [Ancol] = ${ancol_eq.toFixed(4)} M.`;
+
+      // Vẽ biểu đồ [Este] theo giả sử axi0=anc0 cố định
+      const ctx = document.getElementById("ch1-chart").getContext("2d");
+      if (ctx.chart) ctx.chart.destroy();
+      const keq_vals = [];
+      const este_vals = [];
+      for (let k = keq * 0.2; k <= keq * 2; k += (keq * 1.8) / 50) {
+        // Tính x với phương trình tương tự
+        const B = -(k * (axi0 + anc0) + 2);
+        const C = k * axi0 * anc0;
+        const D = B * B - 4 * C;
+        let xm = 0;
+        if (D >= 0) {
+          const r1 = (-B + Math.sqrt(D)) / 2;
+          const r2 = (-B - Math.sqrt(D)) / 2;
+          xm = r1 > 0 && r1 < Math.min(axi0, anc0) ? r1 : r2;
+        }
+        keq_vals.push(k);
+        este_vals.push(xm);
+      }
+      ctx.chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: keq_vals.map(v => v.toFixed(2)),
+          datasets: [
+            {
+              label: "[Este] tại cân bằng (M)",
+              data: este_vals,
+              borderWidth: 2,
+              fill: false,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          scales: {
+            x: {
+              title: { display: true, text: "K_eq" }
+            },
+            y: {
+              beginAtZero: true,
+              title: { display: true, text: "[Este] (mol/L)" }
+            }
+          },
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    function calcSV() {
+      const N = parseFloat(document.getElementById("ch1-n").value);
+      const W = parseFloat(document.getElementById("ch1-w").value);
+      if (isNaN(N) || isNaN(W) || W <= 0) {
+        document.getElementById("ch1-sv-result").textContent = "Nhập đầy đủ và W > 0.";
+        return;
+      }
+      const SV = (56.1 * N) / W;
+      document.getElementById("ch1-sv-result").textContent =
+        `Giá trị xà phòng hóa: SV = ${SV.toFixed(2)} mg KOH/g mẫu.`;
+
+      // Vẽ biểu đồ SV theo W (giả lập)
+      const ctx = document.getElementById("ch1-sv-chart").getContext("2d");
+      if (ctx.chart) ctx.chart.destroy();
+      const W_vals = [];
+      const SV_vals = [];
+      for (let w = W * 0.5; w <= W * 1.5; w += (W) / 50) {
+        W_vals.push(w.toFixed(2));
+        SV_vals.push(((56.1 * N) / w).toFixed(2));
+      }
+      ctx.chart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: W_vals,
+          datasets: [
+            {
+              label: "SV (mg KOH/g)",
+              data: SV_vals,
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          scales: {
+            x: { display: false },
+            y: { beginAtZero: true }
+          },
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    // CHƯƠNG 2: CARBOHYDRATE
+    function calcMolCarb() {
+      const n = parseInt(document.getElementById("ch2-n").value);
+      if (isNaN(n) || n <= 0) {
+        document.getElementById("ch2-mm-result").textContent = "Nhập n > 0.";
+        return;
+      }
+      const Mm = n * 12.01 + 2 * n * 1.008 + n * 16.00;
+      document.getElementById("ch2-mm-result").textContent =
+        `Khối lượng mol: M_m = ${Mm.toFixed(2)} g/mol.`;
+
+      // Vẽ biểu đồ M_m theo n
+      const ctx = document.getElementById("ch2-mm-chart").getContext("2d");
+      if (ctx.chart) ctx.chart.destroy();
+      const n_vals = [];
+      const Mm_vals = [];
+      for (let ni = 1; ni <= Math.max(n + 5, 10); ni++) {
+        n_vals.push(ni);
+        Mm_vals.push(ni * 12.01 + 2 * ni * 1.008 + ni * 16.00);
+      }
+      ctx.chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: n_vals,
+          datasets: [
+            {
+              label: "M_m (g/mol)",
+              data: Mm_vals,
+              borderWidth: 2,
+              fill: false,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          scales: {
+            x: { title: { display: true, text: "n" } },
+            y: { beginAtZero: true, title: { display: true, text: "M_m (g/mol)" } }
+          },
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function plotUVCurve() {
+      const eps = parseFloat(document.getElementById("ch2-eps").value);
+      const l = parseFloat(document.getElementById("ch2-l").value);
+      const cmin = parseFloat(document.getElementById("ch2-cmin").value);
+      const cmax = parseFloat(document.getElementById("ch2-cmax").value);
+      if (isNaN(eps) || isNaN(l) || isNaN(cmin) || isNaN(cmax) || cmin < 0 || cmax <= cmin) {
+        alert("Nhập đúng ε, l, Cₘᵢₙ < Cₘₐₓ.");
+        return;
+      }
+      const ctx = document.getElementById("ch2-uv-chart").getContext("2d");
+      if (ctx.chart) ctx.chart.destroy();
+      const c_vals = [];
+      const A_vals = [];
+      const steps = 50;
+      for (let i = 0; i <= steps; i++) {
+        const c = cmin + i * ((cmax - cmin) / steps);
+        c_vals.push(c.toFixed(4));
+        A_vals.push((eps * l * c).toFixed(4));
+      }
+      ctx.chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: c_vals,
+          datasets: [
+            {
+              label: "A = ε·l·c",
+              data: A_vals,
+              borderWidth: 2,
+              fill: false,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          scales: {
+            x: { title: { display: true, text: "c (mol/L)" } },
+            y: { beginAtZero: true, title: { display: true, text: "A (absorbance)" } }
+          },
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    // CHƯƠNG 3: HỢP CHẤT CHỨA NITROGEN
+    function calcMolAmin() {
+      const n = parseInt(document.getElementById("ch3-n").value);
+      if (isNaN(n) || n <= 0) {
+        document.getElementById("ch3-mm-result").textContent = "Nhập n > 0.";
+        return;
+      }
+      // M_m = n·12.01 + (2n+1)·1.008 + 14.01 + 2·1.008
+      const Mm = n * 12.01 + (2 * n + 1) * 1.008 + 14.01 + 2 * 1.008;
+      document.getElementById("ch3-mm-result").textContent =
+        `Khối lượng mol amin: M_m = ${Mm.toFixed(2)} g/mol.`;
+
+      // Vẽ biểu đồ M_m theo n
+      const ctx = document.getElementById("ch3-mm-chart").getContext("2d");
+      if (ctx.chart) ctx.chart.destroy();
+      const n_vals = [];
+      const Mm_vals = [];
+      for (let ni = 1; ni <= Math.max(n + 5, 10); ni++) {
+        n_vals.push(ni);
+        Mm_vals.push(ni * 12.01 + (2 * ni + 1) * 1.008 + 14.01 + 2 * 1.008);
+      }
+      ctx.chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: n_vals,
+          datasets: [
+            {
+              label: "M_m (g/mol)",
+              data: Mm_vals,
+              borderWidth: 2,
+              fill: false,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          scales: {
+            x: { title: { display: true, text: "n" } },
+            y: { beginAtZero: true, title: { display: true, text: "M_m (g/mol)" } }
+          },
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function calcAminPH() {
+      const C0 = parseFloat(document.getElementById("ch3-c0").value);
+      const Kb = parseFloat(document.getElementById("ch3-kb").value);
+      if (isNaN(C0) || isNaN(Kb) || C0 <= 0 || Kb <= 0) {
+        document.getElementById("ch3-ph-result").textContent = "Nhập đầy đủ C0 > 0 và Kb > 0.";
+        return;
+      }
+      const x = Math.sqrt(Kb * C0);
+      const pOH = -Math.log10(x);
+      const pH = 14 - pOH;
+      document.getElementById("ch3-ph-result").textContent =
+        `Tính được pH = ${pH.toFixed(2)} (với [NH₄⁺] = [OH⁻] = ${x.toExponential(2)} M).`;
+
+      // Vẽ biểu đồ pH theo C0
+      const ctx = document.getElementById("ch3-ph-chart").getContext("2d");
+      if (ctx.chart) ctx.chart.destroy();
+      const C_vals = [];
+      const pH_vals = [];
+      for (let i = 0; i <= 50; i++) {
+        const C = C0 * (i / 50);
+        if (C <= 0) {
+          C_vals.push(0);
+          pH_vals.push(null);
+          continue;
+        }
+        const xi = Math.sqrt(Kb * C);
+        const pOi = -Math.log10(xi);
+        const pHi = 14 - pOi;
+        C_vals.push(C.toFixed(4));
+        pH_vals.push(pHi.toFixed(2));
+      }
+      ctx.chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: C_vals,
+          datasets: [
+            {
+              label: "pH dung dịch NH₃/NH₄⁺",
+              data: pH_vals,
+              borderWidth: 2,
+              fill: false,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          scales: {
+            x: { title: { display: true, text: "C0 (mol/L)" } },
+            y: { beginAtZero: false, title: { display: true, text: "pH" }, min: 0, max: 14 }
+          },
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    // CHƯƠNG 4: POLYMER VÀ VẬT LIỆU POLYMER
+    function calcDP() {
+      const Mn = parseFloat(document.getElementById("ch4-mn").value);
+      const M0 = parseFloat(document.getElementById("ch4-m0").value);
+      if (isNaN(Mn) || isNaN(M0) || M0 <= 0) {
+        document.getElementById("ch4-dp-result").textContent = "Nhập đầy đủ và M0 > 0.";
+        return;
+      }
+      const DP = Mn / M0;
+      document.getElementById("ch4-dp-result").textContent =
+        `Độ polymer hóa: DP = ${DP.toFixed(2)}.`;
+
+      // Vẽ biểu đồ DP theo Mn
+      const ctx = document.getElementById("ch4-dp-chart").getContext("2d");
+      if (ctx.chart) ctx.chart.destroy();
+      const Mn_vals = [];
+      const DP_vals = [];
+      for (let mi = M0; mi <= Mn * 1.5; mi += ((Mn * 1.5 - M0) / 50)) {
+        Mn_vals.push(mi.toFixed(2));
+        DP_vals.push((mi / M0).toFixed(2));
+      }
+      ctx.chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: Mn_vals,
+          datasets: [
+            {
+              label: "DP",
+              data: DP_vals,
+              borderWidth: 2,
+              fill: false,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          scales: {
+            x: { title: { display: true, text: "M_n (g/mol)" } },
+            y: { beginAtZero: true, title: { display: true, text: "DP" } }
+          },
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function plotStressStrain() {
+      const ctx = document.getElementById("ch4-ss-chart").getContext("2d");
+      if (ctx.chart) ctx.chart.destroy();
+      // Giả lập dữ liệu: ứng suất (MPa) vs biến dạng (%)
+      const strain = [];
+      const stress = [];
+      for (let i = 0; i <= 100; i++) {
+        const xi = i / 100;
+        strain.push((xi * 100).toFixed(0));
+        // Đường cong giả: linear cho đến 0.02, sau đó plateau, sau đó failure
+        let si;
+        if (xi <= 0.02) si = 2000 * xi; // Young: 2000 MPa
+        else if (xi <= 0.2) si = 40; 
+        else si = 40 * Math.exp(-5 * (xi - 0.2));
+        stress.push(si.toFixed(2));
+      }
+      ctx.chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: strain,
+          datasets: [
+            {
+              label: "Ứng suất (MPa)",
+              data: stress,
+              borderWidth: 2,
+              fill: false,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          scales: {
+            x: { title: { display: true, text: "Biến dạng (%)" } },
+            y: { beginAtZero: true, title: { display: true, text: "Ứng suất (MPa)" } }
+          },
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    // CHƯƠNG 5: PIN ĐIỆN VÀ ĐIỆN PHÂN
+    function calcNernst() {
+      const E0 = parseFloat(document.getElementById("ch5-e0").value);
+      const T = parseFloat(document.getElementById("ch5-t").value);
+      const n = parseFloat(document.getElementById("ch5-n").value);
+      const Q = parseFloat(document.getElementById("ch5-q").value);
+      if (isNaN(E0) || isNaN(T) || isNaN(n) || isNaN(Q) || n <= 0 || T <= 0) {
+        document.getElementById("ch5-e-result").textContent = "Nhập đầy đủ và T, n > 0.";
+        return;
+      }
+      const R = 8.314; // J/mol·K
+      const F = 96485; // C/mol
+      const E = E0 - (R * T) / (n * F) * Math.log(Q);
+      document.getElementById("ch5-e-result").textContent =
+        `Điện thế E = ${E.toFixed(4)} V.`;
+
+      // Vẽ biểu đồ E theo Q (log-scale)
+      const ctx = document.getElementById("ch5-e-chart").getContext("2d");
+      if (ctx.chart) ctx.chart.destroy();
+      const Q_vals = [];
+      const E_vals = [];
+      for (let i = 1; i <= 50; i++) {
+        const Qi = Math.pow(10, -3 + (i * 6) / 50); // từ 10^-3 đến 10^3
+        const Ei = E0 - (R * T) / (n * F) * Math.log(Qi);
+        Q_vals.push(Qi.toExponential(1));
+        E_vals.push(Ei.toFixed(4));
+      }
+      ctx.chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: Q_vals,
+          datasets: [
+            {
+              label: "E (V)",
+              data: E_vals,
+              borderWidth: 2,
+              fill: false,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          scales: {
+            x: {
+              title: { display: true, text: "Q" },
+              type: 'category'
+            },
+            y: { beginAtZero: false, title: { display: true, text: "E (V)" } }
+          },
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function calcElectrolysis() {
+      const I = parseFloat(document.getElementById("ch5-i").value);
+      const t = parseFloat(document.getElementById("ch5-t2").value);
+      if (isNaN(I) || isNaN(t) || I < 0 || t < 0) {
+        document.getElementById("ch5-h2-result").textContent = "Nhập đúng I ≥ 0 và t ≥ 0.";
+        return;
+      }
+      const F = 96485; // C/mol
+      const n = 2; // electron
+      // V_H2 (L) = (I·t)/(nF) * 22.414
+      const Vh2 = (I * t / (n * F)) * 22.414;
+      document.getElementById("ch5-h2-result").textContent =
+        `Thể tích H₂ sinh ra ≈ ${Vh2.toFixed(4)} L (T=25°C, 1 atm).`;
+
+      // Vẽ biểu đồ Vh2 theo I (giả lập t cố định)
+      const ctx = document.getElementById("ch5-h2-chart").getContext("2d");
+      if (ctx.chart) ctx.chart.destroy();
+      const I_vals = [];
+      const V_vals = [];
+      for (let Ii = 0; Ii <= I * 1.5; Ii += (I * 1.5) / 50) {
+        const Vi = (Ii * t / (n * F)) * 22.414;
+        I_vals.push(Ii.toFixed(2));
+        V_vals.push(Vi.toFixed(4));
+      }
+      ctx.chart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: I_vals,
+          datasets: [
+            {
+              label: "V(H₂) (L)",
+              data: V_vals,
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          scales: {
+            x: { display: false },
+            y: { beginAtZero: true, title: { display: true, text: "V(H₂) (L)" } }
+          },
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    // CHƯƠNG 6: ĐẠI CƯƠNG KIM LOẠI
+    function calcRecovery() {
+      const m0 = parseFloat(document.getElementById("ch6-m0").value);
+      const mr = parseFloat(document.getElementById("ch6-mr").value);
+      if (isNaN(m0) || isNaN(mr) || m0 <= 0 || mr < 0 || mr > m0) {
+        document.getElementById("ch6-recovery-result").textContent = "Nhập đúng 0 ≤ m_thu hồi ≤ m_ban đầu.";
+        return;
+      }
+      const eta = (mr / m0) * 100;
+      document.getElementById("ch6-recovery-result").textContent =
+        `Hiệu suất thu hồi: η = ${eta.toFixed(2)}%.`;
+
+      // Vẽ biểu đồ η theo mr (giả lập)
+      const ctx = document.getElementById("ch6-recovery-chart").getContext("2d");
+      if (ctx.chart) ctx.chart.destroy();
+      const mr_vals = [];
+      const eta_vals = [];
+      for (let mri = 0; mri <= m0; mri += m0 / 50) {
+        mr_vals.push(mri.toFixed(2));
+        eta_vals.push(((mri / m0) * 100).toFixed(2));
+      }
+      ctx.chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: mr_vals,
+          datasets: [
+            {
+              label: "η (%)",
+              data: eta_vals,
+              borderWidth: 2,
+              fill: false,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          scales: {
+            x: { title: { display: true, text: "m_thu hồi (g)" } },
+            y: { beginAtZero: true, title: { display: true, text: "η (%)" } }
+          },
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function locateMetal() {
+      const E0 = parseFloat(document.getElementById("ch6-e0").value);
+      if (isNaN(E0)) {
+        document.getElementById("ch6-metal-result").textContent = "Nhập E° (V).";
+        return;
+      }
+      // Bảng đơn giản hàm ý: nếu E0 < –2.8: K; –2.8 < E0 < –2.3: Na; –2.3 < E0 < –2.0: Ca; –2.0 < E0 < –1.7: Mg; > –1.7: Al
+      let metal = "";
+      if (E0 < -2.8) metal = "K⁺ / K (E° = -2.93 V)";
+      else if (E0 < -2.3) metal = "Na⁺ / Na (E° = -2.71 V)";
+      else if (E0 < -2.0) metal = "Ca²⁺ / Ca (E° = -2.87 V)";
+      else if (E0 < -1.7) metal = "Mg²⁺ / Mg (E° = -2.37 V)";
+      else metal = "Al³⁺ / Al (E° = -1.66 V)";
+      document.getElementById("ch6-metal-result").textContent =
+        `Kim loại tương ứng xấp xỉ: ${metal}.`;
+    }
+
+    // CHƯƠNG 7: KIM LOẠI NHÓM I & II
+    function showIonRadius() {
+      const ion = document.getElementById("ch7-ion-select").value;
+      // Bán kính ion (Å) giả lập:
+      const radii = { Na: 1.02, K: 1.38, Ca: 1.00, Mg: 0.72 };
+      const r = radii[ion];
+      document.getElementById("ch7-radius-result").textContent =
+        `Bán kính ion ${ion}⁺ ≈ ${r.toFixed(2)} Å.`;
+
+      // Vẽ biểu đồ so sánh
+      const ctx = document.getElementById("ch7-radius-chart").getContext("2d");
+      if (ctx.chart) ctx.chart.destroy();
+      const labels = Object.keys(radii);
+      const data = Object.values(radii).map(v => v.toFixed(2));
+      ctx.chart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Bán kính ion (Å)",
+              data: data,
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true, title: { display: true, text: "r (Å)" } }
+          },
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function calcSolubility() {
+      const Ksp = parseFloat(document.getElementById("ch7-ksp").value);
+      const hydroxide = document.getElementById("ch7-hydroxide-select").value;
+      if (isNaN(Ksp) || Ksp <= 0) {
+        document.getElementById("ch7-sol-result").textContent = "Nhập Ksp > 0.";
+        return;
+      }
+      // Ksp = 4S^3 => S = (Ksp/4)^(1/3)
+      const S = Math.pow(Ksp / 4, 1 / 3);
+      document.getElementById("ch7-sol-result").textContent =
+        `Độ hòa tan S của ${hydroxide}(OH)₂ ≈ ${S.toExponential(3)} mol/L.`;
+
+      // Vẽ biểu đồ S theo Ksp
+      const ctx = document.getElementById("ch7-sol-chart").getContext("2d");
+      if (ctx.chart) ctx.chart.destroy();
+      const Ksp_vals = [];
+      const S_vals = [];
+      for (let i = 0; i <= 50; i++) {
+        const k = Ksp * (0.2 + (i * 1.8) / 50);
+        const Si = Math.pow(k / 4, 1 / 3);
+        Ksp_vals.push(k.toExponential(2));
+        S_vals.push(Si.toFixed(3));
+      }
+      ctx.chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: Ksp_vals,
+          datasets: [
+            {
+              label: "S (mol/L)",
+              data: S_vals,
+              borderWidth: 2,
+              fill: false,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          scales: {
+            x: {
+              title: { display: true, text: "Ksp" },
+              type: 'category'
+            },
+            y: { beginAtZero: true, title: { display: true, text: "S (mol/L)" } }
+          },
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    // CHƯƠNG 8: DÃY KIM LOẠI CHUYỂN TIẾP & PHỨC CHẤT
+    function calcDeltaO() {
+      const do0 = parseFloat(document.getElementById("ch8-do0").value);
+      const complex = parseFloat(document.getElementById("ch8-complex").value);
+      const metal = parseFloat(document.getElementById("ch8-metal").value);
+      if (isNaN(do0) || isNaN(complex) || isNaN(metal) || metal <= 0) {
+        document.getElementById("ch8-do-result").textContent = "Nhập đầy đủ Δ_o^0, [MLₙ], [Mᵐ⁺].";
+        return;
+      }
+      const d_o = do0 * (complex / metal);
+      document.getElementById("ch8-do-result").textContent =
+        `Δ<sub>o</sub> = ${d_o.toFixed(2)} kJ/mol.`;
+
+      // Vẽ biểu đồ Δo theo [MLn]
+      const ctx = document.getElementById("ch8-do-chart").getContext("2d");
+      if (ctx.chart) ctx.chart.destroy();
+      const complex_vals = [];
+      const d_vals = [];
+      for (let i = 0; i <= 50; i++) {
+        const ci = complex * (i / 50);
+        const di = do0 * (ci / metal);
+        complex_vals.push(ci.toFixed(4));
+        d_vals.push(di.toFixed(2));
+      }
+      ctx.chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: complex_vals,
+          datasets: [
+            {
+              label: "Δo (kJ/mol)",
+              data: d_vals,
+              borderWidth: 2,
+              fill: false,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          scales: {
+            x: { title: { display: true, text: "[MLₙ] (mol/L)" } },
+            y: { beginAtZero: true, title: { display: true, text: "Δo (kJ/mol)" } }
+          },
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function plotSpectrum() {
+      const Amax = parseFloat(document.getElementById("ch8-amax").value);
+      const lmax = parseFloat(document.getElementById("ch8-lmax").value);
+      const sigma = parseFloat(document.getElementById("ch8-sigma").value);
+      if (isNaN(Amax) || isNaN(lmax) || isNaN(sigma) || sigma <= 0) {
+        alert("Nhập đầy đủ A_max, λ_max và σ > 0.");
+        return;
+      }
+      const ctx = document.getElementById("ch8-spectrum-chart").getContext("2d");
+      if (ctx.chart) ctx.chart.destroy();
+      const lambda = [];
+      const A_vals = [];
+      for (let λ = lmax - 50; λ <= lmax + 50; λ += 2) {
+        const Ai = Amax * Math.exp(-Math.pow(λ - lmax, 2) / (2 * sigma * sigma));
+        lambda.push(λ);
+        A_vals.push(Ai.toFixed(3));
+      }
+      ctx.chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: lambda,
+          datasets: [
+            {
+              label: "A(λ)",
+              data: A_vals,
+              borderWidth: 2,
+              fill: false,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          scales: {
+            x: { title: { display: true, text: "λ (nm)" } },
+            y: { beginAtZero: true, title: { display: true, text: "A(λ)" } }
+          },
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+  </script>
+</body>
+{% endblock %}

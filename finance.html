@@ -1,0 +1,1646 @@
+{% extends 'contestTem/_Base.html' %}
+
+{% block header_class %}exam-hide{% endblock %}
+
+{% block content %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bộ Công Thức Kinh Tế - Tài Chính - Chứng Khoán - Thương Mại Quốc Tế - GMAT - Kế Toán</title>
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+
+  <!-- Custom CSS -->
+  <style>
+    body {
+      background-color: #f8f9fa;
+      color: #212529;
+    }
+    .navbar-brand {
+      font-weight: 600;
+    }
+    .formula-card {
+      margin-bottom: 2rem;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      background-color: #ffffff;
+    }
+    .formula-card .card-header {
+      background-color: #007bff;
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+    .formula-card .card-body {
+      padding: 1.5rem;
+    }
+    .formula-title {
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+    }
+    .input-group-text {
+      width: 6rem;
+      justify-content: center;
+    }
+    .result-display {
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+    canvas {
+      margin-top: 1rem;
+      max-height: 300px;
+    }
+    .category-section {
+      padding-top: 3rem;
+      padding-bottom: 3rem;
+    }
+    .category-heading {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 0.5rem;
+      color: #007bff;
+    }
+    @media (max-width: 576px) {
+      .input-group-text {
+        width: 4rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Bộ Công Thức 169</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarContent"
+        aria-controls="navbarContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="#Economics">Kinh Tế</a></li>
+          <li class="nav-item"><a class="nav-link" href="#Finance">Tài Chính</a></li>
+          <li class="nav-item"><a class="nav-link" href="#Stock">Chứng Khoán</a></li>
+          <li class="nav-item"><a class="nav-link" href="#IntlTrade">Thương Mại Quốc Tế</a></li>
+          <li class="nav-item"><a class="nav-link" href="#GMAT">GMAT</a></li>
+          <li class="nav-item"><a class="nav-link" href="#Accounting">Kế Toán</a></li>
+          <li class="nav-item"><a class="nav-link" href="#Other">Chủ Đề Khác</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Container -->
+  <div class="container-fluid mt-4 mb-5">
+    <!-- Economics Section -->
+    <section id="Economics" class="category-section">
+      <div class="container">
+        <h2 class="category-heading">Kinh Tế (30 Công Thức)</h2>
+        <div id="economics-container" class="row"></div>
+      </div>
+    </section>
+
+    <!-- Finance Section -->
+    <section id="Finance" class="category-section bg-light">
+      <div class="container">
+        <h2 class="category-heading">Tài Chính (30 Công Thức)</h2>
+        <div id="finance-container" class="row"></div>
+      </div>
+    </section>
+
+    <!-- Stock Section -->
+    <section id="Stock" class="category-section">
+      <div class="container">
+        <h2 class="category-heading">Chứng Khoán (20 Công Thức)</h2>
+        <div id="stock-container" class="row"></div>
+      </div>
+    </section>
+
+    <!-- International Trade Section -->
+    <section id="IntlTrade" class="category-section bg-light">
+      <div class="container">
+        <h2 class="category-heading">Thương Mại Quốc Tế (20 Công Thức)</h2>
+        <div id="intltrade-container" class="row"></div>
+      </div>
+    </section>
+
+    <!-- GMAT Section -->
+    <section id="GMAT" class="category-section">
+      <div class="container">
+        <h2 class="category-heading">GMAT Toán (30 Công Thức)</h2>
+        <div id="gmat-container" class="row"></div>
+      </div>
+    </section>
+
+    <!-- Accounting Section -->
+    <section id="Accounting" class="category-section bg-light">
+      <div class="container">
+        <h2 class="category-heading">Kế Toán (20 Công Thức)</h2>
+        <div id="accounting-container" class="row"></div>
+      </div>
+    </section>
+
+    <!-- Other Section -->
+    <section id="Other" class="category-section">
+      <div class="container">
+        <h2 class="category-heading">Chủ Đề Liên Quan Khác (19 Công Thức)</h2>
+        <div id="other-container" class="row"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Bootstrap JS & Dependencies -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"
+  ></script>
+
+  <!-- Chart.js -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"
+    crossorigin="anonymous"
+  ></script>
+
+  <!-- Custom JS -->
+  <script>
+    // Danh sách 169 công thức, chia theo từng danh mục
+    const formulas = [
+      // =========================
+      // KINH TẾ (30)
+      // =========================
+      {
+        name: "1. Tốc độ Tăng trưởng GDP",
+        category: "Economics",
+        variables: ["GDP_t", "GDP_tm1"],
+        formula: "((GDP_t - GDP_tm1) / GDP_tm1) * 100",
+        compute: vars => ((vars.GDP_t - vars.GDP_tm1) / vars.GDP_tm1) * 100
+      },
+      {
+        name: "2. Tỷ lệ Lạm phát (Inflation Rate)",
+        category: "Economics",
+        variables: ["CPI_t", "CPI_tm1"],
+        formula: "((CPI_t - CPI_tm1) / CPI_tm1) * 100",
+        compute: vars => ((vars.CPI_t - vars.CPI_tm1) / vars.CPI_tm1) * 100
+      },
+      {
+        name: "3. Tỷ lệ Thất nghiệp",
+        category: "Economics",
+        variables: ["Unemployed", "LaborForce"],
+        formula: "(Unemployed / LaborForce) * 100",
+        compute: vars => (vars.Unemployed / vars.LaborForce) * 100
+      },
+      {
+        name: "4. Độ co giãn Giá cầu (Price Elasticity of Demand)",
+        category: "Economics",
+        variables: ["Q2", "Q1", "P2", "P1"],
+        formula: "((Q2 - Q1)/Q1) / ((P2 - P1)/P1)",
+        compute: vars => ((vars.Q2 - vars.Q1) / vars.Q1) / ((vars.P2 - vars.P1) / vars.P1)
+      },
+      {
+        name: "5. Độ co giãn Giá cung (Price Elasticity of Supply)",
+        category: "Economics",
+        variables: ["Qs2", "Qs1", "P2", "P1"],
+        formula: "((Qs2 - Qs1)/Qs1) / ((P2 - P1)/P1)",
+        compute: vars => ((vars.Qs2 - vars.Qs1) / vars.Qs1) / ((vars.P2 - vars.P1) / vars.P1)
+      },
+      {
+        name: "6. Độ co giãn chéo (Cross Elasticity of Demand)",
+        category: "Economics",
+        variables: ["Qx2", "Qx1", "Py2", "Py1"],
+        formula: "((Qx2 - Qx1)/Qx1) / ((Py2 - Py1)/Py1)",
+        compute: vars => ((vars.Qx2 - vars.Qx1) / vars.Qx1) / ((vars.Py2 - vars.Py1) / vars.Py1)
+      },
+      {
+        name: "7. Độ co giãn thu nhập (Income Elasticity of Demand)",
+        category: "Economics",
+        variables: ["Q2", "Q1", "I2", "I1"],
+        formula: "((Q2 - Q1)/Q1) / ((I2 - I1)/I1)",
+        compute: vars => ((vars.Q2 - vars.Q1) / vars.Q1) / ((vars.I2 - vars.I1) / vars.I1)
+      },
+      {
+        name: "8. Chi phí Cận biên (Marginal Cost)",
+        category: "Economics",
+        variables: ["TC2", "TC1", "Q2", "Q1"],
+        formula: "(TC2 - TC1) / (Q2 - Q1)",
+        compute: vars => (vars.TC2 - vars.TC1) / (vars.Q2 - vars.Q1)
+      },
+      {
+        name: "9. Doanh thu Cận biên (Marginal Revenue)",
+        category: "Economics",
+        variables: ["TR2", "TR1", "Q2", "Q1"],
+        formula: "(TR2 - TR1) / (Q2 - Q1)",
+        compute: vars => (vars.TR2 - vars.TR1) / (vars.Q2 - vars.Q1)
+      },
+      {
+        name: "10. Tổng Chi phí (Total Cost)",
+        category: "Economics",
+        variables: ["FC", "VC"],
+        formula: "FC + VC",
+        compute: vars => vars.FC + vars.VC
+      },
+      {
+        name: "11. Chi phí Trung bình (Average Cost)",
+        category: "Economics",
+        variables: ["TC", "Q"],
+        formula: "TC / Q",
+        compute: vars => vars.TC / vars.Q
+      },
+      {
+        name: "12. Tổng Doanh thu (Total Revenue)",
+        category: "Economics",
+        variables: ["P", "Q"],
+        formula: "P * Q",
+        compute: vars => vars.P * vars.Q
+      },
+      {
+        name: "13. Lợi nhuận (Profit)",
+        category: "Economics",
+        variables: ["TR", "TC"],
+        formula: "TR - TC",
+        compute: vars => vars.TR - vars.TC
+      },
+      {
+        name: "14. Thặng dư Người tiêu dùng (Consumer Surplus)",
+        category: "Economics",
+        variables: ["Q", "P_market", "P_intercept"],
+        formula: "0.5 * (P_intercept - P_market) * Q",
+        compute: vars => 0.5 * (vars.P_intercept - vars.P_market) * vars.Q
+      },
+      {
+        name: "15. Thặng dư Nhà sản xuất (Producer Surplus)",
+        category: "Economics",
+        variables: ["Q", "P_market", "P_supply_intercept"],
+        formula: "0.5 * (P_market - P_supply_intercept) * Q",
+        compute: vars => 0.5 * (vars.P_market - vars.P_supply_intercept) * vars.Q
+      },
+      {
+        name: "16. GDP bình quân đầu người (GDP per Capita)",
+        category: "Economics",
+        variables: ["GDP", "Pop"],
+        formula: "GDP / Pop",
+        compute: vars => vars.GDP / vars.Pop
+      },
+      {
+        name: "17. GDP thực (Real GDP)",
+        category: "Economics",
+        variables: ["Nominal_GDP", "CPI"],
+        formula: "Nominal_GDP / (CPI / 100)",
+        compute: vars => vars.Nominal_GDP / (vars.CPI / 100)
+      },
+      {
+        name: "18. GDP danh nghĩa (Nominal GDP)",
+        category: "Economics",
+        variables: ["Σ(P_i * Q_i)"],
+        formula: "Σ(P_i * Q_i)",
+        compute: vars => {
+          // Giả sử người dùng nhập tổng P_i*Q_i trực tiếp
+          return vars["Σ(P_i * Q_i)"];
+        }
+      },
+      {
+        name: "19. Tỷ số dự trữ tiền tệ (Money Multiplier)",
+        category: "Economics",
+        variables: ["ReserveRatio"],
+        formula: "1 / ReserveRatio",
+        compute: vars => 1 / vars.ReserveRatio
+      },
+      {
+        name: "20. Vận tốc Money (Velocity of Money)",
+        category: "Economics",
+        variables: ["GDP", "MoneySupply"],
+        formula: "GDP / MoneySupply",
+        compute: vars => vars.GDP / vars.MoneySupply
+      },
+      {
+        name: "21. Tỷ lệ Thuế suất (Tax Rate)",
+        category: "Economics",
+        variables: ["TaxRevenue", "Income"],
+        formula: "TaxRevenue / Income",
+        compute: vars => vars.TaxRevenue / vars.Income
+      },
+      {
+        name: "22. Hàng rào chi phí (Cost-Push Inflation)",
+        category: "Economics",
+        variables: ["WageCostIncrease", "ProductivityChange"],
+        formula: "(WageCostIncrease) - (ProductivityChange)",
+        compute: vars => vars.WageCostIncrease - vars.ProductivityChange
+      },
+      {
+        name: "23. Tỷ lệ Phần trăm Thay đổi Lương thực (Real Wage Growth)",
+        category: "Economics",
+        variables: ["NominalWage_t", "NominalWage_tm1", "CPI_t", "CPI_tm1"],
+        formula: "(((NominalWage_t / NominalWage_tm1) / (CPI_t / CPI_tm1)) - 1) * 100",
+        compute: vars =>
+          (((vars.NominalWage_t / vars.NominalWage_tm1) / (vars.CPI_t / vars.CPI_tm1)) - 1) * 100
+      },
+      {
+        name: "24. Điểm cân bằng cung cầu (Equilibrium Price)",
+        category: "Economics",
+        variables: ["a_d", "b_d", "a_s", "b_s"],
+        formula: "(a_d - a_s) / (b_s - b_d)",
+        compute: vars => (vars.a_d - vars.a_s) / (vars.b_s - vars.b_d)
+      },
+      {
+        name: "25. Điểm cân bằng sản lượng (Equilibrium Quantity)",
+        category: "Economics",
+        variables: ["a_d", "b_d", "P_eq"],
+        formula: "(a_d - b_d * P_eq)",
+        compute: vars => vars.a_d - vars.b_d * vars.P_eq
+      },
+      {
+        name: "26. Hàng rào Kinh tế (Barrier-to-Entry Cost)",
+        category: "Economics",
+        variables: ["InitialInvestment", "AnnualCost"],
+        formula: "InitialInvestment + (AnnualCost * 5)  /* giả định 5 năm */",
+        compute: vars => vars.InitialInvestment + vars.AnnualCost * 5
+      },
+      {
+        name: "27. Tỷ số Dân số trong Độ tuổi Lao động (Labor Force Participation Rate)",
+        category: "Economics",
+        variables: ["LaborForce", "WorkingAgePopulation"],
+        formula: "LaborForce / WorkingAgePopulation",
+        compute: vars => vars.LaborForce / vars.WorkingAgePopulation
+      },
+      {
+        name: "28. Tỷ số Thặng dư Ngân sách (Budget Surplus Ratio)",
+        category: "Economics",
+        variables: ["Revenue", "Expenditure"],
+        formula: "(Revenue - Expenditure) / Revenue",
+        compute: vars => (vars.Revenue - vars.Expenditure) / vars.Revenue
+      },
+      {
+        name: "29. Hệ số Lan truyền (Multiplier Effect)",
+        category: "Economics",
+        variables: ["MPC"],
+        formula: "1 / (1 - MPC)",
+        compute: vars => 1 / (1 - vars.MPC)
+      },
+      {
+        name: "30. Tỷ lệ Hàng đổi Hàng (Terms of Trade)",
+        category: "Economics",
+        variables: ["ExportPriceIndex", "ImportPriceIndex"],
+        formula: "(ExportPriceIndex / ImportPriceIndex) * 100",
+        compute: vars => (vars.ExportPriceIndex / vars.ImportPriceIndex) * 100
+      },
+
+      // =========================
+      // TÀI CHÍNH (30)
+      // =========================
+      {
+        name: "31. Giá trị Hiện tại thuần (NPV)",
+        category: "Finance",
+        variables: ["CashFlows[]", "DiscountRate"],
+        formula: "Σ [CashFlow_t / (1 + DiscountRate)^t] - InitialInvestment",
+        compute: vars => {
+          const cashFlows = vars.CashFlows;
+          const r = vars.DiscountRate;
+          let sum = 0;
+          for (let t = 1; t < cashFlows.length; t++) {
+            sum += cashFlows[t] / Math.pow(1 + r, t);
+          }
+          return sum - cashFlows[0];
+        }
+      },
+      {
+        name: "32. Tốc độ hoàn vốn nội bộ (IRR)",
+        category: "Finance",
+        variables: ["CashFlows[]"],
+        formula: "Giá trị r sao cho NPV = 0",
+        compute: vars => {
+          const CF = vars.CashFlows;
+          let irr = 0.1;
+          const npv = r => {
+            let sum = 0;
+            for (let t = 0; t < CF.length; t++) {
+              sum += CF[t] / Math.pow(1 + r, t);
+            }
+            return sum;
+          };
+          let iteration = 0;
+          while (Math.abs(npv(irr)) > 1e-6 && iteration < 1000) {
+            // Sử dụng phương pháp Newton-Raphson
+            let f = npv(irr);
+            let fprime = 0;
+            for (let t = 1; t < CF.length; t++) {
+              fprime -= t * CF[t] / Math.pow(1 + irr, t + 1);
+            }
+            irr -= f / fprime;
+            iteration++;
+          }
+          return irr;
+        }
+      },
+      {
+        name: "33. Giá trị Tương lai (Future Value)",
+        category: "Finance",
+        variables: ["PV", "r", "n"],
+        formula: "PV * (1 + r)^n",
+        compute: vars => vars.PV * Math.pow(1 + vars.r, vars.n)
+      },
+      {
+        name: "34. Giá trị Hiện tại (Present Value)",
+        category: "Finance",
+        variables: ["FV", "r", "n"],
+        formula: "FV / (1 + r)^n",
+        compute: vars => vars.FV / Math.pow(1 + vars.r, vars.n)
+      },
+      {
+        name: "35. Giá trị Tương lai của Annuity (Future Value of Annuity)",
+        category: "Finance",
+        variables: ["PMT", "r", "n"],
+        formula: "PMT * [((1 + r)^n - 1) / r]",
+        compute: vars => vars.PMT * ((Math.pow(1 + vars.r, vars.n) - 1) / vars.r)
+      },
+      {
+        name: "36. Giá trị Hiện tại của Annuity (Present Value of Annuity)",
+        category: "Finance",
+        variables: ["PMT", "r", "n"],
+        formula: "PMT * [1 - (1 + r)^(-n)] / r",
+        compute: vars => vars.PMT * ((1 - Math.pow(1 + vars.r, -vars.n)) / vars.r)
+      },
+      {
+        name: "37. Giá trị Tương lai của Perpetuity (Perpetuity Future Value)",
+        category: "Finance",
+        variables: ["PMT", "r"],
+        formula: "Không giới hạn (Perpetuity không có FV hữu hạn)",
+        compute: () => NaN
+      },
+      {
+        name: "38. Giá trị Hiện tại của Perpetuity (Present Value of Perpetuity)",
+        category: "Finance",
+        variables: ["PMT", "r"],
+        formula: "PMT / r",
+        compute: vars => vars.PMT / vars.r
+      },
+      {
+        name: "39. Tỷ suất Hồi hoàn (Rate of Return)",
+        category: "Finance",
+        variables: ["EndingValue", "BeginningValue"],
+        formula: "(EndingValue - BeginningValue) / BeginningValue * 100",
+        compute: vars => ((vars.EndingValue - vars.BeginningValue) / vars.BeginningValue) * 100
+      },
+      {
+        name: "40. Tỷ lệ Sinh lời (Return on Investment - ROI)",
+        category: "Finance",
+        variables: ["GainFromInvestment", "CostOfInvestment"],
+        formula: "(GainFromInvestment - CostOfInvestment) / CostOfInvestment * 100",
+        compute: vars => ((vars.GainFromInvestment - vars.CostOfInvestment) / vars.CostOfInvestment) * 100
+      },
+      {
+        name: "41. Tỷ lệ Nợ trên Vốn (Debt-to-Equity Ratio)",
+        category: "Finance",
+        variables: ["TotalDebt", "ShareholdersEquity"],
+        formula: "TotalDebt / ShareholdersEquity",
+        compute: vars => vars.TotalDebt / vars.ShareholdersEquity
+      },
+      {
+        name: "42. Tỷ lệ Lời gộp (Gross Profit Margin)",
+        category: "Finance",
+        variables: ["GrossProfit", "Revenue"],
+        formula: "GrossProfit / Revenue * 100",
+        compute: vars => (vars.GrossProfit / vars.Revenue) * 100
+      },
+      {
+        name: "43. Tỷ lệ Lợi nhuận ròng (Net Profit Margin)",
+        category: "Finance",
+        variables: ["NetProfit", "Revenue"],
+        formula: "NetProfit / Revenue * 100",
+        compute: vars => (vars.NetProfit / vars.Revenue) * 100
+      },
+      {
+        name: "44. Tỷ lệ Sinh lời Tài sản (Return on Assets - ROA)",
+        category: "Finance",
+        variables: ["NetIncome", "TotalAssets"],
+        formula: "NetIncome / TotalAssets * 100",
+        compute: vars => (vars.NetIncome / vars.TotalAssets) * 100
+      },
+      {
+        name: "45. Tỷ lệ Sinh lời Vốn chủ sở hữu (Return on Equity - ROE)",
+        category: "Finance",
+        variables: ["NetIncome", "ShareholdersEquity"],
+        formula: "NetIncome / ShareholdersEquity * 100",
+        compute: vars => (vars.NetIncome / vars.ShareholdersEquity) * 100
+      },
+      {
+        name: "46. Hệ số Thanh khoản Hiện hành (Current Ratio)",
+        category: "Finance",
+        variables: ["CurrentAssets", "CurrentLiabilities"],
+        formula: "CurrentAssets / CurrentLiabilities",
+        compute: vars => vars.CurrentAssets / vars.CurrentLiabilities
+      },
+      {
+        name: "47. Hệ số Thanh khoản Nhanh (Quick Ratio)",
+        category: "Finance",
+        variables: ["CurrentAssets", "Inventory", "CurrentLiabilities"],
+        formula: "(CurrentAssets - Inventory) / CurrentLiabilities",
+        compute: vars => (vars.CurrentAssets - vars.Inventory) / vars.CurrentLiabilities
+      },
+      {
+        name: "48. Vòng quay Hàng tồn kho (Inventory Turnover)",
+        category: "Finance",
+        variables: ["COGS", "AverageInventory"],
+        formula: "COGS / AverageInventory",
+        compute: vars => vars.COGS / vars.AverageInventory
+      },
+      {
+        name: "49. Vòng quay Tài sản (Asset Turnover)",
+        category: "Finance",
+        variables: ["Revenue", "AverageAssets"],
+        formula: "Revenue / AverageAssets",
+        compute: vars => vars.Revenue / vars.AverageAssets
+      },
+      {
+        name: "50. Rủi ro Tài chính (Financial Leverage)",
+        category: "Finance",
+        variables: ["TotalAssets", "TotalEquity"],
+        formula: "TotalAssets / TotalEquity",
+        compute: vars => vars.TotalAssets / vars.TotalEquity
+      },
+      {
+        name: "51. Tỷ lệ Chi phí trên Doanh thu (Expense Ratio)",
+        category: "Finance",
+        variables: ["TotalExpenses", "Revenue"],
+        formula: "TotalExpenses / Revenue * 100",
+        compute: vars => (vars.TotalExpenses / vars.Revenue) * 100
+      },
+      {
+        name: "52. Tỷ lệ Cổ tức (Dividend Yield)",
+        category: "Finance",
+        variables: ["AnnualDividendsPerShare", "PricePerShare"],
+        formula: "AnnualDividendsPerShare / PricePerShare * 100",
+        compute: vars => (vars.AnnualDividendsPerShare / vars.PricePerShare) * 100
+      },
+      {
+        name: "53. Tỷ lệ Chi phí Vốn bình quân (WACC)",
+        category: "Finance",
+        variables: ["E", "Re", "D", "Rd", "Tc"],
+        formula: "(E / (E + D)) * Re + (D / (E + D)) * Rd * (1 - Tc)",
+        compute: vars =>
+          (vars.E / (vars.E + vars.D)) * vars.Re + (vars.D / (vars.E + vars.D)) * vars.Rd * (1 - vars.Tc)
+      },
+      {
+        name: "54. Tỷ lệ Chi phí Vốn (Cost of Equity - CAPM)",
+        category: "Finance",
+        variables: ["Rf", "Beta", "Rm"],
+        formula: "Rf + Beta * (Rm - Rf)",
+        compute: vars => vars.Rf + vars.Beta * (vars.Rm - vars.Rf)
+      },
+      {
+        name: "55. Tỷ lệ Cổ tức trên Giá trị sổ sách (Dividend Payout Ratio)",
+        category: "Finance",
+        variables: ["DividendsPaid", "NetIncome"],
+        formula: "DividendsPaid / NetIncome * 100",
+        compute: vars => (vars.DividendsPaid / vars.NetIncome) * 100
+      },
+      {
+        name: "56. Hệ số Giá trên Lợi nhuận (P/E Ratio)",
+        category: "Finance",
+        variables: ["PricePerShare", "EPS"],
+        formula: "PricePerShare / EPS",
+        compute: vars => vars.PricePerShare / vars.EPS
+      },
+      {
+        name: "57. Hệ số Giá trên Sổ sách (P/B Ratio)",
+        category: "Finance",
+        variables: ["PricePerShare", "BookValuePerShare"],
+        formula: "PricePerShare / BookValuePerShare",
+        compute: vars => vars.PricePerShare / vars.BookValuePerShare
+      },
+      {
+        name: "58. Tỷ lệ D/E (Debt-to-Equity)",
+        category: "Finance",
+        variables: ["TotalDebt", "Equity"],
+        formula: "TotalDebt / Equity",
+        compute: vars => vars.TotalDebt / vars.Equity
+      },
+      {
+        name: "59. Tỷ lệ Vòng quay Vốn lưu động (Working Capital Turnover)",
+        category: "Finance",
+        variables: ["Revenue", "WorkingCapital"],
+        formula: "Revenue / WorkingCapital",
+        compute: vars => vars.Revenue / vars.WorkingCapital
+      },
+      {
+        name: "60. Tỷ lệ Vòng quay Tiền mặt (Cash Turnover)",
+        category: "Finance",
+        variables: ["Revenue", "Cash"],
+        formula: "Revenue / Cash",
+        compute: vars => vars.Revenue / vars.Cash
+      },
+
+      // =========================
+      // CHỨNG KHOÁN (20)
+      // =========================
+      {
+        name: "61. Hệ số P/E (Price-to-Earnings)",
+        category: "Stock",
+        variables: ["PricePerShare", "EPS"],
+        formula: "PricePerShare / EPS",
+        compute: vars => vars.PricePerShare / vars.EPS
+      },
+      {
+        name: "62. Tỷ lệ Chi trả Cổ tức (Dividend Payout Ratio)",
+        category: "Stock",
+        variables: ["DividendsPerShare", "EPS"],
+        formula: "DividendsPerShare / EPS * 100",
+        compute: vars => (vars.DividendsPerShare / vars.EPS) * 100
+      },
+      {
+        name: "63. Tỷ suất Lợi nhuận Cổ tức (Dividend Yield)",
+        category: "Stock",
+        variables: ["AnnualDividendsPerShare", "PricePerShare"],
+        formula: "AnnualDividendsPerShare / PricePerShare * 100",
+        compute: vars => (vars.AnnualDividendsPerShare / vars.PricePerShare) * 100
+      },
+      {
+        name: "64. Biến động Giá (Price Volatility)",
+        category: "Stock",
+        variables: ["StdDevReturns"],
+        formula: "StdDevReturns",
+        compute: vars => vars.StdDevReturns
+      },
+      {
+        name: "65. Beta của Cổ phiếu (Stock Beta)",
+        category: "Stock",
+        variables: ["Covariance_stock_market", "Variance_market"],
+        formula: "Covariance_stock_market / Variance_market",
+        compute: vars => vars.Covariance_stock_market / vars.Variance_market
+      },
+      {
+        name: "66. Tỷ lệ Rủi ro (Sharpe Ratio)",
+        category: "Stock",
+        variables: ["ReturnPortfolio", "RiskFreeRate", "StdDevPortfolio"],
+        formula: "(ReturnPortfolio - RiskFreeRate) / StdDevPortfolio",
+        compute: vars => (vars.ReturnPortfolio - vars.RiskFreeRate) / vars.StdDevPortfolio
+      },
+      {
+        name: "67. Tỷ lệ Treynor (Treynor Ratio)",
+        category: "Stock",
+        variables: ["ReturnPortfolio", "RiskFreeRate", "Beta"],
+        formula: "(ReturnPortfolio - RiskFreeRate) / Beta",
+        compute: vars => (vars.ReturnPortfolio - vars.RiskFreeRate) / vars.Beta
+      },
+      {
+        name: "68. Alpha (Jensen’s Alpha)",
+        category: "Stock",
+        variables: ["ReturnPortfolio", "RiskFreeRate", "Beta", "ReturnMarket"],
+        formula: "ReturnPortfolio - [RiskFreeRate + Beta * (ReturnMarket - RiskFreeRate)]",
+        compute: vars => vars.ReturnPortfolio - (vars.RiskFreeRate + vars.Beta * (vars.ReturnMarket - vars.RiskFreeRate))
+      },
+      {
+        name: "69. Tỷ lệ Giá trên Sổ sách (P/B Ratio)",
+        category: "Stock",
+        variables: ["PricePerShare", "BookValuePerShare"],
+        formula: "PricePerShare / BookValuePerShare",
+        compute: vars => vars.PricePerShare / vars.BookValuePerShare
+      },
+      {
+        name: "70. Tỷ lệ Giá trên Doanh số (P/S Ratio)",
+        category: "Stock",
+        variables: ["PricePerShare", "SalesPerShare"],
+        formula: "PricePerShare / SalesPerShare",
+        compute: vars => vars.PricePerShare / vars.SalesPerShare
+      },
+      {
+        name: "71. Tỷ lệ Giá trên Dòng tiền (P/CF Ratio)",
+        category: "Stock",
+        variables: ["PricePerShare", "CashFlowPerShare"],
+        formula: "PricePerShare / CashFlowPerShare",
+        compute: vars => vars.PricePerShare / vars.CashFlowPerShare
+      },
+      {
+        name: "72. Tỷ lệ Giá trên EBITDA (EV/EBITDA)",
+        category: "Stock",
+        variables: ["EnterpriseValue", "EBITDA"],
+        formula: "EnterpriseValue / EBITDA",
+        compute: vars => vars.EnterpriseValue / vars.EBITDA
+      },
+      {
+        name: "73. Vòng quay Cổ phiếu (Stock Turnover)",
+        category: "Stock",
+        variables: ["VolumeTraded", "SharesOutstanding"],
+        formula: "VolumeTraded / SharesOutstanding",
+        compute: vars => vars.VolumeTraded / vars.SharesOutstanding
+      },
+      {
+        name: "74. Tỷ lệ Phát hành Mới (New Issue Ratio)",
+        category: "Stock",
+        variables: ["NewSharesIssued", "TotalShares"],
+        formula: "NewSharesIssued / TotalShares * 100",
+        compute: vars => (vars.NewSharesIssued / vars.TotalShares) * 100
+      },
+      {
+        name: "75. Tỷ số Giá trị Thị trường/Tài sản (Market-to-Book Ratio)",
+        category: "Stock",
+        variables: ["MarketValueEquity", "BookValueEquity"],
+        formula: "MarketValueEquity / BookValueEquity",
+        compute: vars => vars.MarketValueEquity / vars.BookValueEquity
+      },
+      {
+        name: "76. Tốc độ tăng Giá cổ phiếu (Stock Price Growth)",
+        category: "Stock",
+        variables: ["Price_t", "Price_tm1"],
+        formula: "((Price_t - Price_tm1) / Price_tm1) * 100",
+        compute: vars => ((vars.Price_t - vars.Price_tm1) / vars.Price_tm1) * 100
+      },
+      {
+        name: "77. Tỷ lệ Dividend Coverage",
+        category: "Stock",
+        variables: ["EarningsAfterTax", "DividendsPaid"],
+        formula: "EarningsAfterTax / DividendsPaid",
+        compute: vars => vars.EarningsAfterTax / vars.DividendsPaid
+      },
+      {
+        name: "78. Tỷ lệ Turnover Giá trị (Value Turnover Ratio)",
+        category: "Stock",
+        variables: ["ValueTraded", "MarketCapitalization"],
+        formula: "ValueTraded / MarketCapitalization",
+        compute: vars => vars.ValueTraded / vars.MarketCapitalization
+      },
+      {
+        name: "79. Tỷ lệ Turnover Khối lượng (Volume Turnover Ratio)",
+        category: "Stock",
+        variables: ["VolumeTraded", "AvgDailyVolume"],
+        formula: "VolumeTraded / AvgDailyVolume",
+        compute: vars => vars.VolumeTraded / vars.AvgDailyVolume
+      },
+      {
+        name: "80. Tỷ suất Lợi nhuận Điều chỉnh Rủi ro (Risk-Adjusted Return)",
+        category: "Stock",
+        variables: ["ReturnPortfolio", "StandardDeviation"],
+        formula: "ReturnPortfolio / StandardDeviation",
+        compute: vars => vars.ReturnPortfolio / vars.StandardDeviation
+      },
+
+      // =========================
+      // THƯƠNG MẠI QUỐC TẾ (20)
+      // =========================
+      {
+        name: "81. Cán cân Thương mại (Trade Balance)",
+        category: "IntlTrade",
+        variables: ["Exports", "Imports"],
+        formula: "Exports - Imports",
+        compute: vars => vars.Exports - vars.Imports
+      },
+      {
+        name: "82. Tỷ lệ Thâm hụt/Suất cân đối (Trade Deficit/Surplus Ratio)",
+        category: "IntlTrade",
+        variables: ["Exports", "Imports"],
+        formula: "(Exports - Imports) / Exports * 100",
+        compute: vars => ((vars.Exports - vars.Imports) / vars.Exports) * 100
+      },
+      {
+        name: "83. Tỷ lệ Chi phí Vận tải trên Tổng giá trị XK (Transportation Cost Ratio)",
+        category: "IntlTrade",
+        variables: ["TransportCost", "ExportValue"],
+        formula: "TransportCost / ExportValue * 100",
+        compute: vars => (vars.TransportCost / vars.ExportValue) * 100
+      },
+      {
+        name: "84. Tỷ lệ Thuế quan trung bình (Average Tariff Rate)",
+        category: "IntlTrade",
+        variables: ["TariffRevenue", "ImportValue"],
+        formula: "TariffRevenue / ImportValue * 100",
+        compute: vars => (vars.TariffRevenue / vars.ImportValue) * 100
+      },
+      {
+        name: "85. Tỷ lệ Ưu đãi Thuế quan (Tariff Rate Quota Utilization)",
+        category: "IntlTrade",
+        variables: ["ImportedUnderTRQ", "QuotaAmount"],
+        formula: "ImportedUnderTRQ / QuotaAmount * 100",
+        compute: vars => (vars.ImportedUnderTRQ / vars.QuotaAmount) * 100
+      },
+      {
+        name: "86. Tỷ lệ Chi phí Giao dịch (Transaction Cost Ratio)",
+        category: "IntlTrade",
+        variables: ["TransactionCosts", "TradeValue"],
+        formula: "TransactionCosts / TradeValue * 100",
+        compute: vars => (vars.TransactionCosts / vars.TradeValue) * 100
+      },
+      {
+        name: "87. Tỷ số Ưu đãi Thuế quan trung bình (Average Preferential Tariff)",
+        category: "IntlTrade",
+        variables: ["PreferentialTariffRevenue", "ImportValuePreferential"],
+        formula: "PreferentialTariffRevenue / ImportValuePreferential * 100",
+        compute: vars => (vars.PreferentialTariffRevenue / vars.ImportValuePreferential) * 100
+      },
+      {
+        name: "88. Tỷ số Thương mại Song phương (Bilateral Trade Ratio)",
+        category: "IntlTrade",
+        variables: ["ExportsToCountry", "ImportsFromCountry"],
+        formula: "ExportsToCountry / ImportsFromCountry",
+        compute: vars => vars.ExportsToCountry / vars.ImportsFromCountry
+      },
+      {
+        name: "89. Tỷ số Thương mại Đa phương (Multilateral Trade Ratio)",
+        category: "IntlTrade",
+        variables: ["TotalExports", "TotalImports"],
+        formula: "TotalExports / TotalImports",
+        compute: vars => vars.TotalExports / vars.TotalImports
+      },
+      {
+        name: "90. Tỷ lệ Phụ thuộc Xuất khẩu (Export Dependence Ratio)",
+        category: "IntlTrade",
+        variables: ["Exports", "GDP"],
+        formula: "Exports / GDP * 100",
+        compute: vars => (vars.Exports / vars.GDP) * 100
+      },
+      {
+        name: "91. Tỷ lệ Phụ thuộc Nhập khẩu (Import Dependence Ratio)",
+        category: "IntlTrade",
+        variables: ["Imports", "GDP"],
+        formula: "Imports / GDP * 100",
+        compute: vars => (vars.Imports / vars.GDP) * 100
+      },
+      {
+        name: "92. Tỷ lệ Cước phí vận tải (Freight-to-Value Ratio)",
+        category: "IntlTrade",
+        variables: ["FreightCost", "CargoValue"],
+        formula: "FreightCost / CargoValue * 100",
+        compute: vars => (vars.FreightCost / vars.CargoValue) * 100
+      },
+      {
+        name: "93. Tỷ lệ Biến động Tỷ giá (Exchange Rate Volatility)",
+        category: "IntlTrade",
+        variables: ["StdDevExchangeRateChanges"],
+        formula: "StdDevExchangeRateChanges",
+        compute: vars => vars.StdDevExchangeRateChanges
+      },
+      {
+        name: "94. Tỷ lệ Cân bằng Thanh toán (Balance of Payments)",
+        category: "IntlTrade",
+        variables: ["CurrentAccount", "CapitalAccount", "FinancialAccount"],
+        formula: "CurrentAccount + CapitalAccount + FinancialAccount",
+        compute: vars => vars.CurrentAccount + vars.CapitalAccount + vars.FinancialAccount
+      },
+      {
+        name: "95. Tỷ lệ Chênh lệch CPI Song phương (Relative CPI Between Countries)",
+        category: "IntlTrade",
+        variables: ["CPI_Home", "CPI_Foreign"],
+        formula: "CPI_Home / CPI_Foreign * 100",
+        compute: vars => (vars.CPI_Home / vars.CPI_Foreign) * 100
+      },
+      {
+        name: "96. Tỷ lệ Lãi suất Song phương (Interest Rate Differential)",
+        category: "IntlTrade",
+        variables: ["InterestHome", "InterestForeign"],
+        formula: "InterestHome - InterestForeign",
+        compute: vars => vars.InterestHome - vars.InterestForeign
+      },
+      {
+        name: "97. Tỷ lệ Hiệu ứng Lạm phát chênh lệch (Relative Inflation Differential)",
+        category: "IntlTrade",
+        variables: ["InflationHome", "InflationForeign"],
+        formula: "InflationHome - InflationForeign",
+        compute: vars => vars.InflationHome - vars.InflationForeign
+      },
+      {
+        name: "98. Tỷ lệ Thặng dư Thương mại Ròng (Net Trade Surplus Ratio)",
+        category: "IntlTrade",
+        variables: ["Exports", "Imports", "GDP"],
+        formula: "(Exports - Imports) / GDP * 100",
+        compute: vars => ((vars.Exports - vars.Imports) / vars.GDP) * 100
+      },
+      {
+        name: "99. Tỷ lệ Chênh lệch Giá Trị Nhập khẩu - Xuất khẩu (Unit Value Differential)",
+        category: "IntlTrade",
+        variables: ["AvgExportUnitValue", "AvgImportUnitValue"],
+        formula: "AvgExportUnitValue - AvgImportUnitValue",
+        compute: vars => vars.AvgExportUnitValue - vars.AvgImportUnitValue
+      },
+      {
+        name: "100. Tỷ lệ Danh nghĩa Tỷ giá (Nominal Exchange Rate)",
+        category: "IntlTrade",
+        variables: ["ForeignCurrency", "DomesticCurrency"],
+        formula: "ForeignCurrency / DomesticCurrency",
+        compute: vars => vars.ForeignCurrency / vars.DomesticCurrency
+      },
+
+      // =========================
+      // GMAT TOÁN (30)
+      // =========================
+      {
+        name: "101. Trung bình số học (Arithmetic Mean)",
+        category: "GMAT",
+        variables: ["Sum", "n"],
+        formula: "Sum / n",
+        compute: vars => vars.Sum / vars.n
+      },
+      {
+        name: "102. Trung bình hình học (Geometric Mean)",
+        category: "GMAT",
+        variables: ["Πx_i", "n"],
+        formula: "ⁿ√(Πx_i)",
+        compute: vars => Math.pow(vars.product, 1 / vars.n)
+      },
+      {
+        name: "103. Trung bình hàm mũ (Harmonic Mean)",
+        category: "GMAT",
+        variables: ["n", "Σ(1 / x_i)"],
+        formula: "n / Σ(1 / x_i)",
+        compute: vars => vars.n / vars.sumReciprocals
+      },
+      {
+        name: "104. Phương sai (Variance)",
+        category: "GMAT",
+        variables: ["Σ(x_i - μ)²", "n"],
+        formula: "Σ(x_i - μ)² / n",
+        compute: vars => vars.sumSquaresDiff / vars.n
+      },
+      {
+        name: "105. Độ lệch chuẩn (Standard Deviation)",
+        category: "GMAT",
+        variables: ["Variance"],
+        formula: "√Variance",
+        compute: vars => Math.sqrt(vars.Variance)
+      },
+      {
+        name: "106. Tỷ lệ xác suất cơ bản (Basic Probability)",
+        category: "GMAT",
+        variables: ["favorable", "total"],
+        formula: "favorable / total",
+        compute: vars => vars.favorable / vars.total
+      },
+      {
+        name: "107. Hoán vị (Permutation nPr)",
+        category: "GMAT",
+        variables: ["n", "r"],
+        formula: "n! / (n - r)!",
+        compute: vars => {
+          const fact = x => (x <= 1 ? 1 : x * fact(x - 1));
+          return fact(vars.n) / fact(vars.n - vars.r);
+        }
+      },
+      {
+        name: "108. Chỉnh hợp (Combination nCr)",
+        category: "GMAT",
+        variables: ["n", "r"],
+        formula: "n! / [r! * (n - r)!]",
+        compute: vars => {
+          const fact = x => (x <= 1 ? 1 : x * fact(x - 1));
+          return fact(vars.n) / (fact(vars.r) * fact(vars.n - vars.r));
+        }
+      },
+      {
+        name: "109. Tỷ lệ % (Percentage)",
+        category: "GMAT",
+        variables: ["part", "whole"],
+        formula: "(part / whole) * 100",
+        compute: vars => (vars.part / vars.whole) * 100
+      },
+      {
+        name: "110. Tăng trưởng % (Percentage Change)",
+        category: "GMAT",
+        variables: ["newVal", "oldVal"],
+        formula: "((newVal - oldVal) / oldVal) * 100",
+        compute: vars => ((vars.newVal - vars.oldVal) / vars.oldVal) * 100
+      },
+      {
+        name: "111. Tỉ số (Ratio)",
+        category: "GMAT",
+        variables: ["a", "b"],
+        formula: "a / b",
+        compute: vars => vars.a / vars.b
+      },
+      {
+        name: "112. Bình phương (Square)",
+        category: "GMAT",
+        variables: ["x"],
+        formula: "x²",
+        compute: vars => vars.x * vars.x
+      },
+      {
+        name: "113. Căn bậc hai (Square Root)",
+        category: "GMAT",
+        variables: ["x"],
+        formula: "√x",
+        compute: vars => Math.sqrt(vars.x)
+      },
+      {
+        name: "114. Đạo hàm (Derivative of ax^n)",
+        category: "GMAT",
+        variables: ["a", "n", "x"],
+        formula: "a * n * x^(n - 1)",
+        compute: vars => vars.a * vars.n * Math.pow(vars.x, vars.n - 1)
+      },
+      {
+        name: "115. Tích phân cơ bản (Integral of ax^n)",
+        category: "GMAT",
+        variables: ["a", "n", "x"],
+        formula: "a * x^(n + 1) / (n + 1)",
+        compute: vars => vars.a * Math.pow(vars.x, vars.n + 1) / (vars.n + 1)
+      },
+      {
+        name: "116. Khoảng cách giữa hai điểm (Distance Formula)",
+        category: "GMAT",
+        variables: ["x1", "y1", "x2", "y2"],
+        formula: "√[(x2 - x1)² + (y2 - y1)²]",
+        compute: vars => Math.sqrt(Math.pow(vars.x2 - vars.x1, 2) + Math.pow(vars.y2 - vars.y1, 2))
+      },
+      {
+        name: "117. Trung điểm (Midpoint Formula)",
+        category: "GMAT",
+        variables: ["x1", "y1", "x2", "y2"],
+        formula: "[(x1 + x2)/2, (y1 + y2)/2]",
+        compute: vars => ({ mx: (vars.x1 + vars.x2) / 2, my: (vars.y1 + vars.y2) / 2 })
+      },
+      {
+        name: "118. Đường thẳng (Slope Formula)",
+        category: "GMAT",
+        variables: ["x1", "y1", "x2", "y2"],
+        formula: "(y2 - y1) / (x2 - x1)",
+        compute: vars => (vars.y2 - vars.y1) / (vars.x2 - vars.x1)
+      },
+      {
+        name: "119. Phương trình đường thẳng (Line Equation y=mx+b)",
+        category: "GMAT",
+        variables: ["m", "x", "b"],
+        formula: "y = m * x + b",
+        compute: vars => vars.m * vars.x + vars.b
+      },
+      {
+        name: "120. Tổng cấp số cộng (Sum of Arithmetic Sequence)",
+        category: "GMAT",
+        variables: ["n", "a1", "an"],
+        formula: "n * (a1 + an) / 2",
+        compute: vars => vars.n * (vars.a1 + vars.an) / 2
+      },
+      {
+        name: "121. Số hạng cấp số cộng (n-th term Arithmetic Sequence)",
+        category: "GMAT",
+        variables: ["a1", "d", "n"],
+        formula: "a1 + (n - 1) * d",
+        compute: vars => vars.a1 + (vars.n - 1) * vars.d
+      },
+      {
+        name: "122. Tổng cấp số nhân (Sum of Geometric Sequence)",
+        category: "GMAT",
+        variables: ["a1", "r", "n"],
+        formula: "a1 * [(1 - r^n) / (1 - r)]",
+        compute: vars => vars.a1 * ((1 - Math.pow(vars.r, vars.n)) / (1 - vars.r))
+      },
+      {
+        name: "123. Số hạng cấp số nhân (n-th term Geometric Sequence)",
+        category: "GMAT",
+        variables: ["a1", "r", "n"],
+        formula: "a1 * r^(n - 1)",
+        compute: vars => vars.a1 * Math.pow(vars.r, vars.n - 1)
+      },
+      {
+        name: "124. Công thức trung điểm (Midpoint Formula)",
+        category: "GMAT",
+        variables: ["x1", "y1", "x2", "y2"],
+        formula: "[(x1 + x2)/2, (y1 + y2)/2]",
+        compute: vars => ({ mx: (vars.x1 + vars.x2) / 2, my: (vars.y1 + vars.y2) / 2 })
+      },
+      {
+        name: "125. Pythagoras (Định lý Pythagoras)",
+        category: "GMAT",
+        variables: ["a", "b"],
+        formula: "c = √(a² + b²)",
+        compute: vars => Math.sqrt(vars.a * vars.a + vars.b * vars.b)
+      },
+      {
+        name: "126. Diện tích Tam giác (Triangle Area)",
+        category: "GMAT",
+        variables: ["base", "height"],
+        formula: "(base * height) / 2",
+        compute: vars => (vars.base * vars.height) / 2
+      },
+      {
+        name: "127. Diện tích Hình chữ nhật (Rectangle Area)",
+        category: "GMAT",
+        variables: ["length", "width"],
+        formula: "length * width",
+        compute: vars => vars.length * vars.width
+      },
+      {
+        name: "128. Diện tích Hình tròn (Circle Area)",
+        category: "GMAT",
+        variables: ["r"],
+        formula: "π * r²",
+        compute: vars => Math.PI * vars.r * vars.r
+      },
+      {
+        name: "129. Chu vi Hình chữ nhật (Rectangle Perimeter)",
+        category: "GMAT",
+        variables: ["length", "width"],
+        formula: "2 * (length + width)",
+        compute: vars => 2 * (vars.length + vars.width)
+      },
+      {
+        name: "130. Chu vi Hình tròn (Circle Circumference)",
+        category: "GMAT",
+        variables: ["r"],
+        formula: "2 * π * r",
+        compute: vars => 2 * Math.PI * vars.r
+      },
+
+      // =========================
+      // KẾ TOÁN (20)
+      // =========================
+      {
+        name: "131. Phương trình Kế toán (Accounting Equation)",
+        category: "Accounting",
+        variables: ["Assets", "Liabilities", "Equity"],
+        formula: "Assets = Liabilities + Equity",
+        compute: vars => ({
+          assets: vars.Liabilities + vars.Equity,
+          liabilities: vars.Liabilities,
+          equity: vars.Equity
+        })
+      },
+      {
+        name: "132. Tỷ lệ Nợ/Vốn chủ sở hữu (Debt-to-Equity)",
+        category: "Accounting",
+        variables: ["TotalDebt", "Equity"],
+        formula: "TotalDebt / Equity",
+        compute: vars => vars.TotalDebt / vars.Equity
+      },
+      {
+        name: "133. Tỷ lệ Nợ/Tổng tài sản (Debt Ratio)",
+        category: "Accounting",
+        variables: ["TotalDebt", "TotalAssets"],
+        formula: "TotalDebt / TotalAssets * 100",
+        compute: vars => (vars.TotalDebt / vars.TotalAssets) * 100
+      },
+      {
+        name: "134. Tỷ lệ Thanh khoản Hiện hành (Current Ratio)",
+        category: "Accounting",
+        variables: ["CurrentAssets", "CurrentLiabilities"],
+        formula: "CurrentAssets / CurrentLiabilities",
+        compute: vars => vars.CurrentAssets / vars.CurrentLiabilities
+      },
+      {
+        name: "135. Tỷ lệ Thanh toán Nhanh (Quick Ratio)",
+        category: "Accounting",
+        variables: ["CurrentAssets", "Inventory", "CurrentLiabilities"],
+        formula: "(CurrentAssets - Inventory) / CurrentLiabilities",
+        compute: vars => (vars.CurrentAssets - vars.Inventory) / vars.CurrentLiabilities
+      },
+      {
+        name: "136. Vòng quay Hàng tồn kho (Inventory Turnover)",
+        category: "Accounting",
+        variables: ["COGS", "AverageInventory"],
+        formula: "COGS / AverageInventory",
+        compute: vars => vars.COGS / vars.AverageInventory
+      },
+      {
+        name: "137. Vòng quay Phải thu (Accounts Receivable Turnover)",
+        category: "Accounting",
+        variables: ["NetCreditSales", "AverageAccountsReceivable"],
+        formula: "NetCreditSales / AverageAccountsReceivable",
+        compute: vars => vars.NetCreditSales / vars.AverageAccountsReceivable
+      },
+      {
+        name: "138. Vòng quay Phải trả (Accounts Payable Turnover)",
+        category: "Accounting",
+        variables: ["COGS", "AverageAccountsPayable"],
+        formula: "COGS / AverageAccountsPayable",
+        compute: vars => vars.COGS / vars.AverageAccountsPayable
+      },
+      {
+        name: "139. Tỷ suất Lợi nhuận gộp (Gross Profit Margin)",
+        category: "Accounting",
+        variables: ["GrossProfit", "Revenue"],
+        formula: "GrossProfit / Revenue * 100",
+        compute: vars => (vars.GrossProfit / vars.Revenue) * 100
+      },
+      {
+        name: "140. Tỷ suất Lợi nhuận ròng (Net Profit Margin)",
+        category: "Accounting",
+        variables: ["NetIncome", "Revenue"],
+        formula: "NetIncome / Revenue * 100",
+        compute: vars => (vars.NetIncome / vars.Revenue) * 100
+      },
+      {
+        name: "141. Tỷ lệ Lưu chuyển tiền mặt (Cash Flow to Revenue)",
+        category: "Accounting",
+        variables: ["OperatingCashFlow", "Revenue"],
+        formula: "OperatingCashFlow / Revenue * 100",
+        compute: vars => (vars.OperatingCashFlow / vars.Revenue) * 100
+      },
+      {
+        name: "142. Tỷ lệ Lợi nhuận trên Tài sản (Return on Assets)",
+        category: "Accounting",
+        variables: ["NetIncome", "TotalAssets"],
+        formula: "NetIncome / TotalAssets * 100",
+        compute: vars => (vars.NetIncome / vars.TotalAssets) * 100
+      },
+      {
+        name: "143. Tỷ lệ Lợi nhuận trên Vốn chủ sở hữu (Return on Equity)",
+        category: "Accounting",
+        variables: ["NetIncome", "Equity"],
+        formula: "NetIncome / Equity * 100",
+        compute: vars => (vars.NetIncome / vars.Equity) * 100
+      },
+      {
+        name: "144. Tỷ lệ Chi phí Vốn (Cost of Capital)",
+        category: "Accounting",
+        variables: ["TotalCostOfCapital", "TotalCapital"],
+        formula: "TotalCostOfCapital / TotalCapital * 100",
+        compute: vars => (vars.TotalCostOfCapital / vars.TotalCapital) * 100
+      },
+      {
+        name: "145. Tỷ lệ Hoa hồng bán hàng (Sales Commission Ratio)",
+        category: "Accounting",
+        variables: ["CommissionExpense", "Sales"],
+        formula: "CommissionExpense / Sales * 100",
+        compute: vars => (vars.CommissionExpense / vars.Sales) * 100
+      },
+      {
+        name: "146. Tỷ lệ Chi phí Quản lý trên Doanh thu (SG&A Expense Ratio)",
+        category: "Accounting",
+        variables: ["SGAExpense", "Revenue"],
+        formula: "SGAExpense / Revenue * 100",
+        compute: vars => (vars.SGAExpense / vars.Revenue) * 100
+      },
+      {
+        name: "147. Tỷ lệ Khấu hao lũy kế (Accumulated Depreciation Ratio)",
+        category: "Accounting",
+        variables: ["AccumDepreciation", "CostBasis"],
+        formula: "AccumDepreciation / CostBasis * 100",
+        compute: vars => (vars.AccumDepreciation / vars.CostBasis) * 100
+      },
+      {
+        name: "148. Tỷ lệ Thuế thu nhập (Effective Tax Rate)",
+        category: "Accounting",
+        variables: ["TaxExpense", "PreTaxIncome"],
+        formula: "TaxExpense / PreTaxIncome * 100",
+        compute: vars => (vars.TaxExpense / vars.PreTaxIncome) * 100
+      },
+      {
+        name: "149. Tỷ lệ Phân bổ Vốn (Capital Allocation Ratio)",
+        category: "Accounting",
+        variables: ["CapitalInvested", "TotalEquity"],
+        formula: "CapitalInvested / TotalEquity * 100",
+        compute: vars => (vars.CapitalInvested / vars.TotalEquity) * 100
+      },
+      {
+        name: "150. Tỷ lệ Vốn lưu động ròng (Net Working Capital Ratio)",
+        category: "Accounting",
+        variables: ["CurrentAssets", "CurrentLiabilities"],
+        formula: "(CurrentAssets - CurrentLiabilities) / CurrentAssets * 100",
+        compute: vars => ((vars.CurrentAssets - vars.CurrentLiabilities) / vars.CurrentAssets) * 100
+      },
+
+      // =========================
+      // CHỦ ĐỀ KHÁC (19)
+      // =========================
+      {
+        name: "151. Công thức CAPM (Capital Asset Pricing Model)",
+        category: "Other",
+        variables: ["Rf", "Beta", "Rm"],
+        formula: "Rf + Beta * (Rm - Rf)",
+        compute: vars => vars.Rf + vars.Beta * (vars.Rm - vars.Rf)
+      },
+      {
+        name: "152. Công thức Gordon Growth (Dividend Discount Model)",
+        category: "Other",
+        variables: ["D1", "r", "g"],
+        formula: "D1 / (r - g)",
+        compute: vars => vars.D1 / (vars.r - vars.g)
+      },
+      {
+        name: "153. Công thức Sharpe Ratio",
+        category: "Other",
+        variables: ["Rp", "Rf", "σp"],
+        formula: "(Rp - Rf) / σp",
+        compute: vars => (vars.Rp - vars.Rf) / vars.σp
+      },
+      {
+        name: "154. Công thức Treynor Ratio",
+        category: "Other",
+        variables: ["Rp", "Rf", "Beta"],
+        formula: "(Rp - Rf) / Beta",
+        compute: vars => (vars.Rp - vars.Rf) / vars.Beta
+      },
+      {
+        name: "155. Công thức Jensen’s Alpha",
+        category: "Other",
+        variables: ["Rp", "Rf", "Beta", "Rm"],
+        formula: "Rp - [Rf + Beta * (Rm - Rf)]",
+        compute: vars => vars.Rp - (vars.Rf + vars.Beta * (vars.Rm - vars.Rf))
+      },
+      {
+        name: "156. Công thức Tỷ suất Tham lam (Gini Coefficient)",
+        category: "Other",
+        variables: ["A", "B"],
+        formula: "(A) / (A + B)",
+        compute: vars => vars.A / (vars.A + vars.B)
+      },
+      {
+        name: "157. Công thức Logarithm (log base b)",
+        category: "Other",
+        variables: ["x", "b"],
+        formula: "log_b(x) = ln(x) / ln(b)",
+        compute: vars => Math.log(vars.x) / Math.log(vars.b)
+      },
+      {
+        name: "158. Công thức Lãi suất Hiệu quả (Effective Annual Rate)",
+        category: "Other",
+        variables: ["r_nominal", "m"],
+        formula: "(1 + r_nominal/m)^m - 1",
+        compute: vars => Math.pow(1 + vars.r_nominal / vars.m, vars.m) - 1
+      },
+      {
+        name: "159. Công thức Để tính Tỷ lệ Tăng trưởng Trung bình (CAGR)",
+        category: "Other",
+        variables: ["EndingValue", "BeginningValue", "n"],
+        formula: "(EndingValue/BeginningValue)^(1/n) - 1",
+        compute: vars => Math.pow(vars.EndingValue / vars.BeginningValue, 1 / vars.n) - 1
+      },
+      {
+        name: "160. Công thức Giá trị Thị trường Vốn hóa (Market Capitalization)",
+        category: "Other",
+        variables: ["PricePerShare", "SharesOutstanding"],
+        formula: "PricePerShare * SharesOutstanding",
+        compute: vars => vars.PricePerShare * vars.SharesOutstanding
+      },
+      {
+        name: "161. Công thức Định giá Trái phiếu (Bond Price)",
+        category: "Other",
+        variables: ["C", "r", "n", "FV"],
+        formula: "Σ [C / (1 + r)^t] + FV / (1 + r)^n",
+        compute: vars => {
+          let sum = 0;
+          for (let t = 1; t <= vars.n; t++) {
+            sum += vars.C / Math.pow(1 + vars.r, t);
+          }
+          return sum + vars.FV / Math.pow(1 + vars.r, vars.n);
+        }
+      },
+      {
+        name: "162. Công thức Yield to Maturity (YTM)",
+        category: "Other",
+        variables: ["Price", "C", "FV", "n"],
+        formula: "Giá trị y sao cho Price = Σ [C/(1+y)^t] + FV/(1+y)^n",
+        compute: vars => {
+          let y = 0.05;
+          const f = y => {
+            let sum = 0;
+            for (let t = 1; t <= vars.n; t++) {
+              sum += vars.C / Math.pow(1 + y, t);
+            }
+            return sum + vars.FV / Math.pow(1 + y, vars.n) - vars.Price;
+          };
+          let iteration = 0;
+          while (Math.abs(f(y)) > 1e-8 && iteration < 200) {
+            // Newton-Raphson
+            let fprime = 0;
+            for (let t = 1; t <= vars.n; t++) {
+              fprime -= t * vars.C / Math.pow(1 + y, t + 1);
+            }
+            fprime -= vars.n * vars.FV / Math.pow(1 + y, vars.n + 1);
+            y -= f(y) / fprime;
+            iteration++;
+          }
+          return y;
+        }
+      },
+      {
+        name: "163. Công thức Weighted Average (Trung bình có trọng số)",
+        category: "Other",
+        variables: ["Σ(w_i x_i)", "Σ(w_i)"],
+        formula: "Σ(w_i x_i) / Σ(w_i)",
+        compute: vars => vars.sumWx / vars.sumW
+      },
+      {
+        name: "164. Công thức Tỷ số Hàng tồn kho (Days Inventory Outstanding - DIO)",
+        category: "Other",
+        variables: ["AverageInventory", "COGS"],
+        formula: "(AverageInventory / COGS) * 365",
+        compute: vars => (vars.AverageInventory / vars.COGS) * 365
+      },
+      {
+        name: "165. Công thức Tỷ số Thu hồi Các khoản phải thu (Days Sales Outstanding - DSO)",
+        category: "Other",
+        variables: ["AverageAccountsReceivable", "NetCreditSales"],
+        formula: "(AverageAccountsReceivable / NetCreditSales) * 365",
+        compute: vars => (vars.AverageAccountsReceivable / vars.NetCreditSales) * 365
+      },
+      {
+        name: "166. Công thức Tỷ số Thanh toán Các khoản phải trả (Days Payable Outstanding - DPO)",
+        category: "Other",
+        variables: ["AverageAccountsPayable", "COGS"],
+        formula: "(AverageAccountsPayable / COGS) * 365",
+        compute: vars => (vars.AverageAccountsPayable / vars.COGS) * 365
+      },
+      {
+        name: "167. Công thức Tỷ lệ Vòng quay Vốn lưu động (Cash Conversion Cycle - CCC)",
+        category: "Other",
+        variables: ["DIO", "DSO", "DPO"],
+        formula: "DIO + DSO - DPO",
+        compute: vars => vars.DIO + vars.DSO - vars.DPO
+      },
+      {
+        name: "168. Công thức Tỷ suất Hoàn vốn (Return on Investment - ROI)",
+        category: "Other",
+        variables: ["NetProfit", "InvestmentCost"],
+        formula: "(NetProfit / InvestmentCost) * 100",
+        compute: vars => (vars.NetProfit / vars.InvestmentCost) * 100
+      },
+      {
+        name: "169. Công thức Giá trị Còn lại (Residual Income)",
+        category: "Other",
+        variables: ["NetIncome", "EquityCharge"],
+        formula: "NetIncome - EquityCharge",
+        compute: vars => vars.NetIncome - vars.EquityCharge
+      }
+    ];
+
+    // Khởi tạo giao diện cho từng công thức
+    window.addEventListener("DOMContentLoaded", () => {
+      const containers = {
+        Economics: document.getElementById("economics-container"),
+        Finance: document.getElementById("finance-container"),
+        Stock: document.getElementById("stock-container"),
+        IntlTrade: document.getElementById("intltrade-container"),
+        GMAT: document.getElementById("gmat-container"),
+        Accounting: document.getElementById("accounting-container"),
+        Other: document.getElementById("other-container")
+      };
+
+      formulas.forEach((fml, idx) => {
+        const col = document.createElement("div");
+        col.className = "col-12 col-md-6 col-lg-4";
+
+        const card = document.createElement("div");
+        card.className = "card formula-card";
+        card.id = `formula-card-${idx}`;
+
+        const cardHeader = document.createElement("div");
+        cardHeader.className = "card-header";
+        cardHeader.textContent = fml.name;
+
+        const cardBody = document.createElement("div");
+        cardBody.className = "card-body";
+
+        // Công thức hiển thị
+        const formulaText = document.createElement("p");
+        formulaText.className = "formula-title";
+        formulaText.innerHTML = `<strong>Công thức:</strong> ${fml.formula}`;
+
+        cardBody.appendChild(formulaText);
+
+        // Tạo input cho từng biến
+        fml.variables.forEach((v) => {
+          const inputGroup = document.createElement("div");
+          inputGroup.className = "input-group mb-2";
+
+          const span = document.createElement("span");
+          span.className = "input-group-text";
+          span.textContent = v;
+
+          const input = document.createElement("input");
+          input.type = "number";
+          input.step = "any";
+          input.className = "form-control";
+          input.id = `input-${idx}-${v}`;
+          input.placeholder = v;
+
+          inputGroup.appendChild(span);
+          inputGroup.appendChild(input);
+          cardBody.appendChild(inputGroup);
+        });
+
+        // Nút tính toán
+        const computeBtn = document.createElement("button");
+        computeBtn.className = "btn btn-success mt-2";
+        computeBtn.textContent = "Tính toán";
+        computeBtn.addEventListener("click", () => computeFormula(idx));
+
+        cardBody.appendChild(computeBtn);
+
+        // Hiển thị kết quả
+        const resultDiv = document.createElement("div");
+        resultDiv.className = "result-display text-primary";
+        resultDiv.id = `result-${idx}`;
+        cardBody.appendChild(resultDiv);
+
+        // Thêm canvas cho biểu đồ
+        const canvas = document.createElement("canvas");
+        canvas.id = `chart-${idx}`;
+        canvas.className = "w-100";
+        cardBody.appendChild(canvas);
+
+        card.appendChild(cardHeader);
+        card.appendChild(cardBody);
+        col.appendChild(card);
+
+        containers[fml.category].appendChild(col);
+      });
+    });
+
+    // Hàm tính toán và vẽ biểu đồ
+    function computeFormula(index) {
+      const fml = formulas[index];
+      const vars = {};
+      let skip = false;
+
+      // Lấy giá trị đầu vào
+      fml.variables.forEach((v) => {
+        const el = document.getElementById(`input-${index}-${v}`);
+        if (!el || el.value === "") {
+          skip = true;
+        } else {
+          const key = v;
+          if (v.includes("[]")) {
+            // Trường hợp mảng: người dùng nhập dãy phân cách bởi dấu phẩy
+            const arrVal = el.value
+              .split(",")
+              .map((x) => parseFloat(x.trim()))
+              .filter((x) => !isNaN(x));
+            vars["CashFlows"] = arrVal;
+          } else {
+            vars[v] = parseFloat(el.value);
+          }
+        }
+      });
+
+      if (skip) {
+        document.getElementById(`result-${index}`).textContent =
+          "Vui lòng nhập đầy đủ các biến.";
+        return;
+      }
+
+      // Tính kết quả
+      let result;
+      try {
+        result = fml.compute(vars);
+      } catch (err) {
+        result = NaN;
+      }
+
+      // Hiển thị kết quả
+      const resultEl = document.getElementById(`result-${index}`);
+      if (typeof result === "object" && result !== null) {
+        // Hiển thị dạng JSON nếu là object (ví dụ midpoint)
+        resultEl.textContent = "Kết quả: " + JSON.stringify(result);
+      } else if (isNaN(result)) {
+        resultEl.textContent = "Kết quả: Không xác định hoặc không áp dụng.";
+      } else {
+        resultEl.textContent = "Kết quả: " + result.toFixed(4);
+      }
+
+      // Vẽ biểu đồ: Bar chart so sánh các biến nhập và kết quả
+      const ctx = document.getElementById(`chart-${index}`).getContext("2d");
+      // Nếu đã có chart trước đó, huỷ bỏ trước khi tạo mới
+      if (ctx.chart) {
+        ctx.chart.destroy();
+      }
+      const labels = [];
+      const dataVals = [];
+      fml.variables.forEach((v) => {
+        if (v.includes("[]")) {
+          labels.push(v);
+          dataVals.push(vars["CashFlows"].reduce((a, b) => a + b, 0));
+        } else {
+          labels.push(v);
+          dataVals.push(vars[v]);
+        }
+      });
+      labels.push("Kết quả");
+      dataVals.push(typeof result === "number" && !isNaN(result) ? result : 0);
+
+      ctx.chart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: fml.name,
+              data: dataVals,
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+{% endblock %}

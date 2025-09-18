@@ -1,0 +1,2119 @@
+{% extends 'contestTem/_Base.html' %}
+
+{% block header_class %}exam-hide{% endblock %}
+
+{% block content %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>169 Công Thức Vi Mạch – Bán Dẫn – Lượng Tử</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+
+  <!-- Chart.js -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"
+    crossorigin="anonymous"
+  ></script>
+
+  <!-- MathJax for rendering công thức toán-hóa học -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+  <!-- Custom CSS -->
+  <style>
+    body {
+      background-color: #f8f9fa;
+      color: #212529;
+    }
+    .navbar-brand {
+      font-weight: 600;
+    }
+    .formula-card {
+      margin-bottom: 2rem;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      background-color: #ffffff;
+    }
+    .formula-card .card-header {
+      background-color: #0d6efd;
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+    .formula-card .card-body {
+      padding: 1.5rem;
+    }
+    .formula-title {
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+    }
+    .input-group-text {
+      width: 6rem;
+      justify-content: center;
+    }
+    .result-display {
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+    canvas {
+      margin-top: 1rem;
+      max-height: 300px;
+    }
+    .category-section {
+      padding-top: 3rem;
+      padding-bottom: 3rem;
+    }
+    .category-heading {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid #0d6efd;
+      padding-bottom: 0.5rem;
+      color: #0d6efd;
+    }
+    @media (max-width: 576px) {
+      .input-group-text {
+        width: 4rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">169 Công Thức Vi Mạch</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarContent"
+        aria-controls="navbarContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="#section1">1. VL Bán Dẫn Cơ Bản</a></li>
+          <li class="nav-item"><a class="nav-link" href="#section2">2. Đặc Tính Điốt</a></li>
+          <li class="nav-item"><a class="nav-link" href="#section3">3. MOSFET</a></li>
+          <li class="nav-item"><a class="nav-link" href="#section4">4. BJT</a></li>
+          <li class="nav-item"><a class="nav-link" href="#section5">5. Cơ Lượng Tử</a></li>
+          <li class="nav-item"><a class="nav-link" href="#section6">6. Vật Liệu</a></li>
+          <li class="nav-item"><a class="nav-link" href="#section7">7. Mạch Liên Kết & Trễ RC</a></li>
+          <li class="nav-item"><a class="nav-link" href="#section8">8. Nhiễu & Nhiệt</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Container -->
+  <div class="container-fluid mt-4 mb-5">
+    <!-- Section 1: Vật liệu Bán Dẫn Cơ Bản -->
+    <section id="section1" class="category-section">
+      <div class="container">
+        <h2 class="category-heading">1. Vật liệu Bán Dẫn Cơ Bản (30 Công Thức)</h2>
+        <div id="container1" class="row"></div>
+      </div>
+    </section>
+
+    <!-- Section 2: Đặc Tính Điốt -->
+    <section id="section2" class="category-section bg-light">
+      <div class="container">
+        <h2 class="category-heading">2. Đặc Tính Điốt (20 Công Thức)</h2>
+        <div id="container2" class="row"></div>
+      </div>
+    </section>
+
+    <!-- Section 3: MOSFET -->
+    <section id="section3" class="category-section">
+      <div class="container">
+        <h2 class="category-heading">3. MOSFET (30 Công Thức)</h2>
+        <div id="container3" class="row"></div>
+      </div>
+    </section>
+
+    <!-- Section 4: BJT -->
+    <section id="section4" class="category-section bg-light">
+      <div class="container">
+        <h2 class="category-heading">4. BJT (20 Công Thức)</h2>
+        <div id="container4" class="row"></div>
+      </div>
+    </section>
+
+    <!-- Section 5: Cơ Lượng Tử -->
+    <section id="section5" class="category-section">
+      <div class="container">
+        <h2 class="category-heading">5. Cơ Lượng Tử (30 Công Thức)</h2>
+        <div id="container5" class="row"></div>
+      </div>
+    </section>
+
+    <!-- Section 6: Vật Liệu -->
+    <section id="section6" class="category-section bg-light">
+      <div class="container">
+        <h2 class="category-heading">6. Vật Liệu (10 Công Thức)</h2>
+        <div id="container6" class="row"></div>
+      </div>
+    </section>
+
+    <!-- Section 7: Mạch Liên Kết & Trễ RC -->
+    <section id="section7" class="category-section">
+      <div class="container">
+        <h2 class="category-heading">7. Mạch Liên Kết &amp; Trễ RC (10 Công Thức)</h2>
+        <div id="container7" class="row"></div>
+      </div>
+    </section>
+
+    <!-- Section 8: Nhiễu & Nhiệt -->
+    <section id="section8" class="category-section bg-light">
+      <div class="container">
+        <h2 class="category-heading">8. Nhiễu &amp; Nhiệt (9 Công Thức)</h2>
+        <div id="container8" class="row"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Bootstrap JS & Dependencies -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"
+  ></script>
+
+  <!-- Custom JS -->
+  <script>
+    // Danh sách 169 công thức với key/label cho biến
+    const formulas = [
+      // =========================
+      // 1. VẬT LIỆU BÁN DẪN CƠ BẢN (30)
+      // =========================
+      {
+        name: "1.1 Độ Dẫn Điện (Conductivity)",
+        category: "section1",
+        variables: [
+          { key: "q", label: "q" },
+          { key: "n", label: "n" },
+          { key: "mu", label: "μ" }
+        ],
+        formula: "σ = q · n · μ",
+        compute: vars => vars.q * vars.n * vars.mu
+      },
+      {
+        name: "1.2 Khả năng Mang Điện (Mobility)",
+        category: "section1",
+        variables: [
+          { key: "v_drift", label: "v_drift" },
+          { key: "E_field", label: "E_field" }
+        ],
+        formula: "μ = v_drift / E_field",
+        compute: vars => vars.v_drift / vars.E_field
+      },
+      {
+        name: "1.3 Dòng Khuếch Tán (Diffusion Current Density)",
+        category: "section1",
+        variables: [
+          { key: "q", label: "q" },
+          { key: "D", label: "D" },
+          { key: "dn_dx", label: "d_n/dx" }
+        ],
+        formula: "J_diff = q · D · (d_n/dx)",
+        compute: vars => vars.q * vars.D * vars.dn_dx
+      },
+      {
+        name: "1.4 Dòng Trôi (Drift Current Density)",
+        category: "section1",
+        variables: [
+          { key: "q", label: "q" },
+          { key: "n", label: "n" },
+          { key: "mu", label: "μ" },
+          { key: "E_field", label: "E_field" }
+        ],
+        formula: "J_drift = q · n · μ · E_field",
+        compute: vars => vars.q * vars.n * vars.mu * vars.E_field
+      },
+      {
+        name: "1.5 Định Luật Einstein",
+        category: "section1",
+        variables: [
+          { key: "D", label: "D" },
+          { key: "mu", label: "μ" },
+          { key: "V_th", label: "V_th" }
+        ],
+        formula: "D = μ · V_th",
+        compute: vars => vars.mu * vars.V_th
+      },
+      {
+        name: "1.6 Điện Thế Nhiệt (Thermal Voltage)",
+        category: "section1",
+        variables: [
+          { key: "k", label: "k" },
+          { key: "T", label: "T" },
+          { key: "q", label: "q" }
+        ],
+        formula: "V_th = (k · T) / q",
+        compute: vars => (vars.k * vars.T) / vars.q
+      },
+      {
+        name: "1.7 Công Thức Poisson",
+        category: "section1",
+        variables: [
+          { key: "eps", label: "ε" },
+          { key: "d2V_dx2", label: "d²V/dx²" },
+          { key: "rho", label: "ρ" }
+        ],
+        formula: "ε · (d²V/dx²) = -ρ",
+        compute: () => NaN
+      },
+      {
+        name: "1.8 Hằng Số Điện Trở (Resistivity)",
+        category: "section1",
+        variables: [
+          { key: "sigma", label: "σ" }
+        ],
+        formula: "ρ_material = 1 / σ",
+        compute: vars => 1 / vars.sigma
+      },
+      {
+        name: "1.9 Nồng Độ Bản Chất (Intrinsic Carrier Concentration)",
+        category: "section1",
+        variables: [
+          { key: "Nc", label: "N_c" },
+          { key: "Nv", label: "N_v" },
+          { key: "Eg", label: "E_g" },
+          { key: "k", label: "k" },
+          { key: "T", label: "T" }
+        ],
+        formula: "n_i = √(N_c · N_v) · exp(-E_g/(2 k T))",
+        compute: vars => Math.sqrt(vars.Nc * vars.Nv) * Math.exp(-vars.Eg / (2 * vars.k * vars.T))
+      },
+      {
+        name: "1.10 Mật Độ Băng Tần Truyền Quán (Density of States)",
+        category: "section1",
+        variables: [
+          { key: "m_eff", label: "m_eff" },
+          { key: "E", label: "E" },
+          { key: "h", label: "h" },
+          { key: "hbar", label: "ħ" }
+        ],
+        formula: "g(E) = ( (2 m_eff)^(3/2) / (2 π² ħ³) ) · √E",
+        compute: () => NaN
+      },
+      {
+        name: "1.11 Vận Tốc Trôi (Drift Velocity)",
+        category: "section1",
+        variables: [
+          { key: "mu", label: "μ" },
+          { key: "E_field", label: "E_field" }
+        ],
+        formula: "v_drift = μ · E_field",
+        compute: vars => vars.mu * vars.E_field
+      },
+      {
+        name: "1.12 Độ Dẫn Điện Electron (Electron Conductivity)",
+        category: "section1",
+        variables: [
+          { key: "q", label: "q" },
+          { key: "n", label: "n" },
+          { key: "mu_n", label: "μ_n" }
+        ],
+        formula: "σ_n = q · n · μ_n",
+        compute: vars => vars.q * vars.n * vars.mu_n
+      },
+      {
+        name: "1.13 Độ Dẫn Điện Lỗ Trống (Hole Conductivity)",
+        category: "section1",
+        variables: [
+          { key: "q", label: "q" },
+          { key: "p", label: "p" },
+          { key: "mu_p", label: "μ_p" }
+        ],
+        formula: "σ_p = q · p · μ_p",
+        compute: vars => vars.q * vars.p * vars.mu_p
+      },
+      {
+        name: "1.14 Dòng Tổng (Total Current Density)",
+        category: "section1",
+        variables: [
+          { key: "J_n", label: "J_n" },
+          { key: "J_p", label: "J_p" }
+        ],
+        formula: "J_total = J_n + J_p",
+        compute: vars => vars.J_n + vars.J_p
+      },
+      {
+        name: "1.15 Độ Dẫn Đặc Trưng (Specific Conductance)",
+        category: "section1",
+        variables: [
+          { key: "sigma", label: "σ" }
+        ],
+        formula: "κ = σ",
+        compute: vars => vars.sigma
+      },
+      {
+        name: "1.16 Chiều Dài Khuếch Tán (Diffusion Length)",
+        category: "section1",
+        variables: [
+          { key: "D", label: "D" },
+          { key: "tau", label: "τ" }
+        ],
+        formula: "L = √(D · τ)",
+        compute: vars => Math.sqrt(vars.D * vars.tau)
+      },
+      {
+        name: "1.17 Đời Sống Mang Tải (Carrier Lifetime)",
+        category: "section1",
+        variables: [
+          { key: "tau_n", label: "τ_n" },
+          { key: "tau_p", label: "τ_p" }
+        ],
+        formula: "τ_eff = (τ_n · τ_p) / (τ_n + τ_p)",
+        compute: vars => (vars.tau_n * vars.tau_p) / (vars.tau_n + vars.tau_p)
+      },
+      {
+        name: "1.18 Phương Trình Liên Tục (Continuity Equation)",
+        category: "section1",
+        variables: [
+          { key: "dn_dt", label: "∂n/∂t" },
+          { key: "div_Jn", label: "(1/q)·∇·J_n" },
+          { key: "G", label: "G" },
+          { key: "R", label: "R" }
+        ],
+        formula: "∂n/∂t = (1/q)·∇·J_n + G - R",
+        compute: () => NaN
+      },
+      {
+        name: "1.19 Bán Kính Debye (Debye Length)",
+        category: "section1",
+        variables: [
+          { key: "eps_s", label: "ε_s" },
+          { key: "k", label: "k" },
+          { key: "T", label: "T" },
+          { key: "q", label: "q" },
+          { key: "ni", label: "n_i" }
+        ],
+        formula: "L_D = √( (ε_s · k · T) / (q² · n_i) )",
+        compute: vars => Math.sqrt((vars.eps_s * vars.k * vars.T) / (Math.pow(vars.q, 2) * vars.ni))
+      },
+      {
+        name: "1.20 Căng Ứng Phủ (Strain Energy Density)",
+        category: "section1",
+        variables: [
+          { key: "sigma", label: "σ" },
+          { key: "epsilon", label: "ε" }
+        ],
+        formula: "u = ½ · σ · ε",
+        compute: vars => 0.5 * vars.sigma * vars.epsilon
+      },
+      {
+        name: "1.21 Hiệu Điện Thế Fermi (Fermi Level)",
+        category: "section1",
+        variables: [
+          { key: "Ec", label: "E_c" },
+          { key: "k", label: "k" },
+          { key: "T", label: "T" },
+          { key: "n", label: "n" },
+          { key: "Nc", label: "N_c" }
+        ],
+        formula: "E_F = E_c + k T · ln(n / N_c)",
+        compute: vars => vars.Ec + vars.k * vars.T * Math.log(vars.n / vars.Nc)
+      },
+      {
+        name: "1.22 Mật Độ Electron (Electron Concentration)",
+        category: "section1",
+        variables: [
+          { key: "Nc", label: "N_c" },
+          { key: "Ec", label: "E_c" },
+          { key: "Ef", label: "E_F" },
+          { key: "k", label: "k" },
+          { key: "T", label: "T" }
+        ],
+        formula: "n = N_c · exp( - (E_c - E_F) / (k T) )",
+        compute: vars => vars.Nc * Math.exp(-(vars.Ec - vars.Ef) / (vars.k * vars.T))
+      },
+      {
+        name: "1.23 Mật Độ Lỗ Trống (Hole Concentration)",
+        category: "section1",
+        variables: [
+          { key: "Nv", label: "N_v" },
+          { key: "Ef", label: "E_F" },
+          { key: "Ev", label: "E_v" },
+          { key: "k", label: "k" },
+          { key: "T", label: "T" }
+        ],
+        formula: "p = N_v · exp( - (E_F - E_v) / (k T) )",
+        compute: vars => vars.Nv * Math.exp(-(vars.Ef - vars.Ev) / (vars.k * vars.T))
+      },
+      {
+        name: "1.24 Khối Lượng Hiệu Dụng (Effective Mass)",
+        category: "section1",
+        variables: [
+          { key: "me", label: "m_e" },
+          { key: "mh", label: "m_h" }
+        ],
+        formula: "m_eff = (m_e · m_h) / (m_e + m_h)",
+        compute: vars => (vars.me * vars.mh) / (vars.me + vars.mh)
+      },
+      {
+        name: "1.25 Độ Cách Điện (Permittivity)",
+        category: "section1",
+        variables: [
+          { key: "eps_r", label: "ε_r" },
+          { key: "eps0", label: "ε_0" }
+        ],
+        formula: "ε_s = ε_r · ε_0",
+        compute: vars => vars.eps_r * vars.eps0
+      },
+      {
+        name: "1.26 Kháng Dòng (Resistivity) Lặp Lại",
+        category: "section1",
+        variables: [
+          { key: "sigma", label: "σ" }
+        ],
+        formula: "ρ = 1 / σ",
+        compute: vars => 1 / vars.sigma
+      },
+      {
+        name: "1.27 Độ Dẫn Cách (Dielectric Conductivity)",
+        category: "section1",
+        variables: [
+          { key: "omega", label: "ω" },
+          { key: "eps_double", label: "ε''" },
+          { key: "eps0", label: "ε_0" }
+        ],
+        formula: "σ_d = ω · ε'' · ε_0",
+        compute: vars => vars.omega * vars.eps_double * vars.eps0
+      },
+      {
+        name: "1.28 Năng Lượng Băng Cấm (Bandgap Energy)",
+        category: "section1",
+        variables: [
+          { key: "Eg0", label: "E_g0" },
+          { key: "alpha", label: "α" },
+          { key: "beta", label: "β" },
+          { key: "T", label: "T" }
+        ],
+        formula: "E_g(T) = E_g0 - (α T²) / (T + β)",
+        compute: vars => vars.Eg0 - (vars.alpha * vars.T * vars.T) / (vars.T + vars.beta)
+      },
+      {
+        name: "1.29 Năng Lượng Ion Hóa (Ionization Energy)",
+        category: "section1",
+        variables: [
+          { key: "Ec", label: "E_c" },
+          { key: "ED", label: "E_D" }
+        ],
+        formula: "E_i = E_c - E_D",
+        compute: vars => vars.Ec - vars.ED
+      },
+      {
+        name: "1.30 Độ Dày Vùng Ban Cho Electron (Density of States 3D)",
+        category: "section1",
+        variables: [
+          { key: "me", label: "m_e" },
+          { key: "E", label: "E" },
+          { key: "hbar", label: "ħ" }
+        ],
+        formula: "g_c(E) = (1/(2π²))·(2 m_e/ħ²)^(3/2)·√(E - E_c)",
+        compute: () => NaN
+      },
+
+      // =========================
+      // 2. ĐẶC TÍNH ĐIỐT (20)
+      // =========================
+      {
+        name: "2.1 Dòng Bão Hòa (Reverse Saturation Current)",
+        category: "section2",
+        variables: [
+          { key: "q", label: "q" },
+          { key: "As", label: "A_s" },
+          { key: "Dn", label: "D_n" },
+          { key: "ni", label: "n_i" },
+          { key: "Ln", label: "L_n" },
+          { key: "NA", label: "N_A" },
+          { key: "Dp", label: "D_p" },
+          { key: "Lp", label: "L_p" },
+          { key: "ND", label: "N_D" }
+        ],
+        formula: "I_s = q A_s · (D_n n_i² / (L_n N_A) + D_p n_i² / (L_p N_D))",
+        compute: vars => vars.q * vars.As * (vars.Dn * Math.pow(vars.ni, 2) / (vars.Ln * vars.NA) + vars.Dp * Math.pow(vars.ni, 2) / (vars.Lp * vars.ND))
+      },
+      {
+        name: "2.2 Định Luật Shockley",
+        category: "section2",
+        variables: [
+          { key: "Is", label: "I_s" },
+          { key: "Vd", label: "V_d" },
+          { key: "n", label: "n" },
+          { key: "Vth", label: "V_th" }
+        ],
+        formula: "I = I_s · (exp(V_d/(n V_th)) - 1)",
+        compute: vars => vars.Is * (Math.exp(vars.Vd / (vars.n * vars.Vth)) - 1)
+      },
+      {
+        name: "2.3 Điện Trở Động (Dynamic Resistance)",
+        category: "section2",
+        variables: [
+          { key: "Id", label: "I_d" },
+          { key: "n", label: "n" },
+          { key: "Vth", label: "V_th" }
+        ],
+        formula: "r_d = n V_th / I_d",
+        compute: vars => (vars.n * vars.Vth) / vars.Id
+      },
+      {
+        name: "2.4 Tụ Đột Phân Depletion (Depletion Capacitance)",
+        category: "section2",
+        variables: [
+          { key: "eps_s", label: "ε_s" },
+          { key: "A", label: "A" },
+          { key: "Vbi", label: "V_bi" },
+          { key: "Vd", label: "V_d" },
+          { key: "ND", label: "N_D" },
+          { key: "NA", label: "N_A" },
+          { key: "q", label: "q" }
+        ],
+        formula: "C_j = √( (q ε_s A² N_D N_A) / (2 (N_D + N_A) (V_bi - V_d)) )",
+        compute: () => NaN
+      },
+      {
+        name: "2.5 Chiều Rộng Vùng Depletion (Depletion Width)",
+        category: "section2",
+        variables: [
+          { key: "eps_s", label: "ε_s" },
+          { key: "q", label: "q" },
+          { key: "ND", label: "N_D" },
+          { key: "NA", label: "N_A" },
+          { key: "Vbi", label: "V_bi" },
+          { key: "Vd", label: "V_d" }
+        ],
+        formula: "W = √( (2 ε_s / q) · ( (1/N_A) + (1/N_D) ) · (V_bi - V_d) )",
+        compute: () => NaN
+      },
+      {
+        name: "2.6 Điện Thế Barrier (Barrier Potential)",
+        category: "section2",
+        variables: [
+          { key: "Vth", label: "V_th" },
+          { key: "NA", label: "N_A" },
+          { key: "ND", label: "N_D" },
+          { key: "ni", label: "n_i" }
+        ],
+        formula: "V_bi = V_th · ln( (N_A N_D) / (n_i²) )",
+        compute: vars => vars.Vth * Math.log((vars.NA * vars.ND) / Math.pow(vars.ni, 2))
+      },
+      {
+        name: "2.7 Điện Thế Bật (Turn-On Voltage)",
+        category: "section2",
+        variables: [
+          { key: "Vth", label: "V_th" },
+          { key: "ND", label: "N_D" },
+          { key: "NA", label: "N_A" },
+          { key: "ni", label: "n_i" }
+        ],
+        formula: "V_on ≈ V_th · ln( (N_D + N_A) / (2 n_i) )",
+        compute: vars => vars.Vth * Math.log((vars.ND + vars.NA) / (2 * vars.ni))
+      },
+      {
+        name: "2.8 Độ Dẫn Ngược (Reverse Conductance)",
+        category: "section2",
+        variables: [
+          { key: "Is", label: "I_s" },
+          { key: "n", label: "n" },
+          { key: "Vth", label: "V_th" },
+          { key: "Vd", label: "V_d" }
+        ],
+        formula: "g_r ≈ (I_s / (n V_th)) · exp(-V_d/(n V_th))",
+        compute: vars => (vars.Is / (vars.n * vars.Vth)) * Math.exp(-vars.Vd / (vars.n * vars.Vth))
+      },
+      {
+        name: "2.9 Điện Trở Series (Series Resistance)",
+        category: "section2",
+        variables: [
+          { key: "Vd", label: "V_d" },
+          { key: "Id", label: "I_d" },
+          { key: "n", label: "n" },
+          { key: "Vth", label: "V_th" },
+          { key: "Is", label: "I_s" }
+        ],
+        formula: "R_s = V_d / I_d - (n V_th / I_d) · ln( I_d / I_s + 1 )",
+        compute: () => NaN
+      },
+      {
+        name: "2.10 Dòng Rò (Leakage Current)",
+        category: "section2",
+        variables: [
+          { key: "Is", label: "I_s" }
+        ],
+        formula: "I_leak ≈ I_s",
+        compute: vars => vars.Is
+      },
+      {
+        name: "2.11 Nhiễu Shot (Shot Noise)",
+        category: "section2",
+        variables: [
+          { key: "q", label: "q" },
+          { key: "Id", label: "I_d" },
+          { key: "delta_f", label: "Δf" }
+        ],
+        formula: "i_n = √(2 q I_d Δf)",
+        compute: vars => Math.sqrt(2 * vars.q * vars.Id * vars.delta_f)
+      },
+      {
+        name: "2.12 Nhiễu Johnson (Thermal Noise)",
+        category: "section2",
+        variables: [
+          { key: "k", label: "k" },
+          { key: "T", label: "T" },
+          { key: "Rs", label: "R_s" },
+          { key: "delta_f", label: "Δf" }
+        ],
+        formula: "v_n = √(4 k T R_s Δf)",
+        compute: vars => Math.sqrt(4 * vars.k * vars.T * vars.Rs * vars.delta_f)
+      },
+      {
+        name: "2.13 Hệ Số Bão Hòa (Emission Coefficient)",
+        category: "section2",
+        variables: [
+          { key: "n", label: "n" }
+        ],
+        formula: "n thường ≈ 1 – 2",
+        compute: () => NaN
+      },
+      {
+        name: "2.14 Điện Thế Phá Hủy (Breakdown Voltage)",
+        category: "section2",
+        variables: [
+          { key: "Vbr", label: "V_br" }
+        ],
+        formula: "V_br phụ thuộc độ doping, kích thước vùng depletion",
+        compute: () => NaN
+      },
+      {
+        name: "2.15 Dòng Phá Hủy (Avalanche Current)",
+        category: "section2",
+        variables: [
+          { key: "Is", label: "I_s" },
+          { key: "Vbr", label: "V_br" },
+          { key: "n", label: "n" },
+          { key: "Vth", label: "V_th" }
+        ],
+        formula: "I_br ≈ I_s · exp(V_br/(n V_th))",
+        compute: vars => vars.Is * Math.exp(vars.Vbr / (vars.n * vars.Vth))
+      },
+      {
+        name: "2.16 Góc Khuếch Tán (Diffusion Angle)",
+        category: "section2",
+        variables: [
+          { key: "Dn", label: "D_n" },
+          { key: "mu_n", label: "μ_n" },
+          { key: "E_field", label: "E_field" }
+        ],
+        formula: "θ_d = arctan(D_n / (μ_n E_field))",
+        compute: () => NaN
+      },
+      {
+        name: "2.17 Hiệu Ứng Quang (Photodiode Current)",
+        category: "section2",
+        variables: [
+          { key: "R", label: "R" },
+          { key: "Popt", label: "P_opt" },
+          { key: "Is", label: "I_s" },
+          { key: "Vd", label: "V_d" },
+          { key: "n", label: "n" },
+          { key: "Vth", label: "V_th" }
+        ],
+        formula: "I_photo = R · P_opt + I_s · (exp(V_d/(n V_th)) - 1)",
+        compute: vars => vars.R * vars.Popt + vars.Is * (Math.exp(vars.Vd / (vars.n * vars.Vth)) - 1)
+      },
+      {
+        name: "2.18 Nhiễu Quang (Shot Noise Photodiode)",
+        category: "section2",
+        variables: [
+          { key: "q", label: "q" },
+          { key: "Iphoto", label: "I_photo" },
+          { key: "delta_f", label: "Δf" }
+        ],
+        formula: "i_n = √(2 q I_photo Δf)",
+        compute: vars => Math.sqrt(2 * vars.q * vars.Iphoto * vars.delta_f)
+      },
+      {
+        name: "2.19 Hệ Số Chuyển Đổi (Responsivity)",
+        category: "section2",
+        variables: [
+          { key: "eta", label: "η" },
+          { key: "lambda", label: "λ" },
+          { key: "q", label: "q" },
+          { key: "h", label: "h" },
+          { key: "c", label: "c" }
+        ],
+        formula: "R = η · (q λ) / (h c)",
+        compute: vars => vars.eta * (vars.q * vars.lambda) / (vars.h * vars.c)
+      },
+      {
+        name: "2.20 Nhiễu Nhiệt Photodiode (Thermal Noise)",
+        category: "section2",
+        variables: [
+          { key: "k", label: "k" },
+          { key: "T", label: "T" },
+          { key: "Rsh", label: "R_sh" },
+          { key: "delta_f", label: "Δf" }
+        ],
+        formula: "v_n = √(4 k T R_sh Δf)",
+        compute: vars => Math.sqrt(4 * vars.k * vars.T * vars.Rsh * vars.delta_f)
+      },
+
+      // =========================
+      // 3. MOSFET (30)
+      // =========================
+      {
+        name: "3.1 Dòng Khuếch Tán MOSFET (Subthreshold)",
+        category: "section3",
+        variables: [
+          { key: "I0", label: "I_0" },
+          { key: "Vgs", label: "V_gs" },
+          { key: "Vth", label: "V_th" },
+          { key: "eta", label: "η" },
+          { key: "Vthm", label: "V_thm" }
+        ],
+        formula: "I_sub = I_0 · exp((V_gs - V_th)/(η V_thm))",
+        compute: vars => vars.I0 * Math.exp((vars.Vgs - vars.Vth) / (vars.eta * vars.Vthm))
+      },
+      {
+        name: "3.2 Dòng Trên Ngưỡng (Triode Region)",
+        category: "section3",
+        variables: [
+          { key: "mu_n", label: "μ_n" },
+          { key: "Cox", label: "C_ox" },
+          { key: "W", label: "W" },
+          { key: "L", label: "L" },
+          { key: "Vgs", label: "V_gs" },
+          { key: "Vth", label: "V_th" },
+          { key: "Vds", label: "V_ds" }
+        ],
+        formula: "I_d = μ_n C_ox (W/L) [ (V_gs - V_th) V_ds - V_ds²/2 ]",
+        compute: vars => vars.mu_n * vars.Cox * (vars.W / vars.L) * ((vars.Vgs - vars.Vth) * vars.Vds - Math.pow(vars.Vds, 2) / 2)
+      },
+      {
+        name: "3.3 Dòng Trên Ngưỡng (Saturation Region)",
+        category: "section3",
+        variables: [
+          { key: "mu_n", label: "μ_n" },
+          { key: "Cox", label: "C_ox" },
+          { key: "W", label: "W" },
+          { key: "L", label: "L" },
+          { key: "Vgs", label: "V_gs" },
+          { key: "Vth", label: "V_th" }
+        ],
+        formula: "I_d_sat = ½ μ_n C_ox (W/L) (V_gs - V_th)²",
+        compute: vars => 0.5 * vars.mu_n * vars.Cox * (vars.W / vars.L) * Math.pow(vars.Vgs - vars.Vth, 2)
+      },
+      {
+        name: "3.4 Hệ Số Kênh (β)",
+        category: "section3",
+        variables: [
+          { key: "mu_n", label: "μ_n" },
+          { key: "Cox", label: "C_ox" },
+          { key: "W", label: "W" },
+          { key: "L", label: "L" }
+        ],
+        formula: "β = μ_n C_ox (W/L)",
+        compute: vars => vars.mu_n * vars.Cox * (vars.W / vars.L)
+      },
+      {
+        name: "3.5 Vùng Triode Khi Nhiều V_ds",
+        category: "section3",
+        variables: [
+          { key: "lambda", label: "λ" },
+          { key: "Vds", label: "V_ds" },
+          { key: "Id_sat", label: "I_d_sat" }
+        ],
+        formula: "I_d = I_d_sat (1 + λ V_ds)",
+        compute: vars => vars.Id_sat * (1 + vars.lambda * vars.Vds)
+      },
+      {
+        name: "3.6 Độ Dẫn Đuôi (Channel-Length Modulation)",
+        category: "section3",
+        variables: [
+          { key: "lambda", label: "λ" },
+          { key: "Id_sat", label: "I_d_sat" }
+        ],
+        formula: "r_o = 1 / (λ I_d_sat)",
+        compute: vars => 1 / (vars.lambda * vars.Id_sat)
+      },
+      {
+        name: "3.7 Điện Trở Theo Kênh (Channel Resistance)",
+        category: "section3",
+        variables: [
+          { key: "L", label: "L" },
+          { key: "mu_n", label: "μ_n" },
+          { key: "Cox", label: "C_ox" },
+          { key: "W", label: "W" },
+          { key: "Vgs", label: "V_gs" },
+          { key: "Vth", label: "V_th" }
+        ],
+        formula: "R_on = 1 / [μ_n C_ox (W/L) (V_gs - V_th)]",
+        compute: vars => 1 / (vars.mu_n * vars.Cox * (vars.W / vars.L) * (vars.Vgs - vars.Vth))
+      },
+      {
+        name: "3.8 Điện Dung C_gs (Gate-Source Capacitance)",
+        category: "section3",
+        variables: [
+          { key: "Cox", label: "C_ox" },
+          { key: "W", label: "W" },
+          { key: "L", label: "L" }
+        ],
+        formula: "C_gs ≈ (2/3) C_ox W L",
+        compute: vars => (2/3) * vars.Cox * vars.W * vars.L
+      },
+      {
+        name: "3.9 Điện Dung C_gd (Gate-Drain Capacitance)",
+        category: "section3",
+        variables: [
+          { key: "Cox", label: "C_ox" },
+          { key: "W", label: "W" },
+          { key: "L", label: "L" }
+        ],
+        formula: "C_gd ≈ C_ox W L",
+        compute: vars => vars.Cox * vars.W * vars.L
+      },
+      {
+        name: "3.10 Truyền Số (Transconductance)",
+        category: "section3",
+        variables: [
+          { key: "mu_n", label: "μ_n" },
+          { key: "Cox", label: "C_ox" },
+          { key: "W", label: "W" },
+          { key: "L", label: "L" },
+          { key: "Vgs", label: "V_gs" },
+          { key: "Vth", label: "V_th" }
+        ],
+        formula: "g_m = μ_n C_ox (W/L) (V_gs - V_th)",
+        compute: vars => vars.mu_n * vars.Cox * (vars.W / vars.L) * (vars.Vgs - vars.Vth)
+      },
+      {
+        name: "3.11 Độ Dẫn Ngược (Output Conductance)",
+        category: "section3",
+        variables: [
+          { key: "lambda", label: "λ" },
+          { key: "Id_sat", label: "I_d_sat" }
+        ],
+        formula: "g_ds = λ I_d_sat",
+        compute: vars => vars.lambda * vars.Id_sat
+      },
+      {
+        name: "3.12 Độ Dốc Subthreshold (Subthreshold Slope)",
+        category: "section3",
+        variables: [
+          { key: "n", label: "n" },
+          { key: "Vth", label: "V_th" }
+        ],
+        formula: "S = n V_th ln(10)",
+        compute: vars => vars.n * vars.Vth * Math.log(10)
+      },
+      {
+        name: "3.13 Điện Trở Mối Ghép (Junction Resistance)",
+        category: "section3",
+        variables: [
+          { key: "Rj", label: "R_j" }
+        ],
+        formula: "R_j phụ thuộc khuếch tán, doping, kích thước kênh",
+        compute: () => NaN
+      },
+      {
+        name: "3.14 Nhiễu Flicker (1/f Noise)",
+        category: "section3",
+        variables: [
+          { key: "Kf", label: "K_f" },
+          { key: "Id", label: "I_d" },
+          { key: "f", label: "f" },
+          { key: "Cox", label: "C_ox" },
+          { key: "W", label: "W" },
+          { key: "L", label: "L" }
+        ],
+        formula: "S_id = (K_f I_d²) / (f C_ox² W L)",
+        compute: vars => (vars.Kf * Math.pow(vars.Id, 2)) / (vars.f * Math.pow(vars.Cox, 2) * vars.W * vars.L)
+      },
+      {
+        name: "3.15 Nhiễu Nhiệt MOSFET",
+        category: "section3",
+        variables: [
+          { key: "k", label: "k" },
+          { key: "T", label: "T" },
+          { key: "gamma", label: "γ" },
+          { key: "gm", label: "g_m" },
+          { key: "delta_f", label: "Δf" }
+        ],
+        formula: "S_in = (4 k T γ / g_m) · Δf",
+        compute: vars => (4 * vars.k * vars.T * vars.gamma / vars.gm) * vars.delta_f
+      },
+      {
+        name: "3.16 Điện Dung Kênh (Channel Capacitance)",
+        category: "section3",
+        variables: [
+          { key: "Cox", label: "C_ox" },
+          { key: "W", label: "W" },
+          { key: "L", label: "L" },
+          { key: "Vgs", label: "V_gs" },
+          { key: "Vth", label: "V_th" },
+          { key: "Vdd", label: "V_dd" }
+        ],
+        formula: "C_ch ≈ C_ox W L (V_gs - V_th) / V_dd",
+        compute: vars => vars.Cox * vars.W * vars.L * (vars.Vgs - vars.Vth) / vars.Vdd
+      },
+      {
+        name: "3.17 Trễ RC (Gate Delay)",
+        category: "section3",
+        variables: [
+          { key: "Ron", label: "R_on" },
+          { key: "Cg", label: "C_g" }
+        ],
+        formula: "t_d = R_on · C_g",
+        compute: vars => vars.Ron * vars.Cg
+      },
+      {
+        name: "3.18 Điện Trở Parasitic (Parasitic Resistance)",
+        category: "section3",
+        variables: [
+          { key: "Rpar", label: "R_par" }
+        ],
+        formula: "R_par phụ thuộc vật liệu, chiều dài, bề rộng",
+        compute: () => NaN
+      },
+      {
+        name: "3.19 Dòng Rò Gate (Gate Leakage)",
+        category: "section3",
+        variables: [
+          { key: "Ig", label: "I_g" }
+        ],
+        formula: "I_g phụ thuộc điện dung oxit, điện trường",
+        compute: () => NaN
+      },
+      {
+        name: "3.20 Dòng Rò Subthreshold",
+        category: "section3",
+        variables: [
+          { key: "I0", label: "I_0" },
+          { key: "Vgs", label: "V_gs" },
+          { key: "Vth", label: "V_th" },
+          { key: "eta", label: "η" },
+          { key: "Vthm", label: "V_thm" }
+        ],
+        formula: "I_sub = I_0 · exp((V_gs - V_th)/(η V_thm))",
+        compute: vars => vars.I0 * Math.exp((vars.Vgs - vars.Vth) / (vars.eta * vars.Vthm))
+      },
+      {
+        name: "3.21 Điện Dung Body (Capacitance to Bulk)",
+        category: "section3",
+        variables: [
+          { key: "Csb", label: "C_sb" }
+        ],
+        formula: "C_sb phụ thuộc vùng depletion và doping",
+        compute: () => NaN
+      },
+      {
+        name: "3.22 Hằng Số Oxit (Oxide Capacitance per Unit Area)",
+        category: "section3",
+        variables: [
+          { key: "eps_ox", label: "ε_ox" },
+          { key: "tox", label: "t_ox" }
+        ],
+        formula: "C_ox = ε_ox / t_ox",
+        compute: vars => vars.eps_ox / vars.tox
+      },
+      {
+        name: "3.23 Dòng Kênh Biên (Edge Leakage)",
+        category: "section3",
+        variables: [
+          { key: "Iedge", label: "I_edge" }
+        ],
+        formula: "I_edge phụ thuộc độ nhiễu và tiếp xúc kênh",
+        compute: () => NaN
+      },
+      {
+        name: "3.24 Punch-Through Current",
+        category: "section3",
+        variables: [
+          { key: "Ipt", label: "I_pt" }
+        ],
+        formula: "I_pt phụ thuộc doping, V_ds và chiều dày vùng depletion",
+        compute: () => NaN
+      },
+      {
+        name: "3.25 Điện Dung Overlap (Overlap Capacitance)",
+        category: "section3",
+        variables: [
+          { key: "Cox", label: "C_ox" },
+          { key: "W", label: "W" },
+          { key: "Lov", label: "L_ov" }
+        ],
+        formula: "C_ov = C_ox · W · L_ov",
+        compute: vars => vars.Cox * vars.W * vars.Lov
+      },
+      {
+        name: "3.26 Hệ Số Độ Dốc (Slope Factor)",
+        category: "section3",
+        variables: [
+          { key: "Cd", label: "C_d" },
+          { key: "Cox", label: "C_ox" }
+        ],
+        formula: "n = 1 + C_d / C_ox",
+        compute: vars => 1 + vars.Cd / vars.Cox
+      },
+      {
+        name: "3.27 Tụ Miller (Miller Capacitance)",
+        category: "section3",
+        variables: [
+          { key: "Cgd", label: "C_gd" },
+          { key: "Cgs", label: "C_gs" }
+        ],
+        formula: "C_m = C_gd + C_gs",
+        compute: vars => vars.Cgd + vars.Cgs
+      },
+      {
+        name: "3.28 Tần Số Cắt (Cutoff Frequency)",
+        category: "section3",
+        variables: [
+          { key: "gm", label: "g_m" },
+          { key: "Cgs", label: "C_gs" }
+        ],
+        formula: "f_T = g_m / (2 π C_gs)",
+        compute: vars => vars.gm / (2 * Math.PI * vars.Cgs)
+      },
+      {
+        name: "3.29 Tần Số Cắt Đầu Ra (Output Cutoff)",
+        category: "section3",
+        variables: [
+          { key: "gds", label: "g_ds" },
+          { key: "Cdb", label: "C_db" }
+        ],
+        formula: "f_T_out = g_ds / (2 π C_db)",
+        compute: vars => vars.gds / (2 * Math.PI * vars.Cdb)
+      },
+      {
+        name: "3.30 Điện Trở Tiếp Xúc (Contact Resistance)",
+        category: "section3",
+        variables: [
+          { key: "Rc", label: "R_c" }
+        ],
+        formula: "R_c phụ thuộc tiếp xúc kim loại – bán dẫn",
+        compute: () => NaN
+      },
+
+      // =========================
+      // 4. BJT (20)
+      // =========================
+      {
+        name: "4.1 Hệ Số β DC (DC Current Gain)",
+        category: "section4",
+        variables: [
+          { key: "Ic", label: "I_c" },
+          { key: "Ib", label: "I_b" }
+        ],
+        formula: "β_DC = I_c / I_b",
+        compute: vars => vars.Ic / vars.Ib
+      },
+      {
+        name: "4.2 Dòng Collector (Forward Active)",
+        category: "section4",
+        variables: [
+          { key: "beta", label: "β" },
+          { key: "Ib", label: "I_b" }
+        ],
+        formula: "I_c = β · I_b",
+        compute: vars => vars.beta * vars.Ib
+      },
+      {
+        name: "4.3 Hệ Số h_fe (AC Current Gain)",
+        category: "section4",
+        variables: [
+          { key: "dIc", label: "ΔI_c" },
+          { key: "dIb", label: "ΔI_b" }
+        ],
+        formula: "h_fe = ΔI_c / ΔI_b",
+        compute: vars => vars.dIc / vars.dIb
+      },
+      {
+        name: "4.4 Độ Dẫn (Transconductance)",
+        category: "section4",
+        variables: [
+          { key: "Ic", label: "I_c" },
+          { key: "Vt", label: "V_t" }
+        ],
+        formula: "g_m = I_c / V_t",
+        compute: vars => vars.Ic / vars.Vt
+      },
+      {
+        name: "4.5 Điện Trở Đầu Ra (Output Resistance)",
+        category: "section4",
+        variables: [
+          { key: "Va", label: "V_A" },
+          { key: "Ic", label: "I_c" }
+        ],
+        formula: "r_o = V_A / I_c",
+        compute: vars => vars.Va / vars.Ic
+      },
+      {
+        name: "4.6 Điện Trở Base (Base Resistance)",
+        category: "section4",
+        variables: [
+          { key: "rb", label: "r_b" }
+        ],
+        formula: "r_b phụ thuộc doping và chiều dài base",
+        compute: () => NaN
+      },
+      {
+        name: "4.7 Điện Trở Emitter (Emitter Resistance)",
+        category: "section4",
+        variables: [
+          { key: "Vt", label: "V_t" },
+          { key: "Ie", label: "I_e" }
+        ],
+        formula: "r_e ≈ V_t / I_e",
+        compute: vars => vars.Vt / vars.Ie
+      },
+      {
+        name: "4.8 Điện Dung C_be (Base-Emitter Capacitance)",
+        category: "section4",
+        variables: [
+          { key: "Cbe", label: "C_be" }
+        ],
+        formula: "C_be phụ thuộc vùng depletion base-emitter",
+        compute: () => NaN
+      },
+      {
+        name: "4.9 Điện Dung C_cb (Collector-Base Capacitance)",
+        category: "section4",
+        variables: [
+          { key: "Ccb", label: "C_cb" }
+        ],
+        formula: "C_cb phụ thuộc doping và V_cb",
+        compute: () => NaN
+      },
+      {
+        name: "4.10 C_mu (Miller Capacitance)",
+        category: "section4",
+        variables: [
+          { key: "Ccb", label: "C_cb" }
+        ],
+        formula: "C_mu = C_cb",
+        compute: vars => vars.Ccb
+      },
+      {
+        name: "4.11 Unity Gain Bandwidth",
+        category: "section4",
+        variables: [
+          { key: "gm", label: "g_m" },
+          { key: "Cmu", label: "C_μ" },
+          { key: "Cpi", label: "C_π" }
+        ],
+        formula: "f_T = g_m / [2 π (C_μ + C_π)]",
+        compute: vars => vars.gm / (2 * Math.PI * (vars.Cmu + vars.Cpi))
+      },
+      {
+        name: "4.12 Early Voltage",
+        category: "section4",
+        variables: [
+          { key: "Va", label: "V_A" }
+        ],
+        formula: "V_A phụ thuộc doping và chiều dài kênh",
+        compute: () => NaN
+      },
+      {
+        name: "4.13 Nhiễu Shot BJT",
+        category: "section4",
+        variables: [
+          { key: "q", label: "q" },
+          { key: "Ic", label: "I_c" },
+          { key: "delta_f", label: "Δf" },
+          { key: "beta", label: "β" }
+        ],
+        formula: "i_n = √[2 q I_c Δf (1 + β)]",
+        compute: vars => Math.sqrt(2 * vars.q * vars.Ic * vars.delta_f * (1 + vars.beta))
+      },
+      {
+        name: "4.14 Nhiễu Thermal BJT",
+        category: "section4",
+        variables: [
+          { key: "k", label: "k" },
+          { key: "T", label: "T" },
+          { key: "rb", label: "r_b" },
+          { key: "delta_f", label: "Δf" }
+        ],
+        formula: "v_n = √(4 k T r_b Δf)",
+        compute: vars => Math.sqrt(4 * vars.k * vars.T * vars.rb * vars.delta_f)
+      },
+      {
+        name: "4.15 β(f) vs Frequency",
+        category: "section4",
+        variables: [
+          { key: "beta0", label: "β_0" },
+          { key: "f", label: "f" },
+          { key: "fT", label: "f_T" }
+        ],
+        formula: "β(f) = β_0 / √[1 + (f/f_T)²]",
+        compute: vars => vars.beta0 / Math.sqrt(1 + Math.pow(vars.f / vars.fT, 2))
+      },
+      {
+        name: "4.16 Conductance Input",
+        category: "section4",
+        variables: [
+          { key: "gm", label: "g_m" },
+          { key: "beta", label: "β" }
+        ],
+        formula: "g_π = g_m / β",
+        compute: vars => vars.gm / vars.beta
+      },
+      {
+        name: "4.17 Điện Trở Đầu Vào (Input Resistance)",
+        category: "section4",
+        variables: [
+          { key: "beta", label: "β" },
+          { key: "re", label: "r_e" }
+        ],
+        formula: "r_π = β · r_e",
+        compute: vars => vars.beta * vars.re
+      },
+      {
+        name: "4.18 Công Suất DC (DC Power)",
+        category: "section4",
+        variables: [
+          { key: "Vce", label: "V_ce" },
+          { key: "Ic", label: "I_c" }
+        ],
+        formula: "P_DC = V_ce · I_c",
+        compute: vars => vars.Vce * vars.Ic
+      },
+      {
+        name: "4.19 Công Suất AC (AC Power)",
+        category: "section4",
+        variables: [
+          { key: "Ic_peak", label: "I_c_peak" },
+          { key: "Vce_peak", label: "V_ce_peak" },
+          { key: "phi", label: "θ" }
+        ],
+        formula: "P_AC = ½ I_c_peak V_ce_peak cos(θ)",
+        compute: vars => 0.5 * vars.Ic_peak * vars.Vce_peak * Math.cos(vars.phi)
+      },
+      {
+        name: "4.20 Hệ Số Feedback",
+        category: "section4",
+        variables: [
+          { key: "Rf", label: "R_f" },
+          { key: "Re", label: "R_e" }
+        ],
+        formula: "β_f = R_e / (R_e + R_f)",
+        compute: vars => vars.Re / (vars.Re + vars.Rf)
+      },
+
+      // =========================
+      // 5. CƠ LƯỢNG TỬ (30)
+      // =========================
+      {
+        name: "5.1 Schrödinger - Thời Gian Độc Lập",
+        category: "section5",
+        variables: [
+          { key: "hbar", label: "ħ" },
+          { key: "m", label: "m" },
+          { key: "laplacian", label: "∇² ψ" },
+          { key: "V", label: "V" },
+          { key: "psi", label: "ψ" },
+          { key: "E", label: "E" }
+        ],
+        formula: "-(ħ²/2m) ∇² ψ + V ψ = E ψ",
+        compute: () => NaN
+      },
+      {
+        name: "5.2 Schrödinger - Thời Gian Phụ Thuộc",
+        category: "section5",
+        variables: [
+          { key: "i_hbar", label: "i ħ" },
+          { key: "dpsi_dt", label: "∂ψ/∂t" },
+          { key: "hbar", label: "ħ" },
+          { key: "m", label: "m" },
+          { key: "laplacian", label: "∇² ψ" },
+          { key: "V", label: "V" },
+          { key: "psi", label: "ψ" }
+        ],
+        formula: "i ħ ∂ψ/∂t = -(ħ²/2m) ∇² ψ + V ψ",
+        compute: () => NaN
+      },
+      {
+        name: "5.3 Xác Suất (Probability Density)",
+        category: "section5",
+        variables: [
+          { key: "psi", label: "ψ" }
+        ],
+        formula: "P(x) = |ψ(x)|²",
+        compute: vars => Math.pow(Math.abs(vars.psi), 2)
+      },
+      {
+        name: "5.4 Năng Lượng Hạt Trong Hộp (Particle in a Box)",
+        category: "section5",
+        variables: [
+          { key: "n", label: "n" },
+          { key: "h", label: "h" },
+          { key: "m", label: "m" },
+          { key: "L", label: "L" }
+        ],
+        formula: "E_n = (n² h²) / (8 m L²)",
+        compute: vars => (Math.pow(vars.n, 2) * Math.pow(vars.h, 2)) / (8 * vars.m * Math.pow(vars.L, 2))
+      },
+      {
+        name: "5.5 Xấp Xỉ WKB (WKB Approximation)",
+        category: "section5",
+        variables: [
+          { key: "integral_k", label: "∫ k(x) dx" }
+        ],
+        formula: "ψ(x) ≈ A/√(k(x)) exp(± i ∫ k(x) dx)",
+        compute: () => NaN
+      },
+      {
+        name: "5.6 Phân Bố Fermi-Dirac",
+        category: "section5",
+        variables: [
+          { key: "E", label: "E" },
+          { key: "Ef", label: "E_F" },
+          { key: "k", label: "k" },
+          { key: "T", label: "T" }
+        ],
+        formula: "f(E) = 1 / [exp((E - E_F)/(k T)) + 1]",
+        compute: vars => 1 / (Math.exp((vars.E - vars.Ef) / (vars.k * vars.T)) + 1)
+      },
+      {
+        name: "5.7 Phân Bố Bose-Einstein",
+        category: "section5",
+        variables: [
+          { key: "E", label: "E" },
+          { key: "mu", label: "μ" },
+          { key: "k", label: "k" },
+          { key: "T", label: "T" }
+        ],
+        formula: "f(E) = 1 / [exp((E - μ)/(k T)) - 1]",
+        compute: vars => 1 / (Math.exp((vars.E - vars.mu) / (vars.k * vars.T)) - 1)
+      },
+      {
+        name: "5.8 Phân Bố Maxwell-Boltzmann",
+        category: "section5",
+        variables: [
+          { key: "E", label: "E" },
+          { key: "k", label: "k" },
+          { key: "T", label: "T" }
+        ],
+        formula: "f(E) = A exp(-E/(k T))",
+        compute: vars => Math.exp(-vars.E / (vars.k * vars.T))
+      },
+      {
+        name: "5.9 Hằng Số Planck Giảm (ħ)",
+        category: "section5",
+        variables: [
+          { key: "h", label: "h" }
+        ],
+        formula: "ħ = h / (2π)",
+        compute: vars => vars.h / (2 * Math.PI)
+      },
+      {
+        name: "5.10 Heisenberg Uncertainty",
+        category: "section5",
+        variables: [
+          { key: "dx", label: "Δx" },
+          { key: "dp", label: "Δp" },
+          { key: "hbar", label: "ħ" }
+        ],
+        formula: "Δx · Δp ≥ ħ/2",
+        compute: () => NaN
+      },
+      {
+        name: "5.11 Tần Số Lượng Tử (Angular Frequency)",
+        category: "section5",
+        variables: [
+          { key: "E", label: "E" },
+          { key: "hbar", label: "ħ" }
+        ],
+        formula: "ω = E / ħ",
+        compute: vars => vars.E / vars.hbar
+      },
+      {
+        name: "5.12 Động Lượng Xoay (Angular Momentum)",
+        category: "section5",
+        variables: [
+          { key: "l", label: "l" },
+          { key: "hbar", label: "ħ" }
+        ],
+        formula: "L = √[l(l+1)] ħ",
+        compute: vars => Math.sqrt(vars.l * (vars.l + 1)) * vars.hbar
+      },
+      {
+        name: "5.13 Spin",
+        category: "section5",
+        variables: [
+          { key: "s", label: "s" },
+          { key: "hbar", label: "ħ" }
+        ],
+        formula: "S = √[s(s+1)] ħ",
+        compute: vars => Math.sqrt(vars.s * (vars.s + 1)) * vars.hbar
+      },
+      {
+        name: "5.14 HO Energy Levels (Quantum HO)",
+        category: "section5",
+        variables: [
+          { key: "n", label: "n" },
+          { key: "hbar", label: "ħ" },
+          { key: "omega", label: "ω" }
+        ],
+        formula: "E_n = ħ ω (n + ½)",
+        compute: vars => vars.hbar * vars.omega * (vars.n + 0.5)
+      },
+      {
+        name: "5.15 Xác Suất Harmonic (Harmonic Oscillator Probability)",
+        category: "section5",
+        variables: [
+          { key: "psi_n", label: "ψ_n(x)" }
+        ],
+        formula: "P(x) = |ψ_n(x)|²",
+        compute: vars => Math.pow(Math.abs(vars.psi_n), 2)
+      },
+      {
+        name: "5.16 Tunneling Probability",
+        category: "section5",
+        variables: [
+          { key: "kappa", label: "κ" },
+          { key: "a", label: "a" }
+        ],
+        formula: "T ≈ exp(-2 κ a)",
+        compute: vars => Math.exp(-2 * vars.kappa * vars.a)
+      },
+      {
+        name: "5.17 Fabry-Perot Transmission",
+        category: "section5",
+        variables: [
+          { key: "r", label: "r" },
+          { key: "t", label: "t" },
+          { key: "phi", label: "φ" }
+        ],
+        formula: "T = |t|² / |1 - r² e^(i 2 φ)|²",
+        compute: () => NaN
+      },
+      {
+        name: "5.18 DOS 3D",
+        category: "section5",
+        variables: [
+          { key: "m", label: "m" },
+          { key: "E", label: "E" },
+          { key: "hbar", label: "ħ" }
+        ],
+        formula: "g(E) = (1/2π²)(2m/ħ²)^(3/2) √E",
+        compute: () => NaN
+      },
+      {
+        name: "5.19 DOS 2D",
+        category: "section5",
+        variables: [
+          { key: "m", label: "m" },
+          { key: "hbar", label: "ħ" }
+        ],
+        formula: "g(E) = m / (π ħ²)",
+        compute: vars => vars.m / (Math.PI * Math.pow(vars.hbar, 2))
+      },
+      {
+        name: "5.20 DOS 1D",
+        category: "section5",
+        variables: [
+          { key: "m", label: "m" },
+          { key: "E", label: "E" },
+          { key: "hbar", label: "ħ" }
+        ],
+        formula: "g(E) = (1/π) √[m / (2 ħ² E)]",
+        compute: () => NaN
+      },
+      {
+        name: "5.21 Stark Effect",
+        category: "section5",
+        variables: [
+          { key: "alpha", label: "α" },
+          { key: "F", label: "F" }
+        ],
+        formula: "ΔE = -½ α F²",
+        compute: vars => -0.5 * vars.alpha * Math.pow(vars.F, 2)
+      },
+      {
+        name: "5.22 Rabi Frequency",
+        category: "section5",
+        variables: [
+          { key: "mu", label: "μ" },
+          { key: "E0", label: "E_0" },
+          { key: "hbar", label: "ħ" }
+        ],
+        formula: "Ω_R = μ E_0 / ħ",
+        compute: vars => vars.mu * vars.E0 / vars.hbar
+      },
+      {
+        name: "5.23 Hằng Số Boltzmann",
+        category: "section5",
+        variables: [],
+        formula: "k = 1.380649 × 10⁻²³ J/K",
+        compute: () => 1.380649e-23
+      },
+      {
+        name: "5.24 Năng Lượng Photon",
+        category: "section5",
+        variables: [
+          { key: "h", label: "h" },
+          { key: "f", label: "f" }
+        ],
+        formula: "E = h f",
+        compute: vars => vars.h * vars.f
+      },
+      {
+        name: "5.25 Wavelength-Frequency",
+        category: "section5",
+        variables: [
+          { key: "c", label: "c" },
+          { key: "f", label: "f" }
+        ],
+        formula: "λ = c / f",
+        compute: vars => vars.c / vars.f
+      },
+      {
+        name: "5.26 Plasma Frequency",
+        category: "section5",
+        variables: [
+          { key: "ne", label: "n_e" },
+          { key: "q", label: "q" },
+          { key: "eps0", label: "ε_0" },
+          { key: "me", label: "m_e" }
+        ],
+        formula: "ω_p = √[n_e q² / (ε_0 m_e)]",
+        compute: vars => Math.sqrt(vars.ne * Math.pow(vars.q, 2) / (vars.eps0 * vars.me))
+      },
+      {
+        name: "5.27 Decoherence Time",
+        category: "section5",
+        variables: [
+          { key: "T2", label: "T_2" }
+        ],
+        formula: "T_2 phụ thuộc môi trường và nhiễu lượng tử",
+        compute: () => NaN
+      },
+      {
+        name: "5.28 Landauer Principle",
+        category: "section5",
+        variables: [
+          { key: "k", label: "k" },
+          { key: "T", label: "T" }
+        ],
+        formula: "E_min = k T ln 2",
+        compute: vars => vars.k * vars.T * Math.log(2)
+      },
+      {
+        name: "5.29 Quantum Confinement ΔE",
+        category: "section5",
+        variables: [
+          { key: "hbar", label: "ħ" },
+          { key: "mstar", label: "m*" },
+          { key: "L", label: "L" }
+        ],
+        formula: "ΔE = (π² ħ²) / (2 m* L²)",
+        compute: vars => (Math.pow(Math.PI, 2) * Math.pow(vars.hbar, 2)) / (2 * vars.mstar * Math.pow(vars.L, 2))
+      },
+      {
+        name: "5.30 Quantum Broadening Γ",
+        category: "section5",
+        variables: [
+          { key: "hbar", label: "ħ" },
+          { key: "tau", label: "τ" }
+        ],
+        formula: "Γ = ħ / τ",
+        compute: vars => vars.hbar / vars.tau
+      },
+
+      // =========================
+      // 6. VẬT LIỆU (10)
+      // =========================
+      {
+        name: "6.1 Điện Trở Kim Loại (Metal Resistivity)",
+        category: "section6",
+        variables: [
+          { key: "rho0", label: "ρ_0" },
+          { key: "alpha", label: "α" },
+          { key: "T", label: "T" },
+          { key: "T0", label: "T_0" }
+        ],
+        formula: "ρ(T) = ρ_0 [1 + α (T - T_0)]",
+        compute: vars => vars.rho0 * (1 + vars.alpha * (vars.T - vars.T0))
+      },
+      {
+        name: "6.2 Độ Dẫn Kim Loại (Metal Conductivity)",
+        category: "section6",
+        variables: [
+          { key: "rho", label: "ρ" }
+        ],
+        formula: "σ = 1 / ρ",
+        compute: vars => 1 / vars.rho
+      },
+      {
+        name: "6.3 Điện Trở Sắt (Iron Resistivity)",
+        category: "section6",
+        variables: [],
+        formula: "ρ_fe ≈ 9.71 × 10⁻⁸ Ω·m",
+        compute: () => 9.71e-8
+      },
+      {
+        name: "6.4 Điện Trở Đồng (Copper Resistivity)",
+        category: "section6",
+        variables: [],
+        formula: "ρ_cu ≈ 1.68 × 10⁻⁸ Ω·m",
+        compute: () => 1.68e-8
+      },
+      {
+        name: "6.5 Hằng Số Dielectric (Dielectric Constant)",
+        category: "section6",
+        variables: [
+          { key: "er", label: "ε_r" },
+          { key: "eps0", label: "ε_0" }
+        ],
+        formula: "ε = ε_r ε_0",
+        compute: vars => vars.er * vars.eps0
+      },
+      {
+        name: "6.6 Chiết Suất (Refractive Index)",
+        category: "section6",
+        variables: [
+          { key: "er", label: "ε_r" }
+        ],
+        formula: "n = √ε_r",
+        compute: vars => Math.sqrt(vars.er)
+      },
+      {
+        name: "6.7 Độ Hút Từ (Magnetic Permeability)",
+        category: "section6",
+        variables: [
+          { key: "mur", label: "μ_r" },
+          { key: "mu0", label: "μ_0" }
+        ],
+        formula: "μ = μ_r μ_0",
+        compute: vars => vars.mur * vars.mu0
+      },
+      {
+        name: "6.8 Nhiệt Dẫn (Thermal Conductivity)",
+        category: "section6",
+        variables: [
+          { key: "k", label: "k" },
+          { key: "A", label: "A" },
+          { key: "L", label: "L" }
+        ],
+        formula: "G_th = k (A / L)",
+        compute: vars => vars.k * (vars.A / vars.L)
+      },
+      {
+        name: "6.9 Hệ Số Mở Rộng Nhiệt (Thermal Expansion)",
+        category: "section6",
+        variables: [
+          { key: "alpha", label: "α" },
+          { key: "deltaT", label: "ΔT" }
+        ],
+        formula: "ΔL/L = α ΔT",
+        compute: vars => vars.alpha * vars.deltaT
+      },
+      {
+        name: "6.10 Điện Dung Dielectric (Dielectric Gate Capacitance)",
+        category: "section6",
+        variables: [
+          { key: "er", label: "ε_r" },
+          { key: "eps0", label: "ε_0" },
+          { key: "A", label: "A" },
+          { key: "d", label: "d" }
+        ],
+        formula: "C = (ε_r ε_0 A) / d",
+        compute: vars => (vars.er * vars.eps0 * vars.A) / vars.d
+      },
+
+      // =========================
+      // 7. MẠCH LIÊN KẾT & TRỄ RC (10)
+      // =========================
+      {
+        name: "7.1 Trễ RC (RC Delay)",
+        category: "section7",
+        variables: [
+          { key: "R", label: "R" },
+          { key: "C", label: "C" }
+        ],
+        formula: "τ = R · C",
+        compute: vars => vars.R * vars.C
+      },
+      {
+        name: "7.2 Độ Trễ Cổng (Gate Delay)",
+        category: "section7",
+        variables: [
+          { key: "Cg", label: "C_g" },
+          { key: "Vdd", label: "V_dd" },
+          { key: "Is", label: "I_s" }
+        ],
+        formula: "t_pd ≈ (C_g V_dd) / I_s",
+        compute: vars => (vars.Cg * vars.Vdd) / vars.Is
+      },
+      {
+        name: "7.3 Tụ Coupling (Coupling Capacitance)",
+        category: "section7",
+        variables: [
+          { key: "Cc", label: "C_c" }
+        ],
+        formula: "C_c phụ thuộc khoảng cách, độ dài, permittivity",
+        compute: () => NaN
+      },
+      {
+        name: "7.4 Điện Trở Dây (Wire Resistance)",
+        category: "section7",
+        variables: [
+          { key: "rhom", label: "ρ_metal" },
+          { key: "L", label: "L" },
+          { key: "A", label: "A" }
+        ],
+        formula: "R_wire = ρ_metal · (L / A)",
+        compute: vars => vars.rhom * (vars.L / vars.A)
+      },
+      {
+        name: "7.5 Tụ Interconnect (Interconnect Capacitance)",
+        category: "section7",
+        variables: [
+          { key: "er", label: "ε_r" },
+          { key: "eps0", label: "ε_0" },
+          { key: "L", label: "L" },
+          { key: "d", label: "d" }
+        ],
+        formula: "C_inter = ε_r ε_0 (L / d)",
+        compute: vars => vars.er * vars.eps0 * (vars.L / vars.d)
+      },
+      {
+        name: "7.6 Điện Trở Skin Effect",
+        category: "section7",
+        variables: [
+          { key: "rho", label: "ρ" },
+          { key: "omega", label: "ω" },
+          { key: "mu", label: "μ" }
+        ],
+        formula: "R_skin = √[ (ω ρ) / (2 μ) ]",
+        compute: vars => Math.sqrt((vars.omega * vars.rho) / (2 * vars.mu))
+      },
+      {
+        name: "7.7 Tụ Skin Effect (Skin Effect Capacitance)",
+        category: "section7",
+        variables: [
+          { key: "Cskin", label: "C_skin" }
+        ],
+        formula: "C_skin phụ thuộc sâu xuyên thấu và permittivity",
+        compute: () => NaN
+      },
+      {
+        name: "7.8 Elmore Delay",
+        category: "section7",
+        variables: [
+          { key: "Ri", label: "R_i" },
+          { key: "Ci", label: "C_i" },
+          { key: "Rj", label: "R_j" }
+        ],
+        formula: "t_elmore = Σ [R_i · (Σ C_j, j ≥ i)]",
+        compute: () => NaN
+      },
+      {
+        name: "7.9 Tụ Substrate (Substrate Capacitance)",
+        category: "section7",
+        variables: [
+          { key: "Csub", label: "C_sub" }
+        ],
+        formula: "C_sub phụ thuộc doping, diện tích, permittivity",
+        compute: () => NaN
+      },
+      {
+        name: "7.10 Tụ Parasitic (Parasitic Capacitance)",
+        category: "section7",
+        variables: [
+          { key: "Cov", label: "C_overlap" },
+          { key: "Cinter", label: "C_inter" },
+          { key: "Csub", label: "C_sub" }
+        ],
+        formula: "C_par = C_overlap + C_inter + C_sub",
+        compute: vars => vars.Cov + vars.Cinter + vars.Csub
+      },
+
+      // =========================
+      // 8. NHIỄU & NHIỆT (9)
+      // =========================
+      {
+        name: "8.1 Nhiễu Shot (Shot Noise)",
+        category: "section8",
+        variables: [
+          { key: "I", label: "I" },
+          { key: "q", label: "q" },
+          { key: "delta_f", label: "Δf" }
+        ],
+        formula: "i_n = √(2 q I Δf)",
+        compute: vars => Math.sqrt(2 * vars.q * vars.I * vars.delta_f)
+      },
+      {
+        name: "8.2 Nhiễu Johnson (Johnson Noise)",
+        category: "section8",
+        variables: [
+          { key: "k", label: "k" },
+          { key: "T", label: "T" },
+          { key: "R", label: "R" },
+          { key: "delta_f", label: "Δf" }
+        ],
+        formula: "v_n = √(4 k T R Δf)",
+        compute: vars => Math.sqrt(4 * vars.k * vars.T * vars.R * vars.delta_f)
+      },
+      {
+        name: "8.3 Nhiễu Flicker (1/f Noise)",
+        category: "section8",
+        variables: [
+          { key: "Kf", label: "K_f" },
+          { key: "I", label: "I" },
+          { key: "f", label: "f" },
+          { key: "Cox", label: "C_ox" },
+          { key: "W", label: "W" },
+          { key: "L", label: "L" }
+        ],
+        formula: "S_i = (K_f I²) / (f C_ox² W L)",
+        compute: vars => (vars.Kf * Math.pow(vars.I, 2)) / (vars.f * Math.pow(vars.Cox, 2) * vars.W * vars.L)
+      },
+      {
+        name: "8.4 Conductance Nhiệt (Thermal Conductance)",
+        category: "section8",
+        variables: [
+          { key: "k", label: "k" },
+          { key: "A", label: "A" },
+          { key: "L", label: "L" }
+        ],
+        formula: "G_th = k (A / L)",
+        compute: vars => vars.k * (vars.A / vars.L)
+      },
+      {
+        name: "8.5 Công Suất Tỏa Nhiệt (Power Dissipation)",
+        category: "section8",
+        variables: [
+          { key: "V", label: "V" },
+          { key: "I", label: "I" }
+        ],
+        formula: "P = V I",
+        compute: vars => vars.V * vars.I
+      },
+      {
+        name: "8.6 Điện Trở Nhiệt (Thermal Resistance)",
+        category: "section8",
+        variables: [
+          { key: "Rth_jc", label: "R_th_jc" },
+          { key: "Rth_ca", label: "R_th_ca" }
+        ],
+        formula: "R_th_total = R_th_jc + R_th_ca",
+        compute: vars => vars.Rth_jc + vars.Rth_ca
+      },
+      {
+        name: "8.7 Nhiệt Độ Tiếp Giữa (Junction Temperature)",
+        category: "section8",
+        variables: [
+          { key: "T_ambient", label: "T_ambient" },
+          { key: "P_diss", label: "P_diss" },
+          { key: "Rth_total", label: "R_th_total" }
+        ],
+        formula: "T_j = T_ambient + P_diss R_th_total",
+        compute: vars => vars.T_ambient + vars.P_diss * vars.Rth_total
+      },
+      {
+        name: "8.8 Công Suất Tối Đa (Safe Operating Area)",
+        category: "section8",
+        variables: [
+          { key: "Imax", label: "I_max" },
+          { key: "Vmax", label: "V_max" }
+        ],
+        formula: "P_max = I_max V_max",
+        compute: vars => vars.Imax * vars.Vmax
+      },
+      {
+        name: "8.9 Điều Kiện Thermal Runaway",
+        category: "section8",
+        variables: [
+          { key: "dR_dT", label: "dR/dT" },
+          { key: "R", label: "R" },
+          { key: "P", label: "P" }
+        ],
+        formula: "Khi (dR/dT) P > R, thiết bị quá nhiệt",
+        compute: () => NaN
+      }
+    ];
+
+    // Khởi tạo giao diện: tạo các card với input hợp lệ
+    window.addEventListener("DOMContentLoaded", () => {
+      const containers = {
+        section1: document.getElementById("container1"),
+        section2: document.getElementById("container2"),
+        section3: document.getElementById("container3"),
+        section4: document.getElementById("container4"),
+        section5: document.getElementById("container5"),
+        section6: document.getElementById("container6"),
+        section7: document.getElementById("container7"),
+        section8: document.getElementById("container8")
+      };
+
+      formulas.forEach((fml, idx) => {
+        const col = document.createElement("div");
+        col.className = "col-12 col-md-6 col-lg-4";
+
+        const card = document.createElement("div");
+        card.className = "card formula-card";
+        card.id = `formula-card-${idx}`;
+
+        const cardHeader = document.createElement("div");
+        cardHeader.className = "card-header";
+        cardHeader.textContent = fml.name;
+
+        const cardBody = document.createElement("div");
+        cardBody.className = "card-body";
+
+        // Hiển thị công thức
+        const formulaText = document.createElement("p");
+        formulaText.className = "formula-title";
+        formulaText.innerHTML = `<strong>Công thức:</strong> ${fml.formula}`;
+        cardBody.appendChild(formulaText);
+
+        // Tạo input cho từng biến
+        fml.variables.forEach((v) => {
+          const inputGroup = document.createElement("div");
+          inputGroup.className = "input-group mb-2";
+
+          const span = document.createElement("span");
+          span.className = "input-group-text";
+          span.textContent = v.label;
+
+          const input = document.createElement("input");
+          input.type = "number";
+          input.step = "any";
+          input.className = "form-control";
+          input.id = `input-${idx}-${v.key}`;
+          input.placeholder = v.label;
+
+          inputGroup.appendChild(span);
+          inputGroup.appendChild(input);
+          cardBody.appendChild(inputGroup);
+        });
+
+        // Nút Tính toán
+        const computeBtn = document.createElement("button");
+        computeBtn.className = "btn btn-success mt-2";
+        computeBtn.textContent = "Tính toán";
+        computeBtn.addEventListener("click", () => computeFormula(idx));
+        cardBody.appendChild(computeBtn);
+
+        // Hiển thị kết quả
+        const resultDiv = document.createElement("div");
+        resultDiv.className = "result-display text-primary";
+        resultDiv.id = `result-${idx}`;
+        cardBody.appendChild(resultDiv);
+
+        // Thêm canvas cho biểu đồ
+        const canvas = document.createElement("canvas");
+        canvas.id = `chart-${idx}`;
+        canvas.className = "w-100";
+        cardBody.appendChild(canvas);
+
+        card.appendChild(cardHeader);
+        card.appendChild(cardBody);
+        col.appendChild(card);
+
+        containers[fml.category].appendChild(col);
+      });
+    });
+
+    // Hàm tính toán và vẽ biểu đồ
+    function computeFormula(index) {
+      const fml = formulas[index];
+      const vars = {};
+      let skip = false;
+
+      // Lấy giá trị từ input
+      fml.variables.forEach((v) => {
+        const el = document.getElementById(`input-${index}-${v.key}`);
+        if (!el || el.value === "") {
+          skip = true;
+        } else {
+          vars[v.key] = parseFloat(el.value);
+        }
+      });
+
+      if (skip) {
+        document.getElementById(`result-${index}`).textContent =
+          "Vui lòng nhập đầy đủ các biến.";
+        return;
+      }
+
+      // Tính kết quả
+      let result;
+      try {
+        result = fml.compute(vars);
+      } catch (err) {
+        result = NaN;
+      }
+
+      // Hiển thị kết quả
+      const resultEl = document.getElementById(`result-${index}`);
+      if (typeof result === "object" && result !== null) {
+        resultEl.textContent = "Kết quả: " + JSON.stringify(result);
+      } else if (isNaN(result)) {
+        resultEl.textContent = "Kết quả: Không xác định hoặc không áp dụng.";
+      } else {
+        resultEl.textContent = "Kết quả: " + result.toFixed(4);
+      }
+
+      // Vẽ biểu đồ
+      const ctx = document.getElementById(`chart-${index}`).getContext("2d");
+      if (ctx.chart) {
+        ctx.chart.destroy();
+      }
+      const labels = [];
+      const dataVals = [];
+      fml.variables.forEach((v) => {
+        labels.push(v.label);
+        dataVals.push(vars[v.key]);
+      });
+      labels.push("Kết quả");
+      dataVals.push(typeof result === "number" && !isNaN(result) ? result : 0);
+
+      ctx.chart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: fml.name,
+              data: dataVals,
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+{% endblock %}

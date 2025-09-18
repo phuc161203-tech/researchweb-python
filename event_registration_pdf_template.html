@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <style>
+    body { font-family: DejaVu Sans, sans-serif; font-size:12px; }
+    .pdf-box { width:700px; margin:0 auto; padding:20px; border:1px solid #ddd; border-radius:8px; }
+    .header { text-align:center; margin-bottom:20px; font-size:16px; color:#304ffe; }
+    .row { display:flex; justify-content:space-between; margin-bottom:8px; }
+    .label { width:150px; font-weight:bold; color:#37474f; }
+    .value { flex:1; text-align:right; word-wrap:break-word; }
+    .footer { text-align:center; margin-top:24px; color:#555; font-size:11px; }
+  </style>
+</head>
+<body>
+  <div class="pdf-box">
+    <div class="header">XÁC NHẬN ĐĂNG KÝ THAM DỰ SỰ KIỆN</div>
+    <ul class="list-group mb-4">
+    <li class="list-group-item"><strong>Sự kiện:</strong> {{ reg.event_name }}</li>
+    <li class="list-group-item"><strong>Ngày:</strong> {{ reg.event_date }}</li>
+    <li class="list-group-item"><strong>Họ tên:</strong> {{ reg.full_name }}</li>
+    <li class="list-group-item"><strong>Email:</strong> {{ reg.email }}</li>
+    <li class="list-group-item"><strong>Điện thoại CQ:</strong>{{ reg.work_phone }}</li>
+    <li class="list-group-item"><strong>Điện thoại cá nhân:</strong>{{ reg.cell_phone }}</li>
+    <li class="list-group-item"><strong>Chức vụ:</strong>{{ reg.job_title }}</li>
+    <li class="list-group-item"><strong>Công ty:</strong>{{ reg.company }}</li>
+    <li class="list-group-item"><strong>Địa chỉ:</strong>{{ reg.address }}</li>
+    <li class="list-group-item"><strong>Website:</strong>{% if reg.website %}<a href="{{ reg.website }}" target="_blank">{{ reg.website }}</a>{% endif %}</li>
+    <li class="list-group-item"><strong>Giới thiệu Cty:</strong>{{ reg.company_desc }}</li>
+    <li class="list-group-item"><strong>Sản phẩm/DV:</strong>{{ reg.products }}</li>
+    <li class="list-group-item"><strong>Hình thức gian hàng:</strong>
+        {% if reg.booth_type == "in_person" %}Gian hàng trực tiếp
+        {% elif reg.booth_type == "virtual" %}Gian hàng online
+        {% elif reg.booth_type == "both" %}Trực tiếp & Online
+        {% endif %}
+    </li>
+    <li class="list-group-item"><strong>Nhân sự đi kèm:</strong>{{ reg.staff_list }}</li>
+    <li class="list-group-item"><strong>Không muốn gần:</strong>{{ reg.competitors }}</li>
+     </ul>
+    <!-- Các thông tin khác... -->
+    <div class="footer">
+      Vui lòng in xác nhận này để xuất trình tại cửa sự kiện.<br>
+      Xin cảm ơn quý khách!
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,680 @@
+{% extends 'greenTem/_Base.html' %}
+
+{% block main_content %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chương Trình Hành Động Bảo Vệ Đồng Bằng Sông Cửu Long</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+
+  <!-- Quill Rich Text Editor CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css"
+    rel="stylesheet"
+  />
+
+  <!-- Chart.js CSS (không cần thiết phải có CSS riêng; dùng CDN JS) -->
+
+  <!-- CSS Tùy Chỉnh -->
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    /* Navbar */
+    .navbar-brand {
+      font-weight: 700;
+    }
+    /* Hero Section */
+    #hero {
+      background: url('https://example.com/delta-hero.jpg') center center/cover no-repeat;
+      height: 60vh;
+      position: relative;
+      color: #fff;
+    }
+    #hero::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    #hero .hero-content {
+      position: relative;
+      z-index: 2;
+      top: 50%;
+      transform: translateY(-50%);
+      text-align: center;
+    }
+    #hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    #hero p {
+      font-size: 1.25rem;
+    }
+    /* Section Heading */
+    .section-heading {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: #00695c;
+    }
+    /* Card Info */
+    .info-card {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    .info-card:hover {
+      transform: translateY(-5px);
+    }
+    /* Rich Editor Container */
+    #editor-container {
+      height: 250px;
+      background-color: #fff;
+      border: 1px solid #ced4da;
+      border-radius: 5px;
+    }
+    /* Idea Voting */
+    .idea-card {
+      margin-bottom: 1rem;
+    }
+    .vote-btn {
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #555;
+      transition: color 0.2s;
+    }
+    .vote-btn:hover {
+      color: #00695c;
+    }
+    .vote-count {
+      font-weight: 600;
+      margin: 0 0.5rem;
+    }
+    /* Threaded Comments */
+    .comment {
+      margin-bottom: 1rem;
+    }
+    .comment .comment-reply {
+      margin-left: 2rem;
+      border-left: 2px solid #dee2e6;
+      padding-left: 1rem;
+    }
+    /* News Feed */
+    #news-feed .news-item {
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #e9ecef;
+      padding-bottom: 0.5rem;
+    }
+    /* Weather Table */
+    #weather-table thead {
+      background-color: #00695c;
+      color: #fff;
+    }
+    /* Partners Logos */
+    .partner-logo {
+      max-height: 60px;
+      margin: 0.5rem;
+      filter: grayscale(20%);
+      transition: filter 0.3s ease;
+    }
+    .partner-logo:hover {
+      filter: none;
+    }
+    /* Footer */
+    footer {
+      background-color: #004d40;
+      color: #fff;
+      padding: 2rem 0;
+    }
+    footer a {
+      color: #fff;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Hero Banner -->
+  <section id="hero">
+    <div class="container h-100">
+      <div class="hero-content text-white">
+        <h1>Chung Tay Bảo Vệ ĐBSCL</h1>
+        <p>Kêu gọi đóng góp ý tưởng, hành động và cùng nhau xây dựng tương lai bền vững.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gửi Ý Tưởng – Rich Text Editor -->
+  <section id="proposals" class="py-5 bg-light">
+    <div class="container">
+      <h2 class="section-heading">Gửi Ý Tưởng Hành Động</h2>
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <!-- Toolbar -->
+          <div id="toolbar-container" class="bg-white border rounded-top">
+            <!-- Các tùy chọn định dạng: -->
+            <span class="ql-formats">
+              <button class="ql-bold"></button>
+              <button class="ql-italic"></button>
+              <button class="ql-underline"></button>
+              <button class="ql-link"></button>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-color"></button>
+              <button class="ql-background"></button>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-list" value="ordered"></button>
+              <button class="ql-list" value="bullet"></button>
+            </span>
+          </div>
+          <!-- Container Editor -->
+          <div id="editor-container"></div>
+          <div class="text-center mt-3">
+            <button id="submit-proposal" class="btn btn-success">
+              Gửi Ý Tưởng
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Danh sách Ý Tưởng & Bầu Chọn -->
+  <section id="ideas" class="py-5">
+    <div class="container">
+      <h2 class="section-heading">Ý Tưởng Đã Gửi & Hệ Thống Bầu Chọn</h2>
+      <div id="idea-list" class="row gy-4">
+        <!-- Mỗi ý tưởng nằm trong 1 card -->
+        <!-- Ví dụ ý tưởng mẫu -->
+        <div class="col-md-6">
+          <div class="card idea-card">
+            <div class="card-body">
+              <h5 class="card-title">Xây dựng hệ thống giám sát mặn</h5>
+              <p class="card-text">
+                Lắp đặt trạm đo độ mặn trên sông chính, kết nối IoT, cảnh báo sớm cho nông dân.
+              </p>
+              <div class="d-flex align-items-center">
+                <i class="fas fa-thumbs-up vote-btn" onclick="vote(this, 'up')"></i>
+                <span class="vote-count">12</span>
+                <i class="fas fa-thumbs-down vote-btn ms-3" onclick="vote(this, 'down')"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Thêm nhiều card ý tưởng khác tương tự -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Tranh Luận Nhiều Cấp -->
+  <section id="debate" class="py-5 bg-light">
+    <div class="container">
+      <h2 class="section-heading">Phản Hồi & Tranh Luận</h2>
+      <div id="comments-section">
+        <!-- Mẫu comment cấp gốc -->
+        <div class="comment">
+          <p><strong>Nguyễn Văn A:</strong> Tôi ủng hộ việc lắp trạm đo độ mặn. Điều này rất cần thiết.</p>
+          <a href="#" onclick="showReplyForm(this); return false;">Trả lời</a>
+
+          <!-- Reply level 1 -->
+          <div class="comment comment-reply">
+            <p><strong>Trần Thị B:</strong> Nhưng chi phí lắp đặt cao, cần kêu gọi tài trợ trước.</p>
+            <a href="#" onclick="showReplyForm(this); return false;">Trả lời</a>
+
+            <!-- Reply level 2 -->
+            <div class="comment comment-reply">
+              <p><strong>Phạm Công C:</strong> Có thể huy động nguồn lực từ các trường đại học và doanh nghiệp.</p>
+              <a href="#" onclick="showReplyForm(this); return false;">Trả lời</a>
+              <!-- Tiếp tục cấp thấp hơn nếu cần -->
+            </div>
+          </div>
+        </div>
+        <!-- Form nhập bình luận mới -->
+        <div id="new-comment-form" class="mt-4">
+          <h5>Thêm bình luận mới:</h5>
+          <textarea id="comment-text" class="form-control mb-2" rows="3" placeholder="Viết bình luận..."></textarea>
+          <button onclick="postComment()" class="btn btn-primary">Gửi Bình Luận</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tin Tức Mới Nhất -->
+  <section id="news" class="py-5">
+    <div class="container">
+      <h2 class="section-heading">Tin Tức Cập Nhật về ĐBSCL</h2>
+      <div id="news-feed" class="list-unstyled">
+        <!-- Mỗi mục tin tức -->
+        <!-- Lấy dữ liệu từ API hoặc RSS nếu có; đây là mẫu tĩnh -->
+        <div class="news-item">
+          <h5><a href="https://nchmf.gov.vn/Kttvsite/vi-VN/1/tin-du-bao-xam-nhap-man-tren-khu-vuc-nam-bo-post2165.html" target="_blank">Xâm nhập mặn trên khu vực Nam Bộ (Ngày 01/06/2025)</a></h5>
+          <p>Độ mặn tăng cao, ảnh hưởng trực tiếp đến sản xuất lúa gạo và nguồn nước sinh hoạt tại nhiều tỉnh Đồng bằng.</p>
+          <small class="text-muted">01/06/2025</small>
+        </div>
+        <!-- Thêm các mục tin khác tương tự -->
+      </div>
+      <div class="text-center mt-3">
+        <button id="load-more-news" class="btn btn-outline-secondary">Xem thêm</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bản Đồ Địa Chất & Thời Tiết -->
+  <section id="map-weather" class="py-5 bg-light">
+    <div class="container">
+      <h2 class="section-heading">Bản Đồ Địa Chất & Thời Tiết ĐBSCL</h2>
+      <div class="row gy-4">
+        <!-- Bản đồ địa chất khí hậu (nhúng iframe từ trang nguồn hoặc dùng API bản đồ) -->
+        <div class="col-lg-6">
+          <h5 class="mb-3">Bản đồ địa chất & khí hậu</h5>
+          <div class="ratio ratio-16x9">
+            <img
+              src="https://thoitietvietnam.gov.vn/upload/Article/thuyvan2/2025/4/20/man_100425.png"
+              title="Bản đồ khí hậu ĐBSCL"
+              allowfullscreen
+              style="height: 100%;"
+            >
+          </div>
+        </div>
+        <!-- Bảng thời tiết tất cả tỉnh, thành -->
+        <div class="col-lg-6">
+          <h5 class="mb-3">Thời tiết các tỉnh thành ĐBSCL</h5>
+          <div class="table-responsive">
+            <table id="weather-table" class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>Tỉnh/Thành</th>
+                  <th>Nhiệt độ (°C)</th>
+                  <th>Độ ẩm (%)</th>
+                  <th>Thời tiết</th>
+                  <th>Thời gian cập nhật</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Dữ liệu mẫu -->
+                <tr>
+                  <td>Long An</td>
+                  <td>32</td>
+                  <td>78</td>
+                  <td>Nắng</td>
+                  <td>10:00 04/06/2025</td>
+                </tr>
+                <tr>
+                  <td>Tiền Giang</td>
+                  <td>31</td>
+                  <td>80</td>
+                  <td>Nhiều mây</td>
+                  <td>10:00 04/06/2025</td>
+                </tr>
+                <tr>
+                  <td>Cần Thơ</td>
+                  <td>30</td>
+                  <td>82</td>
+                  <td>Mưa rào</td>
+                  <td>10:00 04/06/2025</td>
+                </tr>
+                <!-- Thêm các tỉnh khác tương tự -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Biểu Đồ Thống Kê Kinh Tế -->
+  <section id="chart" class="py-5">
+    <div class="container">
+      <h2 class="section-heading">Biểu Đồ Kinh Tế & Xuất Khẩu Lúa Gạo</h2>
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <canvas id="economic-chart"></canvas>
+          <p class="text-center mt-2 text-muted">Thống kê thu nhập bình quân đầu người và xuất khẩu lúa gạo qua các năm.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Đối Tác & Logo -->
+  <section id="partners" class="py-5 bg-light">
+    <div class="container">
+      <h2 class="section-heading">Đối Tác Hợp Tác</h2>
+      <div class="d-flex flex-wrap justify-content-center align-items-center">
+        <!-- Ví dụ các logo partner, lấy tự động từ Clearbit Logo API -->
+        <a href="https://www.hanu.edu.vn" target="_blank">
+          <img
+            src="https://logo.clearbit.com/hanu.edu.vn"
+            alt="Đại học Hà Nội"
+            class="partner-logo"
+          />
+        </a>
+        <a href="https://www.vnu.edu.vn" target="_blank">
+          <img
+            src="https://logo.clearbit.com/vnu.edu.vn"
+            alt="Đại học Quốc gia Hà Nội"
+            class="partner-logo"
+          />
+        </a>
+        <a href="https://www.harvard.edu" target="_blank">
+          <img
+            src="https://logo.clearbit.com/harvard.edu"
+            alt="Harvard University"
+            class="partner-logo"
+          />
+        </a>
+        <a href="https://www.ox.ac.uk" target="_blank">
+          <img
+            src="https://logo.clearbit.com/ox.ac.uk"
+            alt="University of Oxford"
+            class="partner-logo"
+          />
+        </a>
+        <a href="https://www.water.org" target="_blank">
+          <img
+            src="https://logo.clearbit.com/water.org"
+            alt="Water.org"
+            class="partner-logo"
+          />
+        </a>
+        <!-- Thêm các link domain khác tương tự -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Liên Hệ -->
+  <section id="contact" class="py-5">
+    <div class="container">
+      <h2 class="section-heading">Liên Hệ & Đóng Góp Ý Kiến</h2>
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <form id="contact-form">
+            <div class="mb-3">
+              <label for="contact-name" class="form-label">Họ và tên</label>
+              <input
+                type="text"
+                class="form-control"
+                id="contact-name"
+                placeholder="Nguyễn Văn A"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="contact-email" class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="contact-email"
+                placeholder="example@domain.com"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="contact-message" class="form-label">Nội dung</label>
+              <textarea
+                class="form-control"
+                id="contact-message"
+                rows="4"
+                placeholder="Viết nội dung bạn muốn đóng góp..."
+                required
+              ></textarea>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-success">Gửi Liên Hệ</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container text-center">
+      <p>&copy; 2025 ĐBSCL Bền Vững. Cùng nhau bảo vệ sông nước và tương lai.</p>
+      <p>Theo dõi chúng tôi trên:
+        <a href="#" class="mx-1"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="mx-1"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="mx-1"><i class="fab fa-instagram"></i></a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"
+  ></script>
+
+  <!-- Quill JS -->
+  <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+
+  <!-- Chart.js -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"
+    crossorigin="anonymous"
+  ></script>
+
+  <!-- Font Awesome JS (tùy chọn) -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+
+  <!-- JavaScript Tùy Chỉnh -->
+  <script>
+    // thêm CSRF token
+const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+fetch('/green/donate/', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrftoken
+  },
+  body: JSON.stringify({
+    province:  document.getElementById('donate-province').textContent,
+    name:      fd.get('name'),
+    email:     fd.get('email'),
+    amount:    fd.get('amount'),
+    channel:   fd.get('channel'),
+    account:   fd.get('account')
+  })
+})
+.then(r => r.json())
+.then(res => { if(res.ok){ alert('Đã ghi nhận!'); donateModal.hide(); }});
+
+    // 1. Khởi tạo Quill Rich Text Editor
+    const quill = new Quill('#editor-container', {
+      modules: {
+        toolbar: '#toolbar-container'
+      },
+      theme: 'snow'
+    });
+
+    // Khi người dùng nhấn gửi ý tưởng
+    document.getElementById('submit-proposal').addEventListener('click', () => {
+      const htmlContent = quill.root.innerHTML.trim();
+      if (!htmlContent || htmlContent === '<p><br></p>') {
+        alert('Vui lòng nhập nội dung ý tưởng.');
+        return;
+      }
+      // TODO: Gửi htmlContent lên server qua AJAX hoặc fetch
+      console.log('Ý tưởng gửi đi:', htmlContent);
+      alert('Cảm ơn bạn đã gửi ý tưởng!');
+      quill.setContents([]); // Xóa nội dung editor
+    });
+
+    // 2. Hệ thống bầu chọn (vote)
+    function vote(element, type) {
+      const countSpan = element.parentElement.querySelector('.vote-count');
+      let count = parseInt(countSpan.textContent, 10);
+      if (type === 'up') {
+        count += 1;
+      } else if (type === 'down' && count > 0) {
+        count -= 1;
+      }
+      countSpan.textContent = count;
+      // TODO: Gửi thông tin vote lên server
+    }
+
+    // 3. Tranh luận nhiều cấp
+    function showReplyForm(link) {
+      // Kiểm tra xem form reply đã có chưa
+      if (link.nextElementSibling && link.nextElementSibling.classList.contains('reply-form')) {
+        link.nextElementSibling.remove();
+        return;
+      }
+      const formDiv = document.createElement('div');
+      formDiv.classList.add('reply-form', 'mt-2');
+      formDiv.innerHTML = `
+        <textarea class="form-control mb-2" rows="2" placeholder="Viết phản hồi..."></textarea>
+        <button class="btn btn-sm btn-primary" onclick="postReply(this)">Gửi</button>
+        <button class="btn btn-sm btn-secondary ms-2" onclick="cancelReply(this)">Hủy</button>
+      `;
+      link.after(formDiv);
+    }
+    function postReply(btn) {
+      const textarea = btn.parentElement.querySelector('textarea');
+      const text = textarea.value.trim();
+      if (!text) {
+        alert('Vui lòng nhập nội dung phản hồi.');
+        return;
+      }
+      const commentDiv = document.createElement('div');
+      commentDiv.classList.add('comment', 'comment-reply');
+      commentDiv.innerHTML = `
+        <p><strong>Bạn:</strong> ${text}</p>
+        <a href="#" onclick="showReplyForm(this); return false;">Trả lời</a>
+      `;
+      // Thêm comment mới vào sau phần form
+      btn.parentElement.parentElement.appendChild(commentDiv);
+      btn.parentElement.remove(); // Xóa form sau khi gửi
+      // TODO: Gửi bình luận lên server
+    }
+    function cancelReply(btn) {
+      btn.parentElement.remove();
+    }
+    function postComment() {
+      const textArea = document.getElementById('comment-text');
+      const text = textArea.value.trim();
+      if (!text) {
+        alert('Vui lòng nhập nội dung bình luận.');
+        return;
+      }
+      const commentDiv = document.createElement('div');
+      commentDiv.classList.add('comment');
+      commentDiv.innerHTML = `
+        <p><strong>Bạn:</strong> ${text}</p>
+        <a href="#" onclick="showReplyForm(this); return false;">Trả lời</a>
+      `;
+      document.getElementById('comments-section').insertBefore(
+        commentDiv,
+        document.getElementById('new-comment-form')
+      );
+      textArea.value = '';
+      // TODO: Gửi bình luận cấp gốc lên server
+    }
+
+    // 4. Load thêm tin tức (mẫu)
+    document.getElementById('load-more-news').addEventListener('click', () => {
+      // TODO: Ở đây gọi AJAX để lấy thêm tin và append vào #news-feed
+      alert('Tính năng load thêm tin tức sẽ được triển khai.');
+    });
+
+    // 5. Chart.js – Biểu đồ kinh tế
+    const ctx = document.getElementById('economic-chart').getContext('2d');
+    const economicChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['2019', '2020', '2021', '2022', '2023', '2024'], // Năm
+        datasets: [
+          {
+            label: 'Thu nhập bình quân (triệu VND/người)',
+            data: [25, 27, 28, 30, 32, 35], // Ví dụ số liệu
+            fill: false,
+            tension: 0.3,
+            borderColor: '#00695c',
+            backgroundColor: '#00695c'
+          },
+          {
+            label: 'Xuất khẩu lúa gạo (triệu tấn)',
+            data: [7.5, 7.8, 8.0, 8.2, 8.4, 8.6], // Ví dụ số liệu
+            fill: false,
+            tension: 0.3,
+            borderColor: '#d32f2f',
+            backgroundColor: '#d32f2f'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Thu nhập & Xuất khẩu lúa gạo qua các năm'
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false
+          }
+        },
+        interaction: {
+          mode: 'nearest',
+          axis: 'x',
+          intersect: false
+        },
+        scales: {
+          x: {
+            display: true,
+            title: {
+              display: true,
+              text: 'Năm'
+            }
+          },
+          y: {
+            display: true,
+            title: {
+              display: true,
+              text: 'Giá trị'
+            }
+          }
+        }
+      }
+    });
+
+    // 6. Load dữ liệu thời tiết (mẫu tĩnh; có thể thay thành API)
+    // (Đã thiết lập sẵn bảng mẫu trong HTML)
+
+    // 7. Xử lý form liên hệ
+    document.getElementById('contact-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('contact-name').value.trim();
+      const email = document.getElementById('contact-email').value.trim();
+      const message = document.getElementById('contact-message').value.trim();
+      if (!name || !email || !message) {
+        alert('Vui lòng điền đầy đủ thông tin.');
+        return;
+      }
+      // TODO: Gửi dữ liệu liên hệ lên server qua AJAX
+      alert(`Cảm ơn ${name}! Chúng tôi đã nhận được liên hệ của bạn.`);
+      document.getElementById('contact-form').reset();
+    });
+  </script>
+</body>
+{% endblock %}

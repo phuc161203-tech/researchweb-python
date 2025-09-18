@@ -1,0 +1,13 @@
+<form id="subscribeForm" method="post" action="{% url 'blogScience:subscribe' %}">
+    {% csrf_token %}
+    <div class="form-group">
+        {{ form.email }}
+    </div>
+    <div class="form-group">
+        {{ form.name }}
+    </div>
+    <button type="submit" class="btn btn-success btn-block">
+        <i class="fa fa-envelope"></i> Đăng ký nhận tin
+    </button>
+</form>
+<div id="subscribeResult" class="mt-2"></div>

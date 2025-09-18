@@ -1,0 +1,48 @@
+<div>
+  <h5 class="mb-3 text-center">Xem chi tiết bài báo khoa học đã nộp</h5>
+  <div class="form-group">
+    <label>Tên bài báo:</label>
+    <div class="form-control-plaintext">{{ article.articleName }}</div>
+  </div>
+  <div class="form-group">
+    <label>Mã số bài báo:</label>
+    <div class="form-control-plaintext">{{ article.articleID }}</div>
+  </div>
+  <div class="form-group">
+    <label>Tác giả:</label>
+    <div class="form-control-plaintext">{{ article.articleAuthor }}</div>
+  </div>
+  <div class="form-group">
+    <label>Hướng nghiên cứu:</label>
+    <div class="form-control-plaintext">{{ article.articleDirection }}</div>
+  </div>
+  <div class="form-group">
+    <label>Chuyên ngành:</label>
+    <div class="form-control-plaintext">{{ article.articleSubject }}</div>
+  </div>
+  <div class="form-group">
+    <label>Báo cáo nộp:</label>
+    {% if article.reportFile %}
+      <a href="{{ article.reportFile.url }}" target="_blank" class="btn btn-outline-primary btn-sm">Xem file</a>
+      <img src="{{ article.reportFile.url }}" width="100%" height="400px" style="border:1px solid #ddd; margin-top:10px;">
+    {% else %}
+      <span class="text-danger">Chưa có file!</span>
+    {% endif %}
+  </div>
+  <div class="form-group">
+    <label>Ảnh ứng viên:</label>
+    {% if article.candidateImage %}
+      <img src="{{ article.candidateImage.url }}" style="max-width:160px;max-height:160px;border-radius:8px;border:1px solid #eee;">
+    {% else %}
+      <span class="text-danger">Chưa có ảnh!</span>
+    {% endif %}
+  </div>
+  <div class="form-group">
+    <label>Thời gian nộp:</label>
+    <div class="form-control-plaintext">{{ article.submitted_at|date:"d/m/Y H:i" }}</div>
+  </div>
+  <div class="form-group">
+    <label>Trạng thái:</label>
+    <span class="badge badge-warning">Chờ duyệt</span>
+  </div>
+</div>

@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <!-- Basic Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Feature 25: SEO Meta Tags -->
+    <meta name="description" content="Trang web luyện tập thể dục thể thao đa chức năng với các bài tập, tính năng theo dõi, tính toán và cộng đồng.">
+    <meta name="keywords" content="fitness, luyện tập, sức khỏe, thể dục, tập gym, tập yoga, theo dõi tiến trình">
+    <meta name="author" content="FitnessCoach Team">
+
+    <!-- Feature 27: Favicon Link -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- Feature 29: PWA Manifest Link -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Feature 26: Google Analytics Snippet Placeholder -->
+    <script>
+      // TODO: Thêm mã Google Analytics ở đây
+      // (Ví dụ: gtag.js hoặc analytics.js)
+    </script>
+
+    <title>FitnessCoach - Nền tảng luyện tập toàn diện</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+
+    <!-- Font Awesome (icon) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- Custom CSS -->
+    <style>
+        /* ===== Feature 30: Skip Link for Accessibility ===== */
+        a.skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #000;
+            color: #fff;
+            padding: 8px;
+            z-index: 100;
+        }
+        a.skip-link:focus {
+            top: 0;
+        }
+
+        /* ===== Global Styles ===== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin-top: 0;
+        }
+        .dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        /* ===== Feature 31: Cookie Consent Banner ===== */
+        #cookieConsent {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.9);
+            color: #fff;
+            padding: 1rem;
+            display: none;
+            z-index: 9999;
+        }
+        #cookieConsent a {
+            color: #ffd700;
+            text-decoration: underline;
+        }
+        /* ===== Feature 2: Dark Mode Toggle Button ===== */
+        #darkModeToggle {
+            cursor: pointer;
+        }
+        /* ===== Feature 3: Language Selector ===== */
+        #langSelector {
+            width: 100px;
+        }
+        /* ===== Feature 32: Loading Spinner ===== */
+        #loadingSpinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            z-index: 10000;
+        }
+        /* ===== Feature 33: Skeleton Loader for Workout Cards ===== */
+        .skeleton-card {
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            width: 100%;
+            height: 250px;
+            margin-bottom: 1rem;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+        /* ===== Navbar ===== */
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .nav-link {
+            position: relative;
+        }
+        /* ===== Hero Section ===== */
+        #hero {
+            background: url('https://images.unsplash.com/photo-1599941010284-8e43c2c6201b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+            height: 60vh;
+            position: relative;
+            color: white;
+        }
+        #hero .overlay {
+            position: absolute;
+            top: 0; bottom: 0; left: 0; right: 0;
+            background-color: rgba(0,0,0,0.5);
+        }
+        #hero .hero-content {
+            position: relative;
+            z-index: 2;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: center;
+        }
+        #hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+        #hero p {
+            font-size: 1.25rem;
+        }
+        /* ===== Breadcrumb Navigation (Feature 34) ===== */
+        .breadcrumb {
+            background-color: transparent;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+        /* ===== Workouts Section ===== */
+        #workouts .workout-card {
+            transition: transform 0.3s ease;
+        }
+        #workouts .workout-card:hover {
+            transform: translateY(-5px);
+        }
+        /* ===== Sticky Sidebar (Feature 36) ===== */
+        #workoutsSidebar {
+            position: sticky;
+            top: 100px;
+        }
+        /* ===== Timer Section ===== */
+        #timer-display {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+        /* ===== Progress Section ===== */
+        #progress-list li {
+            margin-bottom: 0.5rem;
+        }
+        /* ===== BMI & Calorie Calculator ===== */
+        .calc-input {
+            max-width: 100%;
+        }
+        /* ===== Testimonials Carousel (Feature 13) ===== */
+        .testimonial {
+            text-align: center;
+            padding: 1rem;
+        }
+        .testimonial img {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin-bottom: 0.5rem;
+        }
+        /* ===== FAQ Accordion (Feature 14) ===== */
+        .accordion-button::after {
+            font-family: "Font Awesome 6 Free";
+            content: "\f107";
+            font-weight: 900;
+        }
+        .accordion-button.collapsed::after {
+            content: "\f105";
+        }
+        /* ===== Footer ===== */
+        footer {
+            background-color: #343a40;
+            color: #eee;
+            padding: 1.5rem 0;
+        }
+        footer a {
+            color: #ffd700;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        /* ===== Feature 51: Lazy Loading Images ===== */
+        img {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Feature 30: Skip to Main Content Link -->
+    <a href="#mainContent" class="skip-link">Bỏ qua điều hướng</a>
+
+    <!-- Feature 31: Cookie Consent Banner -->
+    <div id="cookieConsent" role="dialog" aria-live="polite">
+      <div class="container d-flex justify-content-between align-items-center">
+        <div>
+          Trang web này sử dụng cookie để nâng cao trải nghiệm của bạn.
+          <a href="#privacyPolicy">Tìm hiểu thêm</a>.
+        </div>
+        <button id="acceptCookies" class="btn btn-sm btn-success">Đồng Ý</button>
+      </div>
+    </div>
+
+    <!-- Feature 32: Loading Spinner -->
+    <div id="loadingSpinner">
+      <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
+      <span class="visually-hidden">Loading...</span>
+    </div>
+
+    <!-- ===== Navbar ===== -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" aria-label="Main navigation">
+      <div class="container">
+        <!-- Logo / Brand -->
+        <a class="navbar-brand" href="#">FitnessCoach</a>
+        <!-- Feature 55: Off-Canvas Menu Toggle for Mobile -->
+        <button class="navbar-toggler me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-expanded="false" aria-label="Mở menu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Navbar Content -->
+        <div class="collapse navbar-collapse" id="mainNavbar">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <!-- Feature 50: Breadcrumb Replacement Links -->
+            <li class="nav-item"><a class="nav-link" href="#hero">Trang Chủ</a></li>
+            <li class="nav-item"><a class="nav-link" href="#workouts">Bài Tập</a></li>
+            <li class="nav-item"><a class="nav-link" href="#timer">Bộ Đếm</a></li>
+            <li class="nav-item"><a class="nav-link" href="#progress">Tiến Trình</a></li>
+            <li class="nav-item"><a class="nav-link" href="#blog">Blog</a></li>
+          </ul>
+          <ul class="navbar-nav mb-2 mb-lg-0">
+            <!-- Feature 6: Search Bar -->
+            <li class="nav-item">
+              <form class="d-flex" role="search" aria-label="Tìm kiếm bài tập">
+                <input class="form-control me-2" type="search" placeholder="Tìm kiếm bài tập" aria-label="Search" id="workoutSearch">
+                <button class="btn btn-outline-light" type="submit"><i class="fas fa-search"></i></button>
+              </form>
+            </li>
+            <!-- Feature 3: Language Selector -->
+            <li class="nav-item dropdown mx-2">
+              <select id="langSelector" class="form-select form-select-sm" aria-label="Chọn ngôn ngữ">
+                <option value="vi" selected>Tiếng Việt</option>
+                <option value="en">English</option>
+                <option value="zh">中文</option>
+              </select>
+            </li>
+            <!-- Feature 2: Dark Mode Toggle -->
+            <li class="nav-item mx-2">
+              <button id="darkModeToggle" class="btn btn-outline-light btn-sm" aria-label="Chuyển đổi chế độ sáng/tối">
+                <i class="fas fa-moon"></i>
+              </button>
+            </li>
+            <!-- Feature 1 & 41: User Authentication & Social Login Buttons in Modal -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user-circle"></i> Tài Khoản
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng Nhập</a></li>
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#signupModal">Đăng Ký</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#profile" id="profileLink">Hồ Sơ</a></li>
+                <li><a class="dropdown-item" href="#" id="logoutLink">Đăng Xuất</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Feature 55: Off-Canvas Menu Content -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="mobileMenuLabel">Menu</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Đóng"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="#hero">Trang Chủ</a></li>
+          <li class="nav-item"><a class="nav-link" href="#workouts">Bài Tập</a></li>
+          <li class="nav-item"><a class="nav-link" href="#timer">Bộ Đếm</a></li>
+          <li class="nav-item"><a class="nav-link" href="#progress">Tiến Trình</a></li>
+          <li class="nav-item"><a class="nav-link" href="#blog">Blog</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng Nhập</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#signupModal">Đăng Ký</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ===== Main Content ===== -->
+    <main id="mainContent" tabindex="-1">
+      <!-- ===== Hero Section ===== -->
+      <section id="hero">
+        <div class="overlay"></div>
+        <div class="hero-content container">
+          <h1>Chào Mừng Đến Với FitnessCoach</h1>
+          <p>Hãy bắt đầu hành trình nâng cao sức khỏe cùng chúng tôi!</p>
+          <a href="#workouts" class="btn btn-primary btn-lg mt-3">
+              Khám Phá Bài Tập <i class="fas fa-dumbbell"></i>
+          </a>
+        </div>
+      </section>
+
+      <!-- ===== Feature 50: Breadcrumb Navigation ===== -->
+      <nav aria-label="breadcrumb" class="container mt-3">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#hero">Trang Chủ</a></li>
+          <li class="breadcrumb-item"><a href="#workouts">Bài Tập</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Danh Sách</li>
+        </ol>
+      </nav>
+
+      <!-- ===== Workouts Section ===== -->
+      <section id="workouts" class="py-5">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Danh Sách Bài Tập</h2>
+              <p>Chọn bài tập phù hợp với mục tiêu của bạn.</p>
+            </div>
+          </div>
+          <div class="row">
+            <!-- ===== Feature 36: Sticky Sidebar (Filters) ===== -->
+            <aside id="workoutsSidebar" class="col-lg-3 mb-4">
+              <h5>Lọc Bài Tập</h5>
+              <!-- Feature 7: Filter by Category/Level -->
+              <div class="mb-3">
+                <label for="filterCategory" class="form-label">Thể Loại</label>
+                <select id="filterCategory" class="form-select form-select-sm">
+                  <option value="all" selected>Tất cả</option>
+                  <option value="strength">Sức mạnh</option>
+                  <option value="cardio">Cardio</option>
+                  <option value="flexibility">Linh hoạt</option>
+                </select>
+              </div>
+              <!-- Feature 8: Sort by Popularity/Difficulty -->
+              <div class="mb-3">
+                <label for="sortWorkouts" class="form-label">Sắp xếp</label>
+                <select id="sortWorkouts" class="form-select form-select-sm">
+                  <option value="popularity">Phổ biến</option>
+                  <option value="difficulty">Độ khó</option>
+                  <option value="date">Mới nhất</option>
+                </select>
+              </div>
+              <!-- Feature 9: Favorites/Bookmark Workouts -->
+              <div class="mb-3">
+                <button id="viewFavorites" class="btn btn-outline-primary btn-sm w-100">
+                  <i class="fas fa-star"></i> Bài Tập Yêu Thích
+                </button>
+              </div>
+              <!-- Feature 35: Scroll to Top Button within Sidebar -->
+              <div class="text-center mt-5">
+                <button id="sidebarTop" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-up"></i> Lên Đầu</button>
+              </div>
+            </aside>
+            <!-- ===== Exercise Cards (Grid) ===== -->
+            <div class="col-lg-9">
+              <div class="row g-4" id="workoutGrid">
+                <!-- ===== Feature 33: Skeleton Loaders ===== -->
+                <div class="col-md-4">
+                  <div class="skeleton-card"></div>
+                </div>
+                <div class="col-md-4">
+                  <div class="skeleton-card"></div>
+                </div>
+                <div class="col-md-4">
+                  <div class="skeleton-card"></div>
+                </div>
+                <!-- Sau khi load dữ liệu thực, thay thế các skeleton-card bằng các card thực -->
+                <!-- Ví dụ Card 1 -->
+                <div class="col-md-4 workout-item" data-category="strength" data-difficulty="medium">
+                  <div class="card workout-card h-100">
+                    <img
+                      src="https://images.unsplash.com/photo-1599058917210-3f9c8286b075?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                      class="card-img-top"
+                      alt="Push-up"
+                      loading="lazy"  <!-- Feature 51: Lazy Loading Images -->
+                    >
+                    <div class="card-body">
+                      <h5 class="card-title">Push-up</h5>
+                      <p class="card-text">
+                        Bài tập tay với tạ thân trên, giúp phát triển cơ ngực và cơ tay sau.
+                      </p>
+                      <!-- Feature 40: Social Sharing Buttons -->
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <button class="btn btn-outline-primary btn-sm" aria-label="Share Push-up">
+                          <i class="fas fa-share-alt"></i>
+                        </button>
+                        <button class="btn btn-outline-warning btn-sm favorite-btn" aria-label="Thêm Push-up vào yêu thích">
+                          <i class="fas fa-star"></i>
+                        </button>
+                      </div>
+                      <a href="#" class="btn btn-outline-primary btn-sm">
+                        Xem Chi Tiết
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <!-- Ví dụ Card 2 -->
+                <div class="col-md-4 workout-item" data-category="strength" data-difficulty="hard">
+                  <div class="card workout-card h-100">
+                    <img
+                      src="https://images.unsplash.com/photo-1605296867304-46d5465a13f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                      class="card-img-top"
+                      alt="Squat"
+                      loading="lazy"
+                    >
+                    <div class="card-body">
+                      <h5 class="card-title">Squat</h5>
+                      <p class="card-text">
+                        Bài tập chân cơ bản, giúp tăng cường sức mạnh đùi và mông.
+                      </p>
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <button class="btn btn-outline-primary btn-sm" aria-label="Share Squat">
+                          <i class="fas fa-share-alt"></i>
+                        </button>
+                        <button class="btn btn-outline-warning btn-sm favorite-btn" aria-label="Thêm Squat vào yêu thích">
+                          <i class="fas fa-star"></i>
+                        </button>
+                      </div>
+                      <a href="#" class="btn btn-outline-primary btn-sm">Xem Chi Tiết</a>
+                    </div>
+                  </div>
+                </div>
+                <!-- Ví dụ Card 3 -->
+                <div class="col-md-4 workout-item" data-category="flexibility" data-difficulty="easy">
+                  <div class="card workout-card h-100">
+                    <img
+                      src="https://images.unsplash.com/photo-1554284126-0ec237c93085?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                      class="card-img-top"
+                      alt="Plank"
+                      loading="lazy"
+                    >
+                    <div class="card-body">
+                      <h5 class="card-title">Plank</h5>
+                      <p class="card-text">
+                        Bài tập core giúp siết cơ bụng và cải thiện độ bền thân mình.
+                      </p>
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <button class="btn btn-outline-primary btn-sm" aria-label="Share Plank">
+                          <i class="fas fa-share-alt"></i>
+                        </button>
+                        <button class="btn btn-outline-warning btn-sm favorite-btn" aria-label="Thêm Plank vào yêu thích">
+                          <i class="fas fa-star"></i>
+                        </button>
+                      </div>
+                      <a href="#" class="btn btn-outline-primary btn-sm">Xem Chi Tiết</a>
+                    </div>
+                  </div>
+                </div>
+                <!-- Thêm nhiều card tương tự... -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Feature 10: Workout of the Day Highlight Section ===== -->
+      <section id="workoutOfDay" class="py-5 bg-light">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Bài Tập Trong Ngày</h2>
+              <p>Hãy thử thách bản thân với bài tập được chọn lọc ngày hôm nay!</p>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-md-6">
+              <div class="card text-white">
+                <img src="https://images.unsplash.com/photo-1534367610145-bb43a3cd6c64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="card-img" alt="Workout of Day" loading="lazy">
+                <div class="card-img-overlay d-flex flex-column justify-content-end" style="background: rgba(0,0,0,0.4);">
+                  <h5 class="card-title">Burpees</h5>
+                  <p class="card-text">Một thử thách toàn thân giúp nâng cao sức bền và nhịp tim.</p>
+                  <a href="#" class="btn btn-warning btn-sm">Bắt Đầu</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Video Tutorial Section (Feature 11) ===== -->
+      <section id="videoTutorials" class="py-5">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Video Hướng Dẫn</h2>
+              <p>Xem các video hướng dẫn chi tiết để thực hiện bài tập đúng kỹ thuật.</p>
+            </div>
+          </div>
+          <div class="row g-4">
+            <!-- Video 1 -->
+            <div class="col-md-4">
+              <div class="ratio ratio-16x9">
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Ví dụ video 1" allowfullscreen loading="lazy"></iframe>
+              </div>
+            </div>
+            <!-- Video 2 -->
+            <div class="col-md-4">
+              <div class="ratio ratio-16x9">
+                <iframe src="https://www.youtube.com/embed/3JZ_D3ELwOQ" title="Ví dụ video 2" allowfullscreen loading="lazy"></iframe>
+              </div>
+            </div>
+            <!-- Video 3 -->
+            <div class="col-md-4">
+              <div class="ratio ratio-16x9">
+                <iframe src="https://www.youtube.com/embed/L_jWHffIx5E" title="Ví dụ video 3" allowfullscreen loading="lazy"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Image Gallery (Feature 12) ===== -->
+      <section id="imageGallery" class="py-5 bg-light">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Thư Viện Hình Ảnh</h2>
+              <p>Xem các hình ảnh minh họa để đảm bảo thực hiện bài tập đúng cách.</p>
+            </div>
+          </div>
+          <div class="row g-3">
+            <div class="col-sm-6 col-md-4">
+              <img src="https://images.unsplash.com/photo-1605296867304-46d5465a13f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="img-fluid rounded" alt="Exercise 1" loading="lazy">
+            </div>
+            <div class="col-sm-6 col-md-4">
+              <img src="https://images.unsplash.com/photo-1599058917210-3f9c8286b075?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="img-fluid rounded" alt="Exercise 2" loading="lazy">
+            </div>
+            <div class="col-sm-6 col-md-4">
+              <img src="https://images.unsplash.com/photo-1554284126-0ec237c93085?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="img-fluid rounded" alt="Exercise 3" loading="lazy">
+            </div>
+            <!-- Thêm nhiều hình ảnh... -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Testimonials Carousel (Feature 13) ===== -->
+      <section id="testimonials" class="py-5">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Ý Kiến Người Dùng</h2>
+              <p>Nghe chia sẻ thành công và trải nghiệm của cộng đồng.</p>
+            </div>
+          </div>
+          <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel" aria-label="Carousel ý kiến người dùng">
+            <div class="carousel-inner">
+              <div class="carousel-item active testimonial">
+                <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="User 1">
+                <p class="mt-3">"FitnessCoach giúp tôi duy trì lịch tập đều đặn và cải thiện sức khỏe rõ rệt."</p>
+                <h6>- Nguyen Thi A</h6>
+              </div>
+              <div class="carousel-item testimonial">
+                <img src="https://randomuser.me/api/portraits/men/2.jpg" alt="User 2">
+                <p class="mt-3">"Tính năng bộ đếm và theo dõi tiến trình rất hữu ích cho việc lập kế hoạch."</p>
+                <h6>- Tran Van B</h6>
+              </div>
+              <div class="carousel-item testimonial"> 
+                <img src="https://randomuser.me/api/portraits/women/3.jpg" alt="User 3">
+                <p class="mt-3">"Trang web có rất nhiều bài tập và video hướng dẫn, tôi không còn nhàm chán."</p>
+                <h6>- Le Thi C</h6>
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev" aria-label="Trước">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next" aria-label="Tiếp">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== FAQ Accordion (Feature 14) ===== -->
+      <section id="faq" class="py-5 bg-light">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Câu Hỏi Thường Gặp</h2>
+              <p>Những thắc mắc phổ biến được giải đáp nhanh chóng.</p>
+            </div>
+          </div>
+          <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="faqHeading1">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse1" aria-expanded="true" aria-controls="faqCollapse1">
+                  Làm thế nào để tạo tài khoản?
+                </button>
+              </h2>
+              <div id="faqCollapse1" class="accordion-collapse collapse show" aria-labelledby="faqHeading1" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  Bạn chỉ cần nhấn vào "Đăng Ký" trên góc phải navbar, điền thông tin và xác nhận email.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="faqHeading2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse2" aria-expanded="false" aria-controls="faqCollapse2">
+                  Làm thế nào để lưu tiến trình tập luyện?
+                </button>
+              </h2>
+              <div id="faqCollapse2" class="accordion-collapse collapse" aria-labelledby="faqHeading2" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  Vào phần "Tiến Trình", nhấn vào "Thêm Ghi Nhận", nhập thông tin và lưu lại. Hệ thống sẽ tự động hiển thị trong danh sách.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="faqHeading3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse3" aria-expanded="false" aria-controls="faqCollapse3">
+                  Tôi có thể chia sẻ bài tập lên mạng xã hội không?
+                </button>
+              </h2>
+              <div id="faqCollapse3" class="accordion-collapse collapse" aria-labelledby="faqHeading3" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  Có, mỗi card bài tập đều có nút "Chia sẻ" để đăng lên Facebook, Twitter hoặc Instagram.
+                </div>
+              </div>
+            </div>
+            <!-- Thêm nhiều mục FAQ nếu cần -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Newsletter Subscription Form (Feature 15) ===== -->
+      <section id="newsletter" class="py-5">
+        <div class="container">
+          <div class="row justify-content-center mb-4">
+            <div class="col-md-6 text-center">
+              <h2 class="fw-bold">Đăng Ký Nhận Bản Tin</h2>
+              <p>Nhận thông tin bài tập mới, mẹo dinh dưỡng và ưu đãi độc quyền.</p>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-md-6">
+              <form id="newsletterForm" class="d-flex" role="form" aria-label="Đăng ký nhận bản tin">
+                <input type="email" class="form-control me-2" id="newsletterEmail" placeholder="Nhập email của bạn" required>
+                <button class="btn btn-danger" type="submit">Đăng Ký</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== BMI Calculator Widget (Feature 16) ===== -->
+      <section id="bmiCalculator" class="py-5 bg-light">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Tính BMI</h2>
+              <p>Kiểm tra chỉ số khối cơ thể (BMI) của bạn.</p>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-md-6">
+              <form id="bmiForm" aria-label="Form tính BMI">
+                <div class="mb-3">
+                  <label for="bmiHeight" class="form-label">Chiều cao (cm)</label>
+                  <input type="number" class="form-control calc-input" id="bmiHeight" placeholder="Ví dụ: 170" required>
+                </div>
+                <div class="mb-3">
+                  <label for="bmiWeight" class="form-label">Cân nặng (kg)</label>
+                  <input type="number" class="form-control calc-input" id="bmiWeight" placeholder="Ví dụ: 65" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Tính BMI</button>
+              </form>
+              <div id="bmiResult" class="mt-3" aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Calorie Calculator Form (Feature 17) ===== -->
+      <section id="calorieCalculator" class="py-5">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Tính Lượng Calo</h2>
+              <p>Ước tính mức tiêu thụ calo hàng ngày của bạn.</p>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-md-6">
+              <form id="calorieForm" aria-label="Form tính calo">
+                <div class="mb-3">
+                  <label for="calorieAge" class="form-label">Tuổi</label>
+                  <input type="number" class="form-control calc-input" id="calorieAge" placeholder="Ví dụ: 25" required>
+                </div>
+                <div class="mb-3">
+                  <label for="calorieGender" class="form-label">Giới tính</label>
+                  <select id="calorieGender" class="form-select calc-input" required>
+                    <option value="" disabled selected>Chọn giới tính</option>
+                    <option value="male">Nam</option>
+                    <option value="female">Nữ</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="calorieHeight" class="form-label">Chiều cao (cm)</label>
+                  <input type="number" class="form-control calc-input" id="calorieHeight" placeholder="Ví dụ: 170" required>
+                </div>
+                <div class="mb-3">
+                  <label for="calorieWeight" class="form-label">Cân nặng (kg)</label>
+                  <input type="number" class="form-control calc-input" id="calorieWeight" placeholder="Ví dụ: 65" required>
+                </div>
+                <div class="mb-3">
+                  <label for="calorieActivity" class="form-label">Mức độ hoạt động</label>
+                  <select id="calorieActivity" class="form-select calc-input" required>
+                    <option value="" disabled selected>Chọn mức độ</option>
+                    <option value="1.2">Ít hoặc không hoạt động</option>
+                    <option value="1.375">Hoạt động nhẹ</option>
+                    <option value="1.55">Hoạt động vừa</option>
+                    <option value="1.725">Hoạt động nhiều</option>
+                    <option value="1.9">Hoạt động rất nhiều</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Tính Calo</button>
+              </form>
+              <div id="calorieResult" class="mt-3" aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Nutrition Tips Section (Feature 18) ===== -->
+      <section id="nutritionTips" class="py-5 bg-light">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Mẹo Dinh Dưỡng</h2>
+              <p>Các lời khuyên dinh dưỡng để hỗ trợ quá trình luyện tập.</p>
+            </div>
+          </div>
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h5 class="card-title">Ăn đủ Protein</h5>
+                  <p class="card-text">Bổ sung thực phẩm giàu protein như trứng, thịt nạc, cá, và đạm thực vật để phục hồi cơ bắp.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h5 class="card-title">Uống đủ nước</h5>
+                  <p class="card-text">Đảm bảo cung cấp đủ nước hàng ngày, đặc biệt trước, trong và sau khi tập luyện.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h5 class="card-title">Ăn nhiều rau củ</h5>
+                  <p class="card-text">Rau củ cung cấp vitamin, khoáng chất và chất xơ cần thiết cho sức khỏe.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Diet Plan Generator Form (Feature 19) ===== -->
+      <section id="dietPlan" class="py-5">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Tạo Kế Hoạch Ăn Uống</h2>
+              <p>Điền thông tin để nhận gợi ý kế hoạch ăn uống phù hợp.</p>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-md-6">
+              <form id="dietForm" aria-label="Form tạo kế hoạch ăn uống">
+                <div class="mb-3">
+                  <label for="dietGoal" class="form-label">Mục tiêu</label>
+                  <select id="dietGoal" class="form-select calc-input" required>
+                    <option value="" disabled selected>Chọn mục tiêu</option>
+                    <option value="lose">Giảm cân</option>
+                    <option value="maintain">Duy trì cân nặng</option>
+                    <option value="gain">Tăng cơ</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="dietPreferences" class="form-label">Ưu tiên ăn kiêng</label>
+                  <select id="dietPreferences" class="form-select calc-input">
+                    <option value="none" selected>Không</option>
+                    <option value="vegetarian">Chay</option>
+                    <option value="vegan">Veg</option>
+                    <option value="keto">Keto</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-success">Tạo Kế Hoạch</button>
+              </form>
+              <div id="dietResult" class="mt-3" aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Progress Chart (Feature 20) ===== -->
+      <section id="progressChart" class="py-5 bg-light">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Biểu Đồ Tiến Trình</h2>
+              <p>Theo dõi tiến trình tập luyện qua biểu đồ.</p>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+              <!-- Placeholder cho biểu đồ (sẽ sử dụng Chart.js hoặc tương tự) -->
+              <canvas id="progressCanvas" aria-label="Biểu đồ tiến trình luyện tập" role="img"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Export Buttons (Features 21 & 22) ===== -->
+      <section id="exportSection" class="py-5">
+        <div class="container text-center">
+          <button id="exportCSV" class="btn btn-outline-secondary me-3">
+            <i class="fas fa-file-csv"></i> Xuất CSV
+          </button>
+          <button id="exportPDF" class="btn btn-outline-secondary">
+            <i class="fas fa-file-pdf"></i> Xuất PDF
+          </button>
+        </div>
+      </section>
+
+      <!-- ===== Push Notification Opt-in (Feature 23) ===== -->
+      <section id="pushNotifications" class="py-5 bg-light">
+        <div class="container text-center">
+          <h2 class="fw-bold">Nhận Thông Báo</h2>
+          <p>Bật thông báo để không bỏ lỡ cập nhật và lời nhắc tập luyện.</p>
+          <button id="enablePush" class="btn btn-primary">
+            <i class="fas fa-bell"></i> Bật Thông Báo
+          </button>
+        </div>
+      </section>
+
+      <!-- ===== Live Chat Support Widget Placeholder (Feature 24) ===== -->
+      <div id="liveChatWidget" class="fixed-bottom me-3 mb-3" aria-hidden="true">
+        <!-- Khi tích hợp thực tế, chèn mã chat services ở đây -->
+        <button class="btn btn-success rounded-circle shadow-lg" aria-label="Mở chat hỗ trợ">
+          <i class="fas fa-comments fa-2x"></i>
+        </button>
+      </div>
+
+      <!-- ===== Partner Logos Section (Feature 37) ===== -->
+      <section id="partners" class="py-5">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Đối Tác</h2>
+              <p>Các đối tác hỗ trợ và tài trợ cho chúng tôi.</p>
+            </div>
+          </div>
+          <div class="row justify-content-center align-items-center g-4">
+            <div class="col-4 col-md-2 text-center">
+              <img src="partner1.png" alt="Partner 1" class="img-fluid" loading="lazy">
+            </div>
+            <div class="col-4 col-md-2 text-center">
+              <img src="partner2.png" alt="Partner 2" class="img-fluid" loading="lazy">
+            </div>
+            <div class="col-4 col-md-2 text-center">
+              <img src="partner3.png" alt="Partner 3" class="img-fluid" loading="lazy">
+            </div>
+            <!-- Thêm nhiều logo đối tác... -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Trainer Spotlight Section (Feature 38) ===== -->
+      <section id="trainerSpotlight" class="py-5 bg-light">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Huấn Luyện Viên Nổi Bật</h2>
+              <p>Gặp gỡ các huấn luyện viên chuyên nghiệp của chúng tôi.</p>
+            </div>
+          </div>
+          <div class="row g-4 justify-content-center">
+            <div class="col-sm-6 col-md-4 text-center">
+              <img src="trainer1.jpg" class="rounded-circle mb-3" alt="Trainer 1" width="140" height="140" loading="lazy">
+              <h5>Nguyen Van L</h5>
+              <p>Chuyên gia tập cardio và phục hồi chấn thương.</p>
+              <button class="btn btn-outline-primary btn-sm">Chi Tiết</button>
+            </div>
+            <div class="col-sm-6 col-md-4 text-center">
+              <img src="trainer2.jpg" class="rounded-circle mb-3" alt="Trainer 2" width="140" height="140" loading="lazy">
+              <h5>Le Thi M</h5>
+              <p>Chuyên gia nâng cao sức mạnh và thể lực.</p>
+              <button class="btn btn-outline-primary btn-sm">Chi Tiết</button>
+            </div>
+            <!-- Thêm nhiều huấn luyện viên... -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Certification Badges Section (Feature 39) ===== -->
+      <section id="certifications" class="py-5">
+        <div class="container text-center">
+          <h2 class="fw-bold">Chứng Nhận</h2>
+          <p>Dưới đây là các chứng nhận và tiêu chuẩn mà chúng tôi đạt được.</p>
+          <div class="row justify-content-center g-4 mt-3">
+            <div class="col-4 col-md-2">
+              <img src="badge1.png" alt="Badge 1" class="img-fluid" loading="lazy">
+            </div>
+            <div class="col-4 col-md-2">
+              <img src="badge2.png" alt="Badge 2" class="img-fluid" loading="lazy">
+            </div>
+            <div class="col-4 col-md-2">
+              <img src="badge3.png" alt="Badge 3" class="img-fluid" loading="lazy">
+            </div>
+            <!-- Thêm nhiều badge... -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Event Calendar Section (Feature 43) ===== -->
+      <section id="eventCalendar" class="py-5 bg-light">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Lịch Sự Kiện</h2>
+              <p>Các buổi tập nhóm, workshop và sự kiện sắp tới.</p>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+              <!-- Placeholder cho calendar (có thể tích hợp FullCalendar) -->
+              <div id="calendarPlaceholder" class="border rounded p-4 text-center">
+                <p>Calendar component sẽ được tích hợp ở đây.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Class Booking Form (Feature 44) ===== -->
+      <section id="classBooking" class="py-5">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Đặt Lịch Lớp</h2>
+              <p>Chọn lịch và đăng ký các buổi tập nhóm.</p>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-md-6">
+              <form id="bookingForm" aria-label="Form đặt lịch">
+                <div class="mb-3">
+                  <label for="classType" class="form-label">Loại Lớp</label>
+                  <select id="classType" class="form-select calc-input" required>
+                    <option value="" disabled selected>Chọn loại lớp</option>
+                    <option value="yoga">Yoga</option>
+                    <option value="hiit">HIIT</option>
+                    <option value="pilates">Pilates</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="classDate" class="form-label">Ngày</label>
+                  <input type="date" id="classDate" class="form-control calc-input" required>
+                </div>
+                <div class="mb-3">
+                  <label for="classTime" class="form-label">Thời Gian</label>
+                  <input type="time" id="classTime" class="form-control calc-input" required>
+                </div>
+                <button type="submit" class="btn btn-success">Đăng Ký</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Live Streaming Section Placeholder (Feature 45) ===== -->
+      <section id="liveStreaming" class="py-5 bg-light">
+        <div class="container text-center">
+          <h2 class="fw-bold">Phát Trực Tiếp</h2>
+          <p>Tham gia các buổi tập trực tiếp từ huấn luyện viên.</p>
+          <div class="border rounded p-4">
+            <p>Live streaming player sẽ hiển thị ở đây khi có sự kiện.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Audio Guide Section (Feature 46) ===== -->
+      <section id="audioGuide" class="py-5">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Hướng Dẫn Âm Thanh</h2>
+              <p>Nghe hướng dẫn chi tiết qua audio.</p>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+              <audio controls>
+                <source src="guidance.mp3" type="audio/mpeg">
+                Trình duyệt của bạn không hỗ trợ thẻ audio.
+              </audio>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Blog Section Preview (Feature 47) ===== -->
+      <section id="blog" class="py-5 bg-light">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Bài Viết Mới Nhất</h2>
+              <p>Cập nhật tin tức, bài viết về sức khỏe và luyện tập.</p>
+            </div>
+          </div>
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="card h-100">
+                <img src="blog1.jpg" class="card-img-top" alt="Blog 1" loading="lazy">
+                <div class="card-body">
+                  <h5 class="card-title">5 Bí Kíp Luyện Tập Hiệu Quả</h5>
+                  <p class="card-text">Tìm hiểu làm thế nào để tận dụng tối đa thời gian tập luyện của bạn.</p>
+                  <a href="#" class="btn btn-outline-primary btn-sm">Đọc Thêm</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card h-100">
+                <img src="blog2.jpg" class="card-img-top" alt="Blog 2" loading="lazy">
+                <div class="card-body">
+                  <h5 class="card-title">Chế Độ Ăn Uống Chuẩn Cho Người Tập Gym</h5>
+                  <p class="card-text">Khám phá thực đơn khoa học để hỗ trợ xây dựng cơ bắp.</p>
+                  <a href="#" class="btn btn-outline-primary btn-sm">Đọc Thêm</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card h-100">
+                <img src="blog3.jpg" class="card-img-top" alt="Blog 3" loading="lazy">
+                <div class="card-body">
+                  <h5 class="card-title">Lợi Ích Của Yoga Với Sức Khỏe Tâm Thần</h5>
+                  <p class="card-text">Tìm hiểu cách yoga giúp giảm căng thẳng và cải thiện tâm trạng.</p>
+                  <a href="#" class="btn btn-outline-primary btn-sm">Đọc Thêm</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Comment Section for Blog Posts (Feature 48) ===== -->
+      <section id="blogComments" class="py-5">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="fw-bold">Bình Luận</h2>
+              <p>Chia sẻ suy nghĩ của bạn về các bài viết.</p>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+              <form id="commentForm" aria-label="Form bình luận">
+                <div class="mb-3">
+                  <label for="commentName" class="form-label">Họ và tên</label>
+                  <input type="text" class="form-control" id="commentName" placeholder="Nhập tên" required>
+                </div>
+                <div class="mb-3">
+                  <label for="commentEmail" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="commentEmail" placeholder="Nhập email" required>
+                </div>
+                <div class="mb-3">
+                  <label for="commentText" class="form-label">Bình luận</label>
+                  <textarea class="form-control" id="commentText" rows="4" placeholder="Viết bình luận..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Gửi Bình Luận</button>
+              </form>
+              <hr>
+              <div id="commentsList">
+                <!-- Danh sách bình luận sẽ được hiển thị ở đây -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Privacy Policy & Terms Links (Feature 49) ===== -->
+      <section id="legalLinks" class="py-3 bg-light">
+        <div class="container text-center">
+          <a href="#privacyPolicy" class="me-3">Chính Sách Bảo Mật</a>
+          <a href="#termsOfService">Điều Khoản Dịch Vụ</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===== Footer ===== -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <h5>Về Chúng Tôi</h5>
+            <p>FitnessCoach là nền tảng đa năng hỗ trợ bạn luyện tập, dinh dưỡng và cộng đồng.</p>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h5>Liên Kết</h5>
+            <ul class="list-unstyled">
+              <li><a href="#workouts">Bài Tập</a></li>
+              <li><a href="#videoTutorials">Video</a></li>
+              <li><a href="#nutritionTips">Dinh Dưỡng</a></li>
+              <li><a href="#blog">Blog</a></li>
+            </ul>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h5>Kết Nối Với Chúng Tôi</h5>
+            <a href="#" class="text-decoration-none me-2" aria-label="Facebook"><i class="fab fa-facebook fa-lg"></i></a>
+            <a href="#" class="text-decoration-none me-2" aria-label="Instagram"><i class="fab fa-instagram fa-lg"></i></a>
+            <a href="#" class="text-decoration-none" aria-label="YouTube"><i class="fab fa-youtube fa-lg"></i></a>
+            <p class="mt-3">&copy; 2025 FitnessCoach. All Rights Reserved.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ===== Modals ===== -->
+    <!-- ===== Feature 1 & 41: Login Modal ===== -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="loginModalLabel">Đăng Nhập</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          </div>
+          <div class="modal-body">
+            <form id="loginForm" aria-label="Form đăng nhập">
+              <div class="mb-3">
+                <label for="loginEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="loginEmail" placeholder="Nhập email" required>
+              </div>
+              <div class="mb-3">
+                <label for="loginPassword" class="form-label">Mật khẩu</label>
+                <input type="password" class="form-control" id="loginPassword" placeholder="Nhập mật khẩu" required>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Đăng Nhập</button>
+            </form>
+            <hr>
+            <!-- Feature 41: Social Login Buttons -->
+            <div class="text-center">
+              <p>Hoặc đăng nhập bằng</p>
+              <button class="btn btn-outline-danger me-2"><i class="fab fa-google"></i> Google</button>
+              <button class="btn btn-outline-primary"><i class="fab fa-facebook-f"></i> Facebook</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Feature 2: Signup Modal ===== -->
+    <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="signupModalLabel">Đăng Ký</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          </div>
+          <div class="modal-body">
+            <form id="signupForm" aria-label="Form đăng ký">
+              <div class="mb-3">
+                <label for="signupName" class="form-label">Họ và tên</label>
+                <input type="text" class="form-control" id="signupName" placeholder="Nhập họ và tên" required>
+              </div>
+              <div class="mb-3">
+                <label for="signupEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="signupEmail" placeholder="Nhập email" required>
+              </div>
+              <div class="mb-3">
+                <label for="signupPassword" class="form-label">Mật khẩu</label>
+                <input type="password" class="form-control" id="signupPassword" placeholder="Nhập mật khẩu" required>
+              </div>
+              <button type="submit" class="btn btn-success w-100">Đăng Ký</button>
+            </form>
+            <hr>
+            <!-- Feature 41: Social Signup Buttons -->
+            <div class="text-center">
+              <p>Hoặc đăng ký bằng</p>
+              <button class="btn btn-outline-danger me-2"><i class="fab fa-google"></i> Google</button>
+              <button class="btn btn-outline-primary"><i class="fab fa-facebook-f"></i> Facebook</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Feature 56: Onboarding Wizard Modal ===== -->
+    <div class="modal fade" id="onboardingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="onboardingModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="onboardingModalLabel">Chào Mừng Đến FitnessCoach</h5>
+          </div>
+          <div class="modal-body">
+            <!-- Multi-step wizard (Chỉ là placeholder) -->
+            <div id="wizardSteps">
+              <!-- Step 1 -->
+              <div class="wizard-step" id="step1">
+                <h4>Chọn mục tiêu của bạn</h4>
+                <form>
+                  <div class="mb-3">
+                    <select class="form-select" id="wizardGoal" required>
+                      <option value="" disabled selected>Chọn mục tiêu</option>
+                      <option value="lose">Giảm cân</option>
+                      <option value="maintain">Duy trì</option>
+                      <option value="gain">Tăng cơ</option>
+                    </select>
+                  </div>
+                  <button id="toStep2" class="btn btn-primary">Tiếp</button>
+                </form>
+              </div>
+              <!-- Step 2 -->
+              <div class="wizard-step d-none" id="step2">
+                <h4>Chọn mức độ luyện tập</h4>
+                <form>
+                  <div class="mb-3">
+                    <select class="form-select" id="wizardLevel" required>
+                      <option value="" disabled selected>Chọn mức độ</option>
+                      <option value="beginner">Người mới</option>
+                      <option value="intermediate">Trung cấp</option>
+                      <option value="advanced">Cao cấp</option>
+                    </select>
+                  </div>
+                  <button id="toStep3" class="btn btn-primary">Tiếp</button>
+                </form>
+              </div>
+              <!-- Step 3 -->
+              <div class="wizard-step d-none" id="step3">
+                <h4>Hoàn tất!</h4>
+                <p>Cảm ơn bạn đã cung cấp thông tin. Bắt đầu hành trình luyện tập ngay thôi!</p>
+                <button data-bs-dismiss="modal" class="btn btn-success">Hoàn Thành</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Feature 53: Privacy Policy Modal ===== -->
+    <div class="modal fade" id="privacyPolicy" tabindex="-1" aria-labelledby="privacyPolicyLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="privacyPolicyLabel">Chính Sách Bảo Mật</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Nội dung chính sách bảo mật -->
+            <p>Chi tiết về cách chúng tôi thu thập và sử dụng thông tin cá nhân...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Feature 49: Terms of Service Modal ===== -->
+    <div class="modal fade" id="termsOfService" tabindex="-1" aria-labelledby="termsLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="termsLabel">Điều Khoản Dịch Vụ</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Nội dung điều khoản dịch vụ -->
+            <p>Chi tiết về điều khoản sử dụng trang web và dịch vụ...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Feature 43: Class Booking Modal (phụ trợ) ===== -->
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="bookingModalLabel">Đặt Lịch Lớp</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Nội dung form giống phần Class Booking Form -->
+            <form id="modalBookingForm">
+              <div class="mb-3">
+                <label for="modalClassType" class="form-label">Loại Lớp</label>
+                <select id="modalClassType" class="form-select calc-input" required>
+                  <option value="" disabled selected>Chọn loại lớp</option>
+                  <option value="yoga">Yoga</option>
+                  <option value="hiit">HIIT</option>
+                  <option value="pilates">Pilates</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="modalClassDate" class="form-label">Ngày</label>
+                <input type="date" id="modalClassDate" class="form-control calc-input" required>
+              </div>
+              <div class="mb-3">
+                <label for="modalClassTime" class="form-label">Thời Gian</label>
+                <input type="time" id="modalClassTime" class="form-control calc-input" required>
+              </div>
+              <button type="submit" class="btn btn-success w-100">Đăng Ký</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Feature 28: Service Worker Registration Script Placeholder ===== -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('service-worker.js')
+            .then(reg => console.log('ServiceWorker đăng ký thành công: ', reg.scope))
+            .catch(err => console.error('ServiceWorker đăng ký thất bại: ', err));
+        });
+      }
+    </script>
+
+    <!-- ===== Bootstrap JS (bao gồm Popper) ===== -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous">
+    </script>
+
+    <!-- ===== Custom JavaScript ===== -->
+    <script>
+      // ===== Feature 31: Cookie Consent Logic =====
+      document.addEventListener('DOMContentLoaded', () => {
+        if (!localStorage.getItem('cookiesAccepted')) {
+          document.getElementById('cookieConsent').style.display = 'block';
+        }
+        document.getElementById('acceptCookies').addEventListener('click', () => {
+          localStorage.setItem('cookiesAccepted', 'true');
+          document.getElementById('cookieConsent').style.display = 'none';
+        });
+      });
+
+      // ===== Feature 2: Dark Mode Toggle Logic =====
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      darkModeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const icon = darkModeToggle.querySelector('i');
+        if (document.body.classList.contains('dark-mode')) {
+          icon.classList.remove('fa-moon');
+          icon.classList.add('fa-sun');
+        } else {
+          icon.classList.remove('fa-sun');
+          icon.classList.add('fa-moon');
+        }
+      });
+
+      // ===== Feature 6,7,8,9: Filter, Sort, Favorites Logic (Placeholder) =====
+      const workoutGrid = document.getElementById('workoutGrid');
+      const filterCategory = document.getElementById('filterCategory');
+      const sortWorkouts = document.getElementById('sortWorkouts');
+      const viewFavorites = document.getElementById('viewFavorites');
+      const favoriteBtns = document.querySelectorAll('.favorite-btn');
+
+      // Placeholder array để lưu favorite IDs
+      let favoriteList = [];
+
+      favoriteBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const card = e.target.closest('.workout-item');
+          const workoutId = card.getAttribute('data-id') || card.dataset.index; // yêu cầu có data-id hoặc data-index
+          if (favoriteList.includes(workoutId)) {
+            favoriteList = favoriteList.filter(id => id !== workoutId);
+            btn.classList.remove('text-warning');
+          } else {
+            favoriteList.push(workoutId);
+            btn.classList.add('text-warning');
+          }
+        });
+      });
+      viewFavorites.addEventListener('click', () => {
+        // Hiển thị hoặc ẩn chỉ các favorite (cần bổ sung logic thực với dữ liệu thực)
+        console.log('Danh sách yêu thích:', favoriteList);
+      });
+
+      // ===== Feature 20: Progress Chart Logic (Placeholder) =====
+      // Sử dụng Chart.js hoặc thư viện tương tự để vẽ dữ liệu thực tế
+      const ctx = document.getElementById('progressCanvas');
+      if (ctx) {
+        // Ví dụ placeholder
+        ctx.getContext('2d').font = '16px Arial';
+        ctx.getContext('2d').fillText('Biểu đồ sẽ hiển thị ở đây', 50, 50);
+      }
+
+      // ===== Feature 16: BMI Calculator Logic =====
+      const bmiForm = document.getElementById('bmiForm');
+      const bmiResult = document.getElementById('bmiResult');
+      bmiForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const height = parseFloat(document.getElementById('bmiHeight').value) / 100;
+        const weight = parseFloat(document.getElementById('bmiWeight').value);
+        if (height > 0 && weight > 0) {
+          const bmi = (weight / (height * height)).toFixed(1);
+          let category = '';
+          if (bmi < 18.5) category = 'Gầy';
+          else if (bmi < 24.9) category = 'Bình thường';
+          else if (bmi < 29.9) category = 'Thừa cân';
+          else category = 'Béo phì';
+          bmiResult.textContent = `BMI của bạn: ${bmi} (${category})`;
+        }
+      });
+
+      // ===== Feature 17: Calorie Calculator Logic =====
+      const calorieForm = document.getElementById('calorieForm');
+      const calorieResult = document.getElementById('calorieResult');
+      calorieForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const age = parseInt(document.getElementById('calorieAge').value, 10);
+        const gender = document.getElementById('calorieGender').value;
+        const height = parseFloat(document.getElementById('calorieHeight').value);
+        const weight = parseFloat(document.getElementById('calorieWeight').value);
+        const activity = parseFloat(document.getElementById('calorieActivity').value);
+        let bmr;
+        if (gender === 'male') {
+          bmr = 88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age);
+        } else {
+          bmr = 447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age);
+        }
+        const dailyCalories = Math.round(bmr * activity);
+        calorieResult.textContent = `Lượng calo cần thiết mỗi ngày: ${dailyCalories} kcal`;
+      });
+
+      // ===== Feature 15: Newsletter Form Logic (Placeholder) =====
+      const newsletterForm = document.getElementById('newsletterForm');
+      newsletterForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const email = document.getElementById('newsletterEmail').value;
+        // TODO: Gửi email lên server hoặc API
+        alert(`Đã đăng ký nhận bản tin: ${email}`);
+        newsletterForm.reset();
+      });
+
+      // ===== Feature 19: Diet Plan Generator Logic (Placeholder) =====
+      const dietForm = document.getElementById('dietForm');
+      const dietResult = document.getElementById('dietResult');
+      dietForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const goal = document.getElementById('dietGoal').value;
+        const pref = document.getElementById('dietPreferences').value;
+        // TODO: Gọi API để tạo kế hoạch ăn uống
+        dietResult.textContent = `Kế hoạch ăn uống cho mục tiêu "${goal}" với ưu tiên "${pref}" sẽ được gửi đến bạn.`;
+      });
+
+      // ===== Feature 21 & 22: Export CSV & PDF Logic (Placeholder) =====
+      document.getElementById('exportCSV')?.addEventListener('click', () => {
+        // TODO: Tạo và tải file CSV
+        alert('Đã xuất CSV thành công (placeholder).');
+      });
+      document.getElementById('exportPDF')?.addEventListener('click', () => {
+        // TODO: Tạo và tải file PDF
+        alert('Đã xuất PDF thành công (placeholder).');
+      });
+
+      // ===== Feature 23: Push Notification Logic (Placeholder) =====
+      document.getElementById('enablePush')?.addEventListener('click', () => {
+        // TODO: Yêu cầu quyền và đăng ký nhận thông báo
+        alert('Yêu cầu nhận thông báo (placeholder).');
+      });
+
+      // ===== Feature 35: Scroll to Top Button Logic =====
+      document.getElementById('sidebarTop')?.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // ===== Feature 56: Onboarding Wizard Navigation Logic =====
+      document.getElementById('toStep2')?.addEventListener('click', e => {
+        e.preventDefault();
+        document.getElementById('step1').classList.add('d-none');
+        document.getElementById('step2').classList.remove('d-none');
+      });
+      document.getElementById('toStep3')?.addEventListener('click', e => {
+        e.preventDefault();
+        document.getElementById('step2').classList.add('d-none');
+        document.getElementById('step3').classList.remove('d-none');
+      });
+
+      // ===== Feature 53 & 49: Accessibility ARIA Roles and Labels already included above =====
+    </script>
+</body>
+</html>

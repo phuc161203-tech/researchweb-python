@@ -1,0 +1,83 @@
+{% extends "mentalConsult/_Base.html" %}
+{% load static %}
+
+{% block title %}{{ post.title }} | Tâm lý Online{% endblock %}
+
+{% block content %}
+<main class="container my-5">
+  <article class="mb-5">
+    <h1 class="mb-3">{{ post.title }}</h1>
+    <p class="text-muted">Đăng ngày {{ post.published_at|date:"m/d/Y" }} | Chuyên mục: {{ post.category.name }}</p>
+    <img src="{{ post.image }}" class="img-fluid rounded mb-4" alt="{{ post.title }}">
+    <div class="post-content">
+      {{ post.content|linebreaks }}
+    </div>
+  </article>
+
+  
+
+  
+  {# ===== Khung Bình luận ===== #}
+  <section id="comments" class="mb-5">
+    <h2 class="h5 mb-3">Bình luận</h2>
+    {% if user.is_authenticated %}
+      <form method="post" action="{% url 'consult:post_comment' post.id %}">
+        {% csrf_token %}
+        <div class="mb-3">
+          <textarea
+            class="form-control"
+            name="content"
+            rows="4"
+            placeholder="Viết bình luận của bạn..."
+            required
+          ></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Gửi bình luận</button>
+      </form>
+    {% else %}
+      <p>
+        <a href="{% url 'login' %}?next={{ request.path }}">Đăng nhập</a>
+        để bình luận.
+      </p>
+    {% endif %}
+
+    {% if post.comments.exists %}
+      <ul class="list-unstyled mt-4">
+        {% for comment in post.comments.all %}
+          <li class="mb-4">
+            <div>
+              <strong>
+                {{ comment.user.get_full_name|default:comment.user.username }}
+              </strong>
+              <small class="text-muted">
+                {{ comment.created_at|date:"d/m/Y H:i" }}
+              </small>
+            </div>
+            <p class="mb-1">{{ comment.content }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </section>
+  {# ===== End Khung Bình luận ===== #}
+
+  {% if related_posts %}  {# Bài viết liên quan :contentReference[oaicite:0]{index=0} #}
+  <section>
+    <h2 class="h5 mb-3">Bài viết liên quan</h2>
+    <div class="row g-4">
+      {% for r in related_posts %}
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <img src="{{ r.image }}" class="card-img-top" alt="{{ r.title }}">
+          <div class="card-body">
+            <h6 class="card-title">{{ r.title }}</h6>
+            <a href="{{ r.get_absolute_url }}" class="stretched-link"></a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</main>
+{% endblock %}

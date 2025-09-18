@@ -1,0 +1,18 @@
+<div class="modal-body">
+  {% if reg.company_logo %}
+    <div class="text-center mb-3">
+      <img src="{{ reg.company_logo.url }}" style="max-width:120px;border-radius:8px;">
+    </div>
+  {% endif %}
+  <!-- Thông tin đã đăng ký… -->
+  <div style="height:350px; margin:1rem 0;">
+    <iframe src="{{ pdf_url }}" style="width:100%; height:100%; border:0;"></iframe>
+  </div>
+  <div class="d-flex justify-content-end">
+    <a href="{{ pdf_url }}" target="_blank" class="btn btn-outline-primary me-2">Xem PDF</a>
+    <button class="btn btn-success" onclick="window.open('{{ pdf_url }}').print()">In Phiếu</button>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+</div>

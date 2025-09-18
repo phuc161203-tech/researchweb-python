@@ -1,0 +1,153 @@
+<!-- templates/contestTem/contest_wait.html -->
+{% extends 'contestTem/_Base.html' %}
+{% block title %}Phòng Chờ{% endblock %}
+
+{% block content %}
+  <header class="wait">
+  <h1>Phòng Chờ – {{ exam.title }}</h1>
+</header>
+
+  <div class="container wait-container">
+    <!-- Timer & Vào Phòng Thi -->
+    <div class="timer-card">
+      <h2>Bắt Đầu Trong</h2>
+      <div id="countdown" class="countdown-display">--:--:--</div>
+      <button id="enter-btn" class="enter-btn">Vào Phòng Thi</button>
+    </div>
+
+    <!-- Nội Quy + Test Thiết Bị -->
+    <div class="rules test-section">
+      <h2>Nội Quy &amp; Kiểm Tra Thiết Bị</h2>
+      <ul class="rule-list">
+        <li>1. Không rời chỗ ngồi sau khi bắt đầu.</li>
+        <li>2. Tắt các thiết bị gây ồn.</li>
+        <li>3. Tôn trọng giám thị và thí sinh khác.</li>
+        <li>4. Không sử dụng điện thoại hoặc thiết bị điện tử.</li>
+        <li>5. Không trao đổi, bàn bạc với thí sinh khác.</li>
+        <li>6. Không mang tài liệu tham khảo vào phòng thi.</li>
+        <li>7. Không mang thiết bị lưu trữ USB.</li>
+        <li>8. Không sử dụng tài liệu không được phép.</li>
+        <li>9. Không ăn uống trong phòng thi.</li>
+        <li>10. Không hút thuốc.</li>
+        <li>11. Không mang vũ khí vào phòng thi.</li>
+        <li>12. Cấm gian lận dưới mọi hình thức.</li>
+        <li>13. Không quay video hoặc chụp hình đề thi.</li>
+        <li>14. Cấm mang gương hoặc kính phản chiếu.</li>
+        <li>15. Không viết tên hoặc thông tin cá nhân trên bài thi.</li>
+        <li>16. Giữ im lặng trong phòng thi.</li>
+        <li>17. Chấp hành chỉ dẫn của giám thị.</li>
+        <li>18. Nộp bài khi hết giờ hoặc khi giám thị yêu cầu.</li>
+        <li>19. Sử dụng bút do Ban tổ chức phát.</li>
+        <li>20. Không sử dụng đồng hồ thông minh hoặc thiết bị đeo tay thông minh.</li>
+        <li>21. Không mang thức ăn có mùi mạnh vào phòng thi.</li>
+        <li>22. Giữ vệ sinh và sạch sẽ khu vực thi.</li>
+        <li>23. Không mang đề thi ra khỏi phòng thi.</li>
+        <li>24. Đến phòng thi trước giờ ghi trên giấy báo ít nhất 15 phút.</li>
+        <li>25. Không mang thú cưng hoặc động vật vào khu vực thi.</li>
+        <li>26. Không nghe nhạc hoặc đeo tai nghe khi thi.</li>
+        <li>27. Không truy cập Internet hoặc các ứng dụng trên máy tính.</li>
+        <li>28. Nộp giấy nháp vào khay thu gom khi kết thúc thi.</li>
+        <li>29. Không sử dụng chất kích thích hoặc chất gây nghiện.</li>
+        <li>30. Không sử dụng thiết bị ghi âm, camera cá nhân.</li>
+        <li>31. Tuân thủ quy định phòng chống dịch (đeo khẩu trang, sát khuẩn tay).</li>
+        <li>32. Giữ khoảng cách và trật tự khi xếp hàng vào thi.</li>
+        <li>33. Không mang đồ cá nhân không cần thiết vào phòng thi.</li>
+        <li>34. Không gian lận dưới bất kỳ hình thức nào.</li>
+        <li>35. Tuân thủ đúng thời gian làm bài theo quy định.</li>
+        <li>36. Báo ngay cho giám thị khi phát hiện vi phạm hoặc sự cố.</li>
+      </ul>
+      <div class="test-buttons">
+        <button id="test-audio">Test Âm Thanh</button>
+        <button id="test-video">Test Camera</button>
+        <button id="test-pledge">Tuyên Thệ</button>
+      </div>
+      <div id="test-result" class="test-result"></div>
+    </div>
+
+    <!-- Hướng Dẫn Chuẩn Bị -->
+    <div class="prepare">
+      <h2>Chuẩn Bị</h2>
+      <p>Hãy đảm bảo máy tính, webcam, micro hoạt động tốt và kết nối Internet ổn định.</p>
+    </div>
+  </div>
+
+  <!-- Modal Tuyên Thệ -->
+  <div id="pledge-modal" class="pledge-modal">
+    <div class="pledge-content">
+      <h3>Nhập Lời Tuyên Thệ</h3>
+      <p>Vui lòng đánh nguyên văn lời tuyên thệ sau đây để tiếp tục:</p>
+      <em>"TÔI CAM KẾT THỰC HIỆN BÀI KIỂM TRA NÀY MỘT CÁCH TRUNG THỰC, KHÔNG VI PHẠM QUY ĐỊNH THI VÀ ĐẢM BẢO CHẤT LƯỢNG KỲ THI ĐƯỢC DIỄN RA TỐT ĐẸP NHẤT"</em>
+      <textarea id="pledge-input" placeholder="Nhập ở đây..."
+        oncopy="return false" oncut="return false" onpaste="return false" oncontextmenu="return false"
+      ></textarea>
+      <button id="pledge-submit">Gửi</button>
+    </div>
+  </div>
+
+  <style>
+    .wait-container { display: grid; grid-template-columns: 1fr; gap: 30px; }
+    .timer-card { background: linear-gradient(135deg,#4caf50,#2e7d32); color:#fff; padding:20px; text-align:center; border-radius:8px; }
+    .countdown-display { font-size:2.5rem; margin-bottom:15px; }
+    .enter-btn { display:none; background:#ffca28; color:#333; padding:10px 20px; border:none; border-radius:4px; cursor:pointer; font-weight:bold; }
+    .enter-btn.show { display:inline-block; }
+    .enter-btn:hover { background:#ffc107; }
+
+    .test-section { background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+    .rule-list { margin:15px 0; max-height: 300px; overflow-y: auto; padding-right: 10px; }
+    .rule-list li { margin-bottom:8px; line-height:1.4; font-size:0.9rem; }
+    .test-buttons button { margin-right:10px; margin-bottom:10px; background:#1976d2; color:#fff; border:none; padding:8px 15px; border-radius:4px; cursor:pointer; }
+    .test-buttons button:hover { background:#1565c0; }
+    .test-result { margin-top:15px; font-style:italic; color:#d32f2f; }
+
+    .prepare { background:#e3f2fd; padding:20px; border-radius:8px; }
+    .prepare h2 { color:#0d47a1; margin-bottom:10px; }
+
+    .pledge-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; visibility:hidden; }
+    .pledge-content { background:#fff; padding:20px; border-radius:8px; max-width:600px; width:90%; text-align:center; }
+    .pledge-content textarea { width:100%; height:150px; margin-top:10px; padding:10px; border:1px solid #ccc; border-radius:4px; resize:none; }
+    .pledge-content button { margin-top:10px; padding:8px 16px; background:#1976d2; color:#fff; border:none; border-radius:4px; cursor:pointer; }
+  </style>
+
+  <script>
+    // Countdown
+    const startTime = new Date('2025-06-01T09:00:00').getTime();
+    setInterval(() => {
+      const now = Date.now(); let diff = Math.max(0, startTime - now);
+      const h = String(Math.floor(diff/3600000)).padStart(2,'0'); diff %= 3600000;
+      const m = String(Math.floor(diff/60000)).padStart(2,'0'); diff %= 60000;
+      const s = String(Math.floor(diff/1000)).padStart(2,'0');
+      document.getElementById('countdown').textContent = `${h}:${m}:${s}`;
+    },1000);
+
+    // Test media
+    function testMedia(constraints, label) {
+      navigator.mediaDevices.getUserMedia(constraints)
+        .then(stream => { document.getElementById('test-result').textContent = `${label} hoạt động tốt.`; stream.getTracks().forEach(t => t.stop()); })
+        .catch(() => { document.getElementById('test-result').textContent = `${label} không khả dụng.`; });
+    }
+    document.getElementById('test-audio').onclick = () => testMedia({ audio:true }, 'Âm thanh');
+    document.getElementById('test-video').onclick = () => testMedia({ video:true }, 'Camera');
+
+    // Pledge
+    const modal = document.getElementById('pledge-modal');
+    const input = document.getElementById('pledge-input');
+    const enterBtn = document.getElementById('enter-btn');
+    document.getElementById('test-pledge').onclick = () => { modal.style.visibility = 'visible'; input.focus(); };
+    document.getElementById('pledge-submit').onclick = () => {
+      const pledgeText = input.value.trim();
+      const expected = 'TÔI CAM KẾT THỰC HIỆN BÀI KIỂM TRA NÀY MỘT CÁCH TRUNG THỰC, KHÔNG VI PHẠM QUY ĐỊNH THI VÀ ĐẢM BẢO CHẤT LƯỢNG KỲ THI ĐƯỢC DIỄN RA TỐT ĐẸP NHẤT';
+      const resultEl = document.getElementById('test-result');
+      if (pledgeText === expected) {
+        resultEl.style.color = 'green'; resultEl.textContent = 'Bạn đã tuyên thệ thành công.';
+        modal.style.visibility = 'hidden';
+        enterBtn.classList.add('show');
+      } else {
+        resultEl.style.color = '#d32f2f'; resultEl.textContent = 'Lời tuyên thệ không chính xác. Vui lòng thử lại.';
+      }
+    };
+    // Click event for enter button
+    enterBtn.addEventListener('click', () => {
+      window.location.href = "{% url 'contestApp:contest_zone' exam.code %}";
+    });
+  </script>
+{% endblock %}

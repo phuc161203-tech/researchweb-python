@@ -1,0 +1,1209 @@
+{# article-blog-details.html #}
+{% extends "articleDetail/_Base.html" %}
+{% load static %}
+
+{% block title %}
+  {{ article.articleName }} | Research Article Details
+{% endblock %}
+
+{% block main_content %}
+<div class="container-fluid py-4" style="background: #f5f6fa;">
+  <div class="row">
+    <!-- ===========================================
+             MAIN CONTENT: Article Info & PDF Reader
+         =========================================== -->
+    <div class="col-lg-8 mb-4">
+      <div class="card shadow-lg rounded-xl p-4 border-0 bg-white">
+        <!-- Article Header -->
+        <h2 class="text-primary mb-2 font-weight-bold">{{ article.articleName }}</h2>
+        <div class="mb-2 text-muted small">
+          <span class="badge badge-info px-2 py-1">{{ article.articleCategory.name }}</span>
+        </div>
+        <div class="mb-2">
+          <i class="fa fa-calendar text-secondary"></i>
+          <span>{{ article.articleDate|date:"d/m/Y" }}</span>
+          &nbsp; &bull; &nbsp;
+          <i class="fa fa-user text-secondary"></i>
+          <span>{{ article.articleAuthor }}</span>
+        </div>
+        {% if article.articleSubject %}
+          <div class="mb-2">
+            <strong>Subject:</strong> {{ article.articleSubject }}
+          </div>
+        {% endif %}
+
+        <hr>
+        <!-- Abstract Section -->
+        <h5 class="font-weight-bold text-secondary">Abstract</h5>
+        <div class="mb-4">
+          <p>
+            {% if article.articleAbstract %}
+              {{ article.articleAbstract|linebreaksbr }}
+            {% elif article.articleDirection %}
+              {{ article.articleDirection|linebreaksbr }}
+            {% endif %}
+          </p>
+        </div>
+
+        <!-- Links to ArXiv PDF/HTML -->
+        <div class="mb-3">
+          <a href="https://arxiv.org/pdf/{{ article.articleID }}.pdf" target="_blank"
+             class="btn btn-danger mr-2 mb-2">
+            <i class="fa fa-file-pdf-o"></i> View PDF on ArXiv
+          </a>
+          <a href="https://arxiv.org/html/{{ article.articleID }}.html" target="_blank"
+             class="btn btn-success mb-2">
+            <i class="fa fa-html5"></i> View HTML on ArXiv
+          </a>
+          <a href="https://www.connectedpapers.com/search?q={{ article.articleName }}" target="_blank"
+             class="btn btn-success mb-2">
+            <i class="fa fa-html5"></i> View connected papers
+          </a>
+        </div>
+
+        <hr>
+        <!-- Embedded PDF Flipbook Reader -->
+        <h5 class="font-weight-bold text-secondary mb-3">Embedded PDF Flipbook Reader</h5>
+        <button id="btnFullScreen" class="btn btn-outline-primary mb-3">
+          <i class="fa fa-expand"></i> Phóng to khung đọc
+        </button>
+
+        <div id="pdfReaderWrapper" class="card border-0 shadow-sm mb-4" style="position: relative;">
+          <!-- Inline CSS cho PDF reader -->
+          <style>
+            html, body {
+              height: 100%;
+              margin: 0;
+              padding: 0;
+              font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            }
+            #pdfReaderWrapper {
+              background-color: #f0f0f0;
+            }
+            .reader-header {
+              position: relative;
+              height: 56px;
+              background-color: #ffffff;
+              border-bottom: 1px solid #ddd;
+              display: flex;
+              align-items: center;
+              padding: 0 16px;
+              z-index: 1000;
+            }
+            .reader-header .navbar-brand {
+              font-size: 1.2rem;
+              font-weight: 600;
+              margin-right: auto;
+            }
+            .reader-header .icon-btn {
+              background: none;
+              border: none;
+              font-size: 1.2rem;
+              margin-left: 16px;
+              color: #333;
+              cursor: pointer;
+            }
+            .reader-header .icon-btn:hover {
+              color: #000;
+            }
+            .reader-header .hint {
+              font-size: 0.9rem;
+              margin-left: 24px;
+              color: #666;
+            }
+            .reader-main {
+              position: relative;
+              display: flex;
+              background-color: #eaeaea;
+              overflow: hidden;
+              height: calc(100vh - 200px);
+            }
+            .settings-panel {
+              position: absolute;
+              top: 56px;
+              right: -320px;
+              width: 320px;
+              bottom: 56px;
+              background-color: #fff;
+              border-left: 1px solid #ccc;
+              transition: right 0.3s ease;
+              overflow-y: auto;
+              z-index: 1100;
+              padding: 16px;
+            }
+            .settings-panel.open { right: 0; }
+            .settings-panel h5 {
+              margin-top: 24px;
+              margin-bottom: 8px;
+              font-weight: 600;
+              border-bottom: 1px solid #ddd;
+              padding-bottom: 4px;
+            }
+            .settings-panel label {
+              font-size: 0.9rem;
+              margin-bottom: 4px;
+              display: block;
+            }
+            .settings-panel .form-check-input { margin-top: 0.2rem; }
+            .book-viewer {
+              flex: 1;
+              position: relative;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: #ddd;
+              overflow: hidden;
+            }
+            .page-container {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              gap: 16px;
+              padding: 16px;
+              box-sizing: border-box;
+              overflow-x: auto;
+              height: 100%;
+              width: 100%;
+            }
+            .page {
+              background-color: #fff;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+              position: relative;
+              display: inline-flex;
+              flex-direction: column;
+              border-radius: 4px;
+              transition: transform 0.5s ease;
+              overflow: hidden;
+              max-width: calc((100% - 32px) / 2);
+              max-height: 100%;
+            }
+            .page.active { }
+            .page-content {
+              position: relative;
+              flex: 1;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              overflow: visible;
+              background-color: #fff;
+              cursor: default;
+            }
+            .page-canvas {
+              display: block;
+              max-width: 100%;
+              height: auto;
+            }
+            .textLayer {
+              position: absolute;
+              top: 0;
+              left: 0;
+              transform-origin: top left;
+              color: transparent;
+              cursor: text;
+              pointer-events: none;
+            }
+            .textLayer span.highlight-note {
+              background-color: yellow;
+              color: transparent;
+            }
+            .area-highlight {
+              position: absolute;
+              border: 1px dashed #ffeb3b;
+              background-color: rgba(255, 235, 59, 0.4);
+              z-index: 150;
+              pointer-events: auto;
+              cursor: pointer;
+            }
+            .area-highlight:hover { border-color: #fbc02d; }
+            .note-icon {
+              position: absolute;
+              font-size: 1.2rem;
+              color: #d9534f;
+              cursor: pointer;
+              z-index: 200;
+            }
+            .note-popup {
+              position: absolute;
+              background-color: #fff;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              padding: 8px;
+              width: 220px;
+              box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+              z-index: 250;
+            }
+            .note-popup textarea {
+              width: 100%;
+              height: 60px;
+              resize: none;
+            }
+            .note-popup .close-btn {
+              position: absolute;
+              top: 4px;
+              right: 6px;
+              font-size: 1rem;
+              color: #888;
+              cursor: pointer;
+            }
+            .note-popup .close-btn:hover { color: #333; }
+            .note-popup .delete-btn {
+              margin-top: 6px;
+              width: 100%;
+            }
+            .reader-footer {
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              height: 56px;
+              background-color: #ffffff;
+              border-top: 1px solid #ddd;
+              display: flex;
+              align-items: center;
+              padding: 0 16px;
+              z-index: 1000;
+            }
+            .reader-footer .page-indicator {
+              font-size: 0.9rem;
+              margin-right: 16px;
+            }
+            .reader-footer input[type=range] { flex: 1; }
+            .reader-footer button.icon-btn { margin-left: 16px; }
+            .mode-dark .page {
+              background-color: #2e2e2e;
+              color: #ddd;
+            }
+            .mode-dark body { background-color: #1e1e1e; }
+            .mode-sepia .page {
+              background-color: #f4ecd8;
+              color: #5b4636;
+            }
+            .mode-sepia body { background-color: #efe5d6; }
+            .single-column .page-container { justify-content: center; }
+            .single-column .page { max-width: 100%; }
+            .flipping-next {
+              transform: rotateY(-180deg);
+              z-index: 1;
+            }
+            .flipping-prev {
+              transform: rotateY(0deg);
+              z-index: 1;
+            }
+            .highlight-mode .page-content {
+              cursor: crosshair;
+            }
+            .reader-header .color-picker {
+              margin-left: 16px;
+              cursor: pointer;
+            }
+            .reader-header .btn-highlight {
+              margin-left: 8px;
+
+            
+            }
+            .textLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+  color: transparent;
+  cursor: text;
+  pointer-events: none;
+  z-index: 5;  /* Đảm bảo textLayer nằm dưới .area-highlight (10) và .note-icon (20) */
+}
+          </style>
+
+          <!-- Reader Header Toolbar -->
+          <div class="reader-header">
+            <span class="navbar-brand">Embedded PDF Reader</span>
+            <input type="color" id="headerColorPicker" class="color-picker" title="Chọn màu highlight" value="#ffeb3b">
+            <button id="headerHighlightBtn" class="btn btn-warning btn-sm btn-highlight">
+              <i class="fa fa-highlighter"></i>
+            </button>
+            <button class="icon-btn" id="btnSettings"><i class="fa fa-cog"></i></button>
+            <span class="hint">Ctrl+click để thêm note, bấm “Tô màu” rồi kéo để highlight (click vào highlight để xóa)</span>
+          </div>
+
+          <!-- Main Reader + Settings Panel -->
+          <div class="reader-main">
+            <div class="book-viewer" id="bookViewer">
+              <div class="page-container" id="pageContainer">
+                <div class="page" data-page="1">
+                  <div class="page-content" id="leftPageContent"></div>
+                </div>
+                <div class="page" data-page="2">
+                  <div class="page-content" id="rightPageContent"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-panel" id="settingsPanel">
+              <h5>Cài đặt đọc sách</h5>
+              <!-- Color Mode -->
+              <div class="mb-3">
+                <label class="form-label">Chế độ màu:</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="colorMode" id="modeLight" value="light" checked>
+                  <label class="form-check-label" for="modeLight">Sáng (Light)</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="colorMode" id="modeDark" value="dark">
+                  <label class="form-check-label" for="modeDark">Tối (Dark)</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="colorMode" id="modeSepia" value="sepia">
+                  <label class="form-check-label" for="modeSepia">Sepia</label>
+                </div>
+              </div>
+              <!-- Font Size -->
+              <div class="mb-3">
+                <label class="form-label">Cỡ chữ: <span id="labelFontSize">18px</span></label>
+                <input type="range" class="form-range" min="12" max="32" step="1" id="fontSizeRange" value="18">
+              </div>
+              <!-- Line Height -->
+              <div class="mb-3">
+                <label class="form-label">Khoảng cách dòng: <span id="labelLineHeight">1.6</span></label>
+                <input type="range" class="form-range" min="1.0" max="2.5" step="0.1" id="lineHeightRange" value="1.6">
+              </div>
+              <!-- Column Mode -->
+              <div class="mb-3">
+                <label class="form-label">Chế độ cột:</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="columnMode" id="twoColumn" value="two" checked>
+                  <label class="form-check-label" for="twoColumn">Hai cột (Two-Page)</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="columnMode" id="oneColumn" value="one">
+                  <label class="form-check-label" for="oneColumn">Một cột (Single-Page)</label>
+                </div>
+              </div>
+              <!-- Highlight Color Picker inside Settings -->
+              <div class="mb-3">
+                <label class="form-label">Chọn màu highlight:</label>
+                <input type="color" id="colorPicker" value="#ffeb3b" class="form-control form-control-color" style="width: 60px;">
+                <button id="highlightBtn" class="btn btn-warning w-100 mt-2">
+                  <i class="fa fa-highlighter"></i> Tô màu (Highlight)
+                </button>
+              </div>
+              <!-- Close Settings -->
+              <button class="btn btn-outline-secondary w-100 mt-3" id="btnCloseSettings">
+                Đóng Cài Đặt
+              </button>
+              <div style="height: 40px;"></div>
+            </div>
+          </div>
+
+          <!-- Reader Footer: Page Navigator -->
+          <div class="reader-footer">
+            <div class="page-indicator">
+              Trang <span id="currentPageDisplay">1</span> / <span id="totalPagesDisplay">1</span>
+            </div>
+            <input type="range" id="pageSlider" min="1" max="1" value="1" class="form-range">
+            <button class="icon-btn" id="btnPagePrev" style="margin-left: 16px;" disabled>
+              <i class="fa fa-chevron-left"></i>
+            </button>
+            <button class="icon-btn" id="btnPageNext" disabled>
+              <i class="fa fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================
+                SIDEBAR COMMENTS
+         ==================================== -->
+     <!-- ====================================
+                SIDEBAR COMMENTS
+         ==================================== -->
+    <div class="col-md-4">
+       <!-- ====================================
+       SIDEBAR DICTIONARY (THÊM MỚI)
+     ==================================== -->
+  <!-- Card: Khung tra từ -->
+  <!-- HTML: Form + khung kết quả -->
+<div class="card shadow-sm mb-4">
+  <div class="card-header bg-light">
+    <h5 class="mb-0">Tra từ & định nghĩa Anh → Anh</h5>
+  </div>
+  <div class="card-body">
+    <div class="input-group mb-3">
+      <input
+        type="text"
+        id="combo-input-word"
+        class="form-control"
+        placeholder="Nhập từ tiếng Anh"
+      >
+      <div class="input-group-append">
+        <button class="btn btn-primary" id="btn-combo-search" type="button">
+          Tra một lèo
+        </button>
+      </div>
+    </div>
+
+    <!-- Kết quả -->
+    <div id="combo-result" style="max-height: 500px; overflow-y: auto; border: 1px solid #ddd; padding: 0.5rem;">
+      Chưa có kết quả.
+    </div>
+  </div>
+</div>
+
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Bình luận bài báo</h5>
+        </div>
+        <div class="card-body">
+          {# ───── Form thêm comment/reply ───── #}
+          {% if user.is_authenticated %}
+            <form id="comment-form" method="post"
+                  action="{% url 'blogScience:article-blog-details' article.pk %}">
+              {% csrf_token %}
+
+              {# Hiển thị lỗi chung (nếu có) #}
+              {% if errors %}
+                <div class="alert alert-danger">
+                  <ul class="mb-0">
+                    {% for field, error_msg in errors.items %}
+                      <li><strong>{{ error_msg }}</strong></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+
+              {# Hidden field: name, email (lấy từ user) #}
+              <input type="hidden" name="name"  value="{{ user.get_full_name }}">
+              <input type="hidden" name="email" value="{{ user.email }}">
+
+              {# Textarea để nhập message #}
+              <div class="form-group mb-2">
+                <textarea
+                  id="comment-message"
+                  name="message"
+                  required
+                  placeholder="Nội dung bình luận"
+                  class="form-control{% if errors.message %} is-invalid{% endif %}"
+                  rows="4">{% if data.message %}{{ data.message }}{% endif %}</textarea>
+                {% if errors.message %}
+                  <div class="invalid-feedback">
+                    {{ errors.message }}
+                  </div>
+                {% endif %}
+              </div>
+
+              {# Hidden parent nếu là reply, gán lại nếu data.parent có giá trị #}
+              <input type="hidden"
+                     id="id_parent"
+                     name="parent"
+                     value="{% if data.parent %}{{ data.parent }}{% endif %}">
+
+              <button type="submit" class="btn btn-primary mb-3">Gửi bình luận</button>
+              {# Nút Reset parent (nếu trước đó đang trả lời) #}
+              <button type="button" id="cancel-reply-btn" class="btn btn-link text-secondary" style="display: none;">
+                Hủy reply
+              </button>
+            </form>
+          {% else %}
+            <div class="text-center">
+              <a class="nav-link text-dark"
+                 href="{% url 'app_customer:dang-nhap' %}">
+                Đăng ký/Đăng nhập để bình luận
+              </a>
+            </div>
+          {% endif %}
+
+          <div class="mt-4">
+            <h6 class="font-weight-bold">
+              Các bình luận (
+              <span id="totalCommentCount">{{ comments.count }}</span>
+              )
+            </h6>
+
+            {# ───── Danh sách comment chính (đệ quy 1 cấp con) ───── #}
+            <ul class="list-group list-group-flush mt-2" id="comment-list">
+              {% if comments %}
+                {% for c in comments %}
+                  {% include "articleDetail/_comment_item.html" with comment=c level=0 %}
+                {% endfor %}
+              {% else %}
+                <li class="list-group-item text-muted">
+                  Chưa có bình luận nào.
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+     
+  </div>
+</div>
+
+
+<!-- ========== Cuối trang: load PDF.js + jQuery (duy nhất) + Custom Script ========== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+  // ========== CSRF SETUP cho AJAX ==========
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  const csrftoken = getCookie('csrftoken');
+  $.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+      // Chỉ gắn CSRF token khi request cùng domain
+      if (!/^https?:.*/.test(settings.url)) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+      }
+    }
+  });
+
+  // Lấy ARTICLE_ID để localStorage lưu notes theo từng bài
+  const ARTICLE_ID = "{{ article.articleID }}";
+
+  // PDF.js worker setting (phiên bản 2.14.305)
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.worker.min.js";
+
+  $(function() {
+    // =============================================
+    //  KHỞI TẠO NOTES từ localStorage
+    // =============================================
+    let savedNotesAll = {};
+    const stored = localStorage.getItem("notes-" + ARTICLE_ID);
+    if (stored) {
+      try {
+        savedNotesAll = JSON.parse(stored);
+      } catch (_) {
+        savedNotesAll = {};
+      }
+    }
+
+    // Biến toàn cục cho PDF + notes + highlights
+    let pdfDoc = null;
+    let totalPages = 0;
+    let currentPageIndex = 0;
+    const pdfCanvases = [];
+    const textLayers = [];
+    const notes = [];
+    const highlights = [];
+    let isHighlightMode = false;
+    let startX = 0, startY = 0;
+    let tmpRect = null;
+
+    // Hàm lưu notes vào localStorage
+    function saveNotesToStorage() {
+      localStorage.setItem("notes-" + ARTICLE_ID, JSON.stringify(notes));
+    }
+
+    // URL proxy để fetch PDF (phải có dấu slash ở đầu)
+    const PDF_URL = "{% url 'blogScience:arxiv_pdf_proxy' article.articleID %}";
+    console.log("Fetch PDF từ:", PDF_URL);
+
+    // =============================================
+    //  1. Fetch và load PDF
+    // =============================================
+    fetch(PDF_URL)
+      .then(res => {
+        if (!res.ok) throw new Error("Không thể tải PDF từ server");
+        return res.arrayBuffer();
+      })
+      .then(data => pdfjsLib.getDocument({ data }).promise)
+      .then(pdf => {
+        pdfDoc = pdf;
+        totalPages = pdfDoc.numPages;
+        $("#totalPagesDisplay").text(totalPages);
+        $("#pageSlider").attr("max", totalPages);
+        $("#btnPageNext").prop("disabled", totalPages < 2);
+
+        // Khởi tạo mảng notes và highlights cho mỗi trang
+        for (let i = 0; i < totalPages; i++) {
+          // Nếu localStorage có dữ liệu cũ, load vào notes[i]
+          if (savedNotesAll[i]) {
+            notes[i] = JSON.parse(JSON.stringify(savedNotesAll[i]));
+          } else {
+            notes[i] = [];
+          }
+          highlights[i] = [];
+        }
+
+        // Render từng trang (canvas + textLayer)
+        const renderPromises = [];
+        for (let i = 1; i <= totalPages; i++) {
+          renderPromises.push(renderPDFPage(i));
+        }
+        return Promise.all(renderPromises);
+      })
+      .then(() => renderPages(0))
+      .catch(err => {
+        console.error("Lỗi khi load PDF:", err);
+        alert("Đã xảy ra lỗi khi tải PDF.");
+      });
+
+    // =============================================
+    //  2. Render một trang PDF
+    // =============================================
+    function renderPDFPage(pageNumber) {
+      return pdfDoc.getPage(pageNumber).then(page => {
+        const viewport = page.getViewport({ scale: 1.5 });
+        const canvas = document.createElement("canvas");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        canvas.className = "page-canvas";
+        const ctx = canvas.getContext("2d");
+        const renderContext = { canvasContext: ctx, viewport };
+        const renderTask = page.render(renderContext);
+
+        const textLayerDiv = document.createElement("div");
+        textLayerDiv.className = "textLayer";
+        textLayerDiv.style.width = viewport.width + "px";
+        textLayerDiv.style.height = viewport.height + "px";
+
+        return renderTask.promise.then(() => {
+          return page.getTextContent().then(textContent => {
+            pdfjsLib.renderTextLayer({
+              textContent,
+              container: textLayerDiv,
+              viewport,
+              textDivs: []
+            });
+            pdfCanvases[pageNumber - 1] = canvas;
+            textLayers[pageNumber - 1] = textLayerDiv;
+          });
+        });
+      });
+    }
+
+    // =============================================
+    //  3. Hiển thị hai trang tại currentPageIndex
+    // =============================================
+    function renderPages(index) {
+      const leftCanvas = pdfCanvases[index];
+      const leftTextLayer = textLayers[index];
+      const rightCanvas = pdfCanvases[index + 1];
+      const rightTextLayer = textLayers[index + 1];
+
+      const leftContainer = $("#leftPageContent").empty();
+      const rightContainer = $("#rightPageContent").empty();
+
+      const leftPageDiv = $(".page[data-page='1']");
+      const rightPageDiv = $(".page[data-page='2']");
+
+      // Trang trái (page-index = index)
+      if (leftCanvas) {
+        leftPageDiv.addClass("active");
+        const wrapperL = $("<div></div>").css({
+          position: "relative",
+          display: "inline-block"
+        });
+        $(leftCanvas).css({ width: "100%", height: "auto" });
+        wrapperL.append(leftCanvas);
+
+        // Tính scale để textLayer khớp với canvas
+        const containerWidthL = leftPageDiv.width();
+        const scaleLeft = containerWidthL / leftCanvas.width;
+        leftTextLayer.style.transform = "scale(" + scaleLeft + ")";
+        leftTextLayer.style.transformOrigin = "top left";
+        wrapperL.append(leftTextLayer);
+
+        addExistingHighlights(wrapperL, index);
+        addExistingNotes(wrapperL, index);
+        leftContainer.append(wrapperL);
+      } else {
+        leftPageDiv.removeClass("active");
+      }
+
+      // Trang phải (page-index = index + 1)
+      if (rightCanvas) {
+        rightPageDiv.addClass("active");
+        const wrapperR = $("<div></div>").css({
+          position: "relative",
+          display: "inline-block"
+        });
+        $(rightCanvas).css({ width: "100%", height: "auto" });
+        wrapperR.append(rightCanvas);
+
+        const containerWidthR = rightPageDiv.width();
+        const scaleRight = containerWidthR / rightCanvas.width;
+        rightTextLayer.style.transform = "scale(" + scaleRight + ")";
+        rightTextLayer.style.transformOrigin = "top left";
+        wrapperR.append(rightTextLayer);
+
+        addExistingHighlights(wrapperR, index + 1);
+        addExistingNotes(wrapperR, index + 1);
+        rightContainer.append(wrapperR);
+      } else {
+        rightPageDiv.removeClass("active");
+      }
+
+      $("#currentPageDisplay").text(index + 1);
+      $("#pageSlider").val(index + 1);
+      $("#btnPagePrev").prop("disabled", index === 0);
+      $("#btnPageNext").prop("disabled", index + 2 > totalPages);
+    }
+
+    // =============================================
+    //  4. Thêm các note đã lưu cho pageIdx
+    // =============================================
+    function addExistingNotes(wrapper, pageIdx) {
+      notes[pageIdx].forEach(note => {
+        const icon = $('<i class="fa fa-sticky-note note-icon"></i>');
+        icon.css({ top: note.y + "px", left: note.x + "px" });
+        icon.on("click", function(e) {
+          e.stopPropagation();
+          showNotePopup(wrapper, note, pageIdx, icon);
+        });
+        wrapper.append(icon);
+      });
+    }
+
+    // =============================================
+    //  5. Thêm các highlight đã lưu cho pageIdx
+    // =============================================
+    function addExistingHighlights(wrapper, pageIdx) {
+      highlights[pageIdx].forEach(h => {
+        const rect = $("<div class='area-highlight'></div>");
+        rect.attr("data-id", h.id);
+        rect.css({
+          top: h.y + "px",
+          left: h.x + "px",
+          width: h.w + "px",
+          height: h.h + "px",
+          backgroundColor: hexToRgba(h.color, 0.4)
+        });
+        rect.on("click", function(e) {
+          e.stopPropagation();
+          const rid = $(this).data("id");
+          highlights[pageIdx] = highlights[pageIdx].filter(item => item.id !== rid);
+          $(this).remove();
+        });
+        wrapper.append(rect);
+      });
+    }
+
+    // =============================================
+    //  6. Flip sang trang kế tiếp
+    // =============================================
+    $("#btnPageNext").click(function() {
+      if (currentPageIndex + 2 < totalPages || currentPageIndex + 1 < totalPages) {
+        const leftPageDiv = $(".page[data-page='1']");
+        leftPageDiv.addClass("flipping-next");
+        setTimeout(() => {
+          currentPageIndex += 2;
+          renderPages(currentPageIndex);
+        }, 500);
+      }
+    });
+
+    // =============================================
+    //  7. Flip về trang trước
+    // =============================================
+    $("#btnPagePrev").click(function() {
+      if (currentPageIndex - 2 >= 0) {
+        const leftPageDiv = $(".page[data-page='1']");
+        leftPageDiv.addClass("active").css("transform", "rotateY(-180deg)");
+        setTimeout(() => {
+          leftPageDiv.addClass("flipping-prev");
+        }, 20);
+        setTimeout(() => {
+          currentPageIndex -= 2;
+          renderPages(currentPageIndex);
+        }, 520);
+      }
+    });
+
+    // =============================================
+    //  8. Slider nhảy tới trang bất kỳ
+    // =============================================
+    $("#pageSlider").on("input change", function() {
+      let val = parseInt($(this).val()) - 1;
+      if (val < 0) val = 0;
+      if (val > totalPages - 1) val = totalPages - 1;
+      currentPageIndex = val;
+      renderPages(currentPageIndex);
+    });
+
+    // =============================================
+    //  9. Chuyển thành chế độ Highlight (kéo vẽ khung)
+    // =============================================
+    function enterHighlightMode(color) {
+      isHighlightMode = true;
+      $("body").addClass("highlight-mode");
+      currentHighlightColor = color;
+    }
+    let currentHighlightColor = "#ffeb3b";
+
+    // 10. Nút highlight trên header
+    $("#headerHighlightBtn").click(function() {
+      const color = $("#headerColorPicker").val();
+      currentHighlightColor = color;
+      enterHighlightMode(color);
+    });
+
+    // 11. Nút highlight trong settings
+    $("#highlightBtn").click(function() {
+      const color = $("#colorPicker").val();
+      currentHighlightColor = color;
+      enterHighlightMode(color);
+      $(this).prop("disabled", true);
+    });
+
+    // =============================================
+    // 12. Vẽ highlight khi kéo chuột
+    // =============================================
+    $(".page-container").on("mousedown", ".page-content", function(e) {
+      if (!isHighlightMode) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const $content = $(this);
+      const offset = $content.offset();
+      startX = e.pageX - offset.left;
+      startY = e.pageY - offset.top;
+      tmpRect = $("<div class='area-highlight'></div>").css({
+        top: startY + "px",
+        left: startX + "px",
+        width: "0px",
+        height: "0px",
+        backgroundColor: hexToRgba(currentHighlightColor, 0.4)
+      });
+      $content.append(tmpRect);
+
+      $(document).on("mousemove.highlightDrag", function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        const currX = ev.pageX - offset.left;
+        const currY = ev.pageY - offset.top;
+        const rectX = Math.min(currX, startX);
+        const rectY = Math.min(currY, startY);
+        const rectW = Math.abs(currX - startX);
+        const rectH = Math.abs(currY - startY);
+        tmpRect.css({
+          top: rectY + "px",
+          left: rectX + "px",
+          width: rectW + "px",
+          height: rectH + "px"
+        });
+      });
+
+      $(document).on("mouseup.highlightDrag", function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        const pageDiv = $content.closest(".page");
+        const pageNum = parseInt(pageDiv.attr("data-page"), 10);
+        const pageIdx = currentPageIndex + (pageNum === 2 ? 1 : 0);
+        const rectPos = tmpRect.position();
+        const rectW = tmpRect.width();
+        const rectH = tmpRect.height();
+
+        if (rectW > 5 && rectH > 5) {
+          const rectId = Date.now();
+          highlights[pageIdx].push({
+            id: rectId,
+            x: rectPos.left,
+            y: rectPos.top,
+            w: rectW,
+            h: rectH,
+            color: currentHighlightColor
+          });
+          tmpRect.attr("data-id", rectId);
+          tmpRect.on("click", function(evt) {
+            evt.stopPropagation();
+            const rid = $(this).data("id");
+            highlights[pageIdx] = highlights[pageIdx].filter(item => item.id !== rid);
+            $(this).remove();
+          });
+        } else {
+          tmpRect.remove();
+        }
+
+        $(document).off("mousemove.highlightDrag mouseup.highlightDrag");
+        tmpRect = null;
+        isHighlightMode = false;
+        $("body").removeClass("highlight-mode");
+        $("#highlightBtn").prop("disabled", false);
+      });
+    });
+
+    // =============================================
+    // 13. Ctrl+click để thêm note
+    // =============================================
+    $(".page-container").on("click", ".page-content", function(e) {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const $content = $(this);
+      const pageDiv = $content.closest(".page");
+      const pageNum = parseInt(pageDiv.attr("data-page"), 10);
+      const pageIdx = currentPageIndex + (pageNum === 2 ? 1 : 0);
+      const offset = $content.offset();
+      const clickX = e.pageX - offset.left;
+      const clickY = e.pageY - offset.top;
+      const noteId = Date.now();
+      const noteObj = { id: noteId, x: clickX, y: clickY, text: "" };
+      notes[pageIdx].push(noteObj);
+      // Lưu vào localStorage
+      saveNotesToStorage();
+
+      const icon = $('<i class="fa fa-sticky-note note-icon"></i>');
+      icon.css({ top: clickY + "px", left: clickX + "px" });
+      icon.on("click", function(evt) {
+        evt.stopPropagation();
+        showNotePopup($(this).closest(".page-content"), noteObj, pageIdx, icon);
+      });
+      $content.append(icon);
+      showNotePopup($content, noteObj, pageIdx, icon);
+    });
+
+    // =============================================
+    // 14. Hiển thị popup note (thêm/sửa/xóa)
+    // =============================================
+    function showNotePopup(wrapper, noteObj, pageIdx, icon) {
+      wrapper.find(".note-popup").remove();
+      const popup = $('<div class="note-popup"></div>');
+      const closeBtn = $('<span class="close-btn">&times;</span>');
+      const textarea = $(`<textarea placeholder="Nhập note...">${noteObj.text}</textarea>`);
+      const deleteBtn = $(`<button class="btn btn-sm btn-danger delete-btn">Xóa note</button>`);
+      popup.append(closeBtn).append(textarea).append(deleteBtn);
+
+      const iconPos = icon.position();
+      const popupWidth = 220;
+      const popupHeight = 120;
+      let topPos = iconPos.top + 20;
+      let leftPos = iconPos.left + 20;
+      if (iconPos.left + popupWidth + 30 > wrapper.width()) {
+        leftPos = iconPos.left - popupWidth - 10;
+      }
+      if (iconPos.top + popupHeight + 30 > wrapper.height()) {
+        topPos = iconPos.top - popupHeight - 10;
+      }
+      popup.css({ top: topPos + "px", left: leftPos + "px" });
+      wrapper.append(popup);
+
+      textarea.focus();
+      closeBtn.on("click", function() { popup.remove(); });
+      textarea.on("blur", function() {
+        if (popup.parent().length) {
+          noteObj.text = $(this).val().trim();
+          if (noteObj.text === "") {
+            notes[pageIdx] = notes[pageIdx].filter(n => n.id !== noteObj.id);
+            icon.remove();
+          }
+          // Lưu lại localStorage mỗi lần thay đổi
+          saveNotesToStorage();
+          popup.remove();
+        }
+      });
+      deleteBtn.on("click", function() {
+        notes[pageIdx] = notes[pageIdx].filter(n => n.id !== noteObj.id);
+        icon.remove();
+        saveNotesToStorage();
+        popup.remove();
+      });
+    }
+
+    // =============================================
+    // 15. Mở/Đóng settings panel
+    // =============================================
+    $("#btnSettings").click(function() {
+      $("#settingsPanel").toggleClass("open");
+    });
+    $("#btnCloseSettings").click(function() {
+      $("#settingsPanel").removeClass("open");
+    });
+    $(document).on("click", function(e) {
+      if (!$(e.target).closest("#settingsPanel, #btnSettings").length) {
+        $("#settingsPanel").removeClass("open");
+      }
+    });
+
+    // =============================================
+    // 16. Logic cho cài đặt (Color Mode, Font Size, v.v.)
+    // =============================================
+    $("input[name='colorMode']").change(function() {
+      const mode = $("input[name='colorMode']:checked").val();
+      if (mode === "light") {
+        $("body").removeClass("mode-dark mode-sepia");
+      } else if (mode === "dark") {
+        $("body").removeClass("mode-sepia").addClass("mode-dark");
+      } else {
+        $("body").removeClass("mode-dark").addClass("mode-sepia");
+      }
+    });
+    $("#fontSizeRange").on("input change", function() {
+      const val = $(this).val() + "px";
+      $("#labelFontSize").text(val);
+      $(".page-content").css("font-size", val);
+    });
+    $("#lineHeightRange").on("input change", function() {
+      const val = $(this).val();
+      $("#labelLineHeight").text(val);
+      $(".page-content").css("line-height", val);
+    });
+    $("input[name='columnMode']").change(function() {
+      const col = $("input[name='columnMode']:checked").val();
+      if (col === "one") {
+        $("body").addClass("single-column");
+      } else {
+        $("body").removeClass("single-column");
+      }
+    });
+
+    // =============================================
+    // 17. Utility: Hàm chuyển hex → rgba
+    // =============================================
+    function hexToRgba(hex, alpha) {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    // =============================================
+    // 18. Fullscreen cho khung đọc PDF
+    // =============================================
+    $("#btnFullScreen").click(function() {
+      const elem = document.getElementById("pdfReaderWrapper");
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen();
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      }
+    });
+
+    // =============================================
+    // 19. AJAX: Submit comment và chèn vào danh sách
+    // =============================================
+    $('#commentForm').on('submit', function(e) {
+      e.preventDefault();
+      const $form = $(this);
+      const url = $form.attr('action');
+      const data = $form.serialize();
+
+      // Ẩn trước các lỗi cũ
+      $('#commentError').addClass('d-none').text('');
+
+      $.ajax({
+        url: url,
+        method: 'POST',
+        data: data,
+        headers: {'X-Requested-With': 'XMLHttpRequest'},
+        success: function(resp) {
+          if (resp.status === 'success') {
+            const c = resp.comment;
+            const newItem = `
+              <li class="list-group-item" data-comment-id="${c.id}">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <strong>${c.name}</strong>
+                    <span class="text-muted small ml-2">${c.created_at}</span>
+                  </div>
+                </div>
+                <div class="mt-2">${c.message.replace(/\n/g, '<br>')}</div>
+              </li>`;
+            $('#commentList').prepend(newItem);
+
+            // Cập nhật tổng số comment
+            const total = parseInt($('#totalCommentCount').text()) + 1;
+            $('#totalCommentCount').text(total);
+
+            // Reset textarea và parent
+            $form.find('textarea[name="message"]').val('');
+            $form.find('input[name="parent"]').val('');
+          }
+        },
+        error: function(xhr) {
+          if (xhr.responseJSON && xhr.responseJSON.errors) {
+            $('#commentError').removeClass('d-none').html(xhr.responseJSON.errors.join('<br>'));
+          } else {
+            $('#commentError').removeClass('d-none').text('Đã có lỗi xảy ra, vui lòng thử lại.');
+          }
+        }
+      });
+    });
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    // Khi người dùng click vào nút "Reply"
+    $('#comment-list').on('click', '.reply-btn', function(e) {
+      e.preventDefault();
+      let commentId = $(this).data('comment-id');
+
+      // Set giá trị parent input
+      $('#id_parent').val(commentId);
+
+      // Hiển thị nút "Hủy reply"
+      $('#cancel-reply-btn').show();
+
+      // Chuyển focus xuống textarea
+      $('html, body').animate({
+        scrollTop: $('#comment-form').offset().top - 100
+      }, 300);
+      $('#comment-message').focus();
+    });
+
+    // Khi click "Hủy reply", xóa parent input và ẩn nút
+    $('#cancel-reply-btn').click(function() {
+      $('#id_parent').val('');
+      $(this).hide();
+    });
+  });
+</script>
+<script>
+  document.getElementById('btn-combo-search').addEventListener('click', function() {
+    const word = document.getElementById('combo-input-word').value.trim();
+    const resultDiv = document.getElementById('combo-result');
+
+    if (!word) {
+      alert('Vui lòng nhập từ tiếng Anh.');
+      return;
+    }
+
+    resultDiv.innerHTML = 'Đang tải định nghĩa...';
+
+    // 1. Lấy định nghĩa từ DictionaryAPI.dev
+    fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(word))
+      .then(resp => {
+        if (!resp.ok) throw new Error('Không tìm thấy định nghĩa (DictionaryAPI).');
+        return resp.json();
+      })
+      .then(dictData => {
+        let html = `<h6><strong>${dictData[0].word}</strong> 
+                    <small>/${dictData[0].phonetic || ''}/</small></h6>`;
+
+        dictData[0].meanings.forEach(meaning => {
+          html += `<p><em>${meaning.partOfSpeech}</em></p><ul>`;
+          meaning.definitions.forEach(d => {
+            html += `<li>${d.definition}`;
+            if (d.example) {
+              html += `<br><small><em>VD:</em> ${d.example}</small>`;
+            }
+            html += `</li>`;
+          });
+          html += `</ul>`;
+        });
+
+        resultDiv.innerHTML = html + '<hr><p>Đang tải bản dịch từ Glosbe...</p>';
+
+             });
+  });
+</script>
+
+
+{% endblock %}
+
+

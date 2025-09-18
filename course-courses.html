@@ -1,0 +1,166 @@
+{% extends 'courseSale/_Base.html' %}
+{% load static %}
+
+{% block main_content %}
+  <!-- Toolbar Styles -->
+  <style>
+    .toolbar { gap: 0.75rem; }
+    .toolbar .form-control { min-width: 160px; }
+    .course-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .course-card:hover { transform: translateY(-6px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+  </style>
+
+  <div class="container py-5">
+    <!-- Toolbar -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 toolbar">
+      <h2 class="h3 text-primary font-weight-bold mb-2">Our Courses</h2>
+      <div class="d-flex flex-wrap align-items-end">
+        <div class="form-group mb-2 mr-2">
+          <input type="text" id="search-keyword" class="form-control" placeholder="🔍 Search courses..." aria-label="Search courses">
+        </div>
+        <div class="form-group mb-2 mr-2">
+          <select id="filter-category" class="form-control" aria-label="Filter by category">
+            <option value="">All Categories</option>
+            {% for cat in categories %}
+              <option value="{{ cat.name }}">{{ cat.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group mb-2 mr-2">
+          <select id="filter-duration" class="form-control" aria-label="Filter by duration">
+            <option value="">All Durations</option>
+            <option value="5 days">5 days</option>
+            <option value="1 week">1 week</option>
+            <option value="2 weeks">2 weeks</option>
+            <option value="1 month">1 month</option>
+            <option value="2 months">2 months</option>
+            <option value="3 months">3 months</option>
+            <option value="6 months">6 months</option>
+          </select>
+        </div>
+        <div class="form-group mb-2 mr-2">
+          <input type="number" id="filter-price" class="form-control" placeholder="Max Price (USD)" aria-label="Filter by price">
+        </div>
+        <div class="form-group mb-2 mr-2">
+          <select id="filter-per-page" class="form-control" aria-label="Show per page">
+            <option value="4">4 per page</option>
+            <option value="8" selected>8 per page</option>
+            <option value="12">12 per page</option>
+            <option value="24">24 per page</option>
+          </select>
+        </div>
+        <div class="form-group mb-2">
+          <button id="apply-filters" class="btn btn-primary px-4">Apply</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Courses Grid -->
+    <div class="row" id="courses-container">
+      {% for course in courses %}
+        <div class="col-sm-6 col-md-4 mb-4 course-card" 
+             data-title="{{ course.courseName|lower }}" 
+             data-category="{{ course.courseCategory.name }}" 
+             data-duration="{{ course.courseDuration }}" 
+             data-price="{{ course.price }}">
+          <div class="card h-100 shadow-sm">
+            <img src="{{ course.courseImage }}" alt="{{ course.courseName }}" class="card-img-top" style="height:180px; object-fit:cover;">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">{{ course.courseName }}</h5>
+              <p class="card-text text-muted small mb-3">
+                <i class="fa fa-tags"></i> {{ course.courseCategory.name }} &nbsp;|
+                <i class="fa fa-clock"></i> {{ course.courseDuration }} &nbsp;|
+                <i class="fa fa-dollar-sign"></i> {{ course.price }}
+              </p>
+              <p class="card-text mb-4">{{ course.courseDescription }}</p>
+              <a href="{% url 'blogScience:sale-course-about' course.id %}" class="mt-auto btn btn-outline-primary">Details</a>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12"><p class="text-center">No courses available.</p></div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination Controls -->
+    <nav class="d-flex justify-content-center">
+      <ul id="pagination" class="pagination"></ul>
+    </nav>
+  </div>
+
+  <!-- Filtering & Pagination Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = Array.from(document.querySelectorAll('.course-card'));
+      let currentPage = 1;
+      let perPage = parseInt(document.getElementById('filter-per-page').value);
+      let filtered = cards;
+
+      const searchInput = document.getElementById('search-keyword');
+      const categorySelect = document.getElementById('filter-category');
+      const durationSelect = document.getElementById('filter-duration');
+      const priceInput = document.getElementById('filter-price');
+      const perPageSelect = document.getElementById('filter-per-page');
+      const applyBtn = document.getElementById('apply-filters');
+
+      function applyFilters() {
+        const kw = searchInput.value.trim().toLowerCase();
+        const cat = categorySelect.value;
+        const dur = durationSelect.value;
+        const maxP = priceInput.value ? parseFloat(priceInput.value) : Infinity;
+        perPage = parseInt(perPageSelect.value);
+
+        filtered = cards.filter(card => {
+          const title = card.dataset.title;
+          const category = card.dataset.category;
+          const duration = card.dataset.duration;
+          const price = parseFloat(card.dataset.price);
+          return (kw === '' || title.includes(kw)) &&
+                 (!cat || category === cat) &&
+                 (!dur || duration === dur) &&
+                 price <= maxP;
+        });
+
+        currentPage = 1;
+        renderPage();
+        renderPagination();
+      }
+
+      function renderPage() {
+        cards.forEach(c => c.style.display = 'none');
+        const start = (currentPage - 1) * perPage;
+        filtered.slice(start, start + perPage).forEach(c => c.style.display = 'block');
+      }
+
+      function renderPagination() {
+        const pagEl = document.getElementById('pagination');
+        pagEl.innerHTML = '';
+        const pageCount = Math.ceil(filtered.length / perPage) || 1;
+
+        for (let i = 1; i <= pageCount; i++) {
+          const li = document.createElement('li');
+          li.className = 'page-item ' + (i === currentPage ? 'active' : '');
+          const a = document.createElement('a');
+          a.className = 'page-link';
+          a.href = '#';
+          a.textContent = i;
+          a.addEventListener('click', e => {
+            e.preventDefault();
+            currentPage = i;
+            renderPage();
+            renderPagination();
+          });
+          li.appendChild(a);
+          pagEl.appendChild(li);
+        }
+      }
+
+      applyBtn.addEventListener('click', applyFilters);
+      perPageSelect.addEventListener('change', applyFilters);
+      searchInput.addEventListener('input', () => setTimeout(applyFilters, 300));
+
+      // Initialize
+      applyFilters();
+    });
+  </script>
+{% endblock %}

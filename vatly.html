@@ -1,0 +1,595 @@
+{% extends 'contestTem/_Base.html' %}
+
+{% block header_class %}exam-hide{% endblock %}
+
+{% block content %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Giải Toán Vật Lý THPT Quốc Gia</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+         crossorigin="anonymous">
+
+  <!-- Font Awesome (tùy chọn) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Tùy chỉnh CSS nhỏ -->
+  <style>
+    body {
+      padding-top: 70px;
+      background-color: #f2f2f2;
+    }
+    .section-title {
+      margin-top: 30px;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 5px;
+      font-weight: 600;
+    }
+    .card-header h5 {
+      margin: 0;
+    }
+    .output-area {
+      min-height: 50px;
+      background-color: #eef1f5;
+      padding: 10px;
+      border-radius: 4px;
+      font-family: "Courier New", Courier, monospace;
+      white-space: pre-wrap;
+    }
+    .btn-solve {
+      width: 100%;
+    }
+    @media (max-width: 576px) {
+      .col-sm-6, .col-sm-4 {
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+
+  <div class="container">
+    <!-- Navbar cố định -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Giải Vật Lý THPTQG</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+              aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="#nhiet">Vật Lý Nhiệt</a></li>
+          <li class="nav-item"><a class="nav-link" href="#khi">Khí Lý Tưởng</a></li>
+          <li class="nav-item"><a class="nav-link" href="#tu">Từ Trường</a></li>
+          <li class="nav-item"><a class="nav-link" href="#hatnhan">Vật Lý Hạt Nhân</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+    <!-- 1. Vật lý nhiệt -->
+    <div id="nhiet" class="section-title">
+      <h3>Vật Lý Nhiệt</h3>
+    </div>
+    <div class="row g-4">
+      <!-- 1.1 Tính nhiệt lượng Q = m·c·∆T -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-danger text-white">
+            <h5>Tính Nhiệt Lượng: \(Q = m \,c\,\Delta T\)</h5>
+          </div>
+          <div class="card-body">
+            <form id="formNhietLuong">
+              <div class="row">
+                <div class="col-sm-4 mb-3">
+                  <label for="mass" class="form-label">Khối lượng \(m\) (kg):</label>
+                  <input type="number" step="any" id="mass" class="form-control" placeholder="Ví dụ: 2.5">
+                </div>
+                <div class="col-sm-4 mb-3">
+                  <label for="cp" class="form-label">Nhiệt dung riêng \(c\) (J/kg·K):</label>
+                  <input type="number" step="any" id="cp" class="form-control" placeholder="Ví dụ: 4186">
+                </div>
+                <div class="col-sm-4 mb-3">
+                  <label for="dT" class="form-label">Chênh lệch T \( \Delta T\) (K):</label>
+                  <input type="number" step="any" id="dT" class="form-control" placeholder="Ví dụ: 20">
+                </div>
+              </div>
+              <button type="button" class="btn btn-danger btn-solve" onclick="solveNhietLuong()">Tính Q</button>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputNhietLuong" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1.2 Tính công trong quá trình đẳng nhiệt (Isothermal): W = nRT ln(V2/V1) -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-warning">
+            <h5>Quá Trình Đẳng Nhiệt (W = nRT ln(V₂/V₁))</h5>
+          </div>
+          <div class="card-body">
+            <form id="formCongDangNhiet">
+              <div class="row">
+                <div class="col-sm-3 mb-3">
+                  <label for="n1" class="form-label">Số mol \(n\):</label>
+                  <input type="number" step="any" id="n1" class="form-control" placeholder="Ví dụ: 1">
+                </div>
+                <div class="col-sm-3 mb-3">
+                  <label for="Tiso" class="form-label">Nhiệt độ \(T\) (K):</label>
+                  <input type="number" step="any" id="Tiso" class="form-control" placeholder="Ví dụ: 300">
+                </div>
+                <div class="col-sm-3 mb-3">
+                  <label for="V1" class="form-label">Thể tích \(V_1\) (m³):</label>
+                  <input type="number" step="any" id="V1" class="form-control" placeholder="Ví dụ: 0.01">
+                </div>
+                <div class="col-sm-3 mb-3">
+                  <label for="V2" class="form-label">Thể tích \(V_2\) (m³):</label>
+                  <input type="number" step="any" id="V2" class="form-control" placeholder="Ví dụ: 0.02">
+                </div>
+              </div>
+              <button type="button" class="btn btn-warning btn-solve" onclick="solveCongDangNhiet()">Tính W</button>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputCongDangNhiet" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Khí lý tưởng -->
+    <div id="khi" class="section-title">
+      <h3>Khí Lý Tưởng</h3>
+    </div>
+    <div class="row g-4">
+      <!-- 2.1 Phương trình trạng thái: PV = nRT (tính biến số còn thiếu) -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h5>Phương Trình Trạng Thái: \(PV = nRT\)</h5>
+          </div>
+          <div class="card-body">
+            <form id="formPVnRT">
+              <div class="row">
+                <div class="col-sm-3 mb-3">
+                  <label for="P" class="form-label">Áp suất \(P\) (Pa):</label>
+                  <input type="number" step="any" id="P" class="form-control" placeholder="Ví dụ: 101325">
+                </div>
+                <div class="col-sm-3 mb-3">
+                  <label for="V" class="form-label">Thể tích \(V\) (m³):</label>
+                  <input type="number" step="any" id="V" class="form-control" placeholder="Ví dụ: 0.01">
+                </div>
+                <div class="col-sm-3 mb-3">
+                  <label for="n2" class="form-label">Số mol \(n\) (mol):</label>
+                  <input type="number" step="any" id="n2" class="form-control" placeholder="Ví dụ: 1">
+                </div>
+                <div class="col-sm-3 mb-3">
+                  <label for="T" class="form-label">Nhiệt độ \(T\) (K):</label>
+                  <input type="number" step="any" id="T" class="form-control" placeholder="Ví dụ: 300">
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary btn-solve" onclick="solvePVnRT()">Tính biến số thiếu</button>
+            </form>
+            <small class="text-muted">Nếu để trống một trường, hàm sẽ tính giá trị đó dựa trên 3 thông số còn lại.</small>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputPVnRT" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2.2 Quá trình đẳng áp: W = P·(V₂ - V₁), Q = n·c_p·ΔT -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-info text-white">
+            <h5>Quá Trình Đẳng Áp: \(W = P(V_2 - V_1)\)</h5>
+          </div>
+          <div class="card-body">
+            <form id="formDangAp">
+              <div class="row">
+                <div class="col-sm-3 mb-3">
+                  <label for="Piso" class="form-label">Áp suất \(P\) (Pa):</label>
+                  <input type="number" step="any" id="Piso" class="form-control" placeholder="Ví dụ: 101325">
+                </div>
+                <div class="col-sm-3 mb-3">
+                  <label for="V1_iso" class="form-label">Thể tích \(V_1\) (m³):</label>
+                  <input type="number" step="any" id="V1_iso" class="form-control" placeholder="Ví dụ: 0.01">
+                </div>
+                <div class="col-sm-3 mb-3">
+                  <label for="V2_iso" class="form-label">Thể tích \(V_2\) (m³):</label>
+                  <input type="number" step="any" id="V2_iso" class="form-control" placeholder="Ví dụ: 0.02">
+                </div>
+                <div class="col-sm-3 mb-3">
+                  <label for="n3" class="form-label">Số mol \(n\) (mol):</label>
+                  <input type="number" step="any" id="n3" class="form-control" placeholder="Ví dụ: 1">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4 mb-3">
+                  <label for="cp_iso" class="form-label">Nhiệt dung riêng đẳng áp \(c_p\) (J/mol·K):</label>
+                  <input type="number" step="any" id="cp_iso" class="form-control" placeholder="Ví dụ: 29.1">
+                </div>
+                <div class="col-sm-4 mb-3">
+                  <label for="T1_iso" class="form-label">Nhiệt độ ban đầu \(T_1\) (K):</label>
+                  <input type="number" step="any" id="T1_iso" class="form-control" placeholder="Ví dụ: 300">
+                </div>
+                <div class="col-sm-4 mb-3">
+                  <label for="T2_iso" class="form-label">Nhiệt độ cuối \(T_2\) (K):</label>
+                  <input type="number" step="any" id="T2_iso" class="form-control" placeholder="Ví dụ: 600">
+                </div>
+              </div>
+              <button type="button" class="btn btn-info btn-solve" onclick="solveDangAp()">Tính W, Q</button>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputDangAp" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Từ trường -->
+    <div id="tu" class="section-title">
+      <h3>Từ Trường</h3>
+    </div>
+    <div class="row g-4">
+      <!-- 3.1 Lực từ lên hạt điện tích: F = q·v·B·sinθ -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-success text-white">
+            <h5>Lực Từ Lên Hạt Điện Tích: \(F = q\,v\,B\,\sin\theta\)</h5>
+          </div>
+          <div class="card-body">
+            <form id="formLorentz">
+              <div class="row">
+                <div class="col-sm-3 mb-3">
+                  <label for="q" class="form-label">Điện tích \(q\) (C):</label>
+                  <input type="number" step="any" id="q" class="form-control" placeholder="Ví dụ: 1.6e-19">
+                </div>
+                <div class="col-sm-3 mb-3">
+                  <label for="v" class="form-label">Vận tốc \(v\) (m/s):</label>
+                  <input type="number" step="any" id="v" class="form-control" placeholder="Ví dụ: 2e6">
+                </div>
+                <div class="col-sm-3 mb-3">
+                  <label for="B" class="form-label">Từ trường \(B\) (T):</label>
+                  <input type="number" step="any" id="B" class="form-control" placeholder="Ví dụ: 0.5">
+                </div>
+                <div class="col-sm-3 mb-3">
+                  <label for="theta" class="form-label">Góc θ (độ):</label>
+                  <input type="number" step="any" id="theta" class="form-control" placeholder="Ví dụ: 90">
+                </div>
+              </div>
+              <button type="button" class="btn btn-success btn-solve" onclick="solveLorentz()">Tính F</button>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputLorentz" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3.2 Lực từ lên dây dẫn: F = I·L·B·sinθ -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-secondary text-white">
+            <h5>Lực Từ Lên Dây Dẫn: \(F = I\,L\,B\,\sin\theta\)</h5>
+          </div>
+          <div class="card-body">
+            <form id="formForceWire">
+              <div class="row">
+                <div class="col-sm-3 mb-3">
+                  <label for="I" class="form-label>Dòng điện \(I\) (A):</label>
+                  <input type="number" step="any" id="I" class="form-control" placeholder="Ví dụ: 5">
+                </div>
+                <div class="col-sm-3 mb-3">
+                  <label for="L" class="form-label">Chiều dài \(L\) (m):</label>
+                  <input type="number" step="any" id="L" class="form-control" placeholder="Ví dụ: 0.2">
+                </div>
+                <div class="col-sm-3 mb-3">
+                  <label for="Bwire" class="form-label">Từ trường \(B\) (T):</label>
+                  <input type="number" step="any" id="Bwire" class="form-control" placeholder="Ví dụ: 0.5">
+                </div>
+                <div class="col-sm-3 mb-3">
+                  <label for="thetaWire" class="form-label">Góc θ (độ):</label>
+                  <input type="number" step="any" id="thetaWire" class="form-control" placeholder="Ví dụ: 90">
+                </div>
+              </div>
+              <button type="button" class="btn btn-secondary btn-solve" onclick="solveForceWire()">Tính F</button>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputForceWire" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Vật lý hạt nhân -->
+    <div id="hatnhan" class="section-title">
+      <h3>Vật Lý Hạt Nhân</h3>
+    </div>
+    <div class="row g-4">
+      <!-- 4.1 Phân rã mũ: N(t) = N0 · e^(−λt), λ = ln2/T₁/₂ -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-dark text-white">
+            <h5>Phân Rã Mũ: \(N(t) = N_0 \,e^{-\lambda t}\)</h5>
+          </div>
+          <div class="card-body">
+            <form id="formHalfLife">
+              <div class="row">
+                <div class="col-sm-4 mb-3">
+                  <label for="N0" class="form-label">Số hạt ban đầu \(N_0\):</label>
+                  <input type="number" step="any" id="N0" class="form-control" placeholder="Ví dụ: 1e6">
+                </div>
+                <div class="col-sm-4 mb-3">
+                  <label for="T12" class="form-label">Nửa đời \(T_{1/2}\) (s):</label>
+                  <input type="number" step="any" id="T12" class="form-control" placeholder="Ví dụ: 1600">
+                </div>
+                <div class="col-sm-4 mb-3">
+                  <label for="tDecay" class="form-label">Thời gian \(t\) (s):</label>
+                  <input type="number" step="any" id="tDecay" class="form-control" placeholder="Ví dụ: 3200">
+                </div>
+              </div>
+              <button type="button" class="btn btn-dark btn-solve" onclick="solveHalfLife()">Tính N(t), λ</button>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputHalfLife" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4.2 Năng lượng liên kết: E = Δm·c² -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-secondary text-white">
+            <h5>Năng Lượng Liên Kết: \(E = \Delta m\,c^2\)</h5>
+          </div>
+          <div class="card-body">
+            <form id="formBindingEnergy">
+              <div class="row">
+                <div class="col-sm-6 mb-3">
+                  <label for="dm" class="form-label">Khối lượng khuyết \(\Delta m\) (kg):</label>
+                  <input type="number" step="any" id="dm" class="form-control" placeholder="Ví dụ: 1e-30">
+                </div>
+                <div class="col-sm-6 mb-3">
+                  <label for="c" class="form-label">Tốc độ ánh sáng \(c\) (m/s):</label>
+                  <input type="number" step="any" id="c" class="form-control" placeholder="Ví dụ: 3e8">
+                </div>
+              </div>
+              <button type="button" class="btn btn-secondary btn-solve" onclick="solveBindingEnergy()">Tính E</button>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputBindingEnergy" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- container -->
+
+  <!-- Thư viện JS bên ngoài -->
+  <!-- Math.js (tính toán biểu thức, e^x, ln, ...) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.js"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <!-- Bootstrap Bundle JS (Popper & JS) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+          crossorigin="anonymous"></script>
+
+  <!-- Tập lệnh JS chính -->
+  <script>
+    // ---------- 1. Vật lý nhiệt ----------
+    // 1.1 Tính nhiệt lượng Q = m·c·ΔT
+    function solveNhietLuong() {
+      const m = parseFloat(document.getElementById('mass').value);
+      const c = parseFloat(document.getElementById('cp').value);
+      const dT = parseFloat(document.getElementById('dT').value);
+      const output = document.getElementById('outputNhietLuong');
+      output.textContent = '';
+      if (isNaN(m) || isNaN(c) || isNaN(dT)) {
+        output.textContent = 'Vui lòng nhập đầy đủ m, c và ΔT.';
+        return;
+      }
+      const Q = math.evaluate('m * c * dT', { m: m, c: c, dT: dT });
+      output.textContent = `Q = m·c·ΔT = ${m.toFixed(4)} · ${c.toFixed(4)} · ${dT.toFixed(4)} = ${Q.toFixed(6)} J`;
+    }
+
+    // 1.2 Công trong quá trình đẳng nhiệt: W = n·R·T·ln(V2/V1)
+    function solveCongDangNhiet() {
+      const n = parseFloat(document.getElementById('n1').value);
+      const T = parseFloat(document.getElementById('Tiso').value);
+      const V1 = parseFloat(document.getElementById('V1').value);
+      const V2 = parseFloat(document.getElementById('V2').value);
+      const output = document.getElementById('outputCongDangNhiet');
+      output.textContent = '';
+      if (isNaN(n) || isNaN(T) || isNaN(V1) || isNaN(V2) || V1 <= 0 || V2 <= 0) {
+        output.textContent = 'Vui lòng nhập đúng n, T, V₁, V₂ > 0.';
+        return;
+      }
+      const R = 8.314462618; // J/(mol·K)
+      const lnTerm = math.log(V2 / V1);
+      const W = math.evaluate('n * R * T * lnTerm', { n: n, R: R, T: T, lnTerm: lnTerm });
+      let result = `W = n·R·T·ln(V₂/V₁)\n`;
+      result += `  = ${n.toFixed(4)} · ${R.toFixed(4)} · ${T.toFixed(4)} · ln(${V2.toFixed(4)}/${V1.toFixed(4)})\n`;
+      result += `  = ${W.toFixed(6)} J`;
+      output.textContent = result;
+    }
+
+    // ---------- 2. Khí lý tưởng ----------
+    // 2.1 Tính biến số thiếu trong PV = nRT
+    function solvePVnRT() {
+      let P = parseFloat(document.getElementById('P').value);
+      let V = parseFloat(document.getElementById('V').value);
+      let n = parseFloat(document.getElementById('n2').value);
+      let T = parseFloat(document.getElementById('T').value);
+      const output = document.getElementById('outputPVnRT');
+      output.textContent = '';
+      const R = 8.314462618; // J/(mol·K)
+      // Đếm có bao nhiêu giá trị đã nhập
+      let countEmpty = 0;
+      if (isNaN(P)) countEmpty++;
+      if (isNaN(V)) countEmpty++;
+      if (isNaN(n)) countEmpty++;
+      if (isNaN(T)) countEmpty++;
+      if (countEmpty !== 1) {
+        output.textContent = 'Vui lòng để trống đúng 1 biến số và nhập đủ 3 biến còn lại.';
+        return;
+      }
+      try {
+        if (isNaN(P)) {
+          // P = nRT / V
+          const Pcalc = math.evaluate('n * R * T / V', { n: n, R: R, T: T, V: V });
+          output.textContent = `P = nRT/V = ${Pcalc.toFixed(6)} Pa`;
+        } else if (isNaN(V)) {
+          // V = nRT / P
+          const Vcalc = math.evaluate('n * R * T / P', { n: n, R: R, T: T, P: P });
+          output.textContent = `V = nRT/P = ${Vcalc.toFixed(6)} m³`;
+        } else if (isNaN(n)) {
+          // n = PV / (R T)
+          const ncalc = math.evaluate('P * V / (R * T)', { P: P, V: V, R: R, T: T });
+          output.textContent = `n = PV/(R T) = ${ncalc.toFixed(6)} mol`;
+        } else {
+          // T = PV / (n R)
+          const Tcalc = math.evaluate('P * V / (n * R)', { P: P, V: V, n: n, R: R });
+          output.textContent = `T = PV/(n R) = ${Tcalc.toFixed(6)} K`;
+        }
+      } catch (err) {
+        output.textContent = 'Lỗi khi tính PV = nRT: ' + err;
+      }
+    }
+
+    // 2.2 Quá trình đẳng áp: W = P·(V₂ - V₁), Q = n·c_p·ΔT
+    function solveDangAp() {
+      const P = parseFloat(document.getElementById('Piso').value);
+      const V1 = parseFloat(document.getElementById('V1_iso').value);
+      const V2 = parseFloat(document.getElementById('V2_iso').value);
+      const n = parseFloat(document.getElementById('n3').value);
+      const cp = parseFloat(document.getElementById('cp_iso').value);
+      const T1 = parseFloat(document.getElementById('T1_iso').value);
+      const T2 = parseFloat(document.getElementById('T2_iso').value);
+      const output = document.getElementById('outputDangAp');
+      output.textContent = '';
+      if (isNaN(P) || isNaN(V1) || isNaN(V2) || isNaN(n) || isNaN(cp) || isNaN(T1) || isNaN(T2)) {
+        output.textContent = 'Vui lòng nhập đầy đủ P, V₁, V₂, n, c_p, T₁, T₂.';
+        return;
+      }
+      // Công W = P·(V2 - V1)
+      const W = math.evaluate('P * (V2 - V1)', { P: P, V1: V1, V2: V2 });
+      // Nhiệt lượng Q = n·c_p·(T2 - T1)
+      const dT = T2 - T1;
+      const Q = math.evaluate('n * cp * dT', { n: n, cp: cp, dT: dT });
+      let res = '';
+      res += `W = P·(V₂ - V₁) = ${P.toFixed(4)}·(${V2.toFixed(4)} - ${V1.toFixed(4)}) = ${W.toFixed(6)} J\n`;
+      res += `ΔT = T₂ - T₁ = ${T2.toFixed(4)} - ${T1.toFixed(4)} = ${dT.toFixed(4)} K\n`;
+      res += `Q = n·c_p·ΔT = ${n.toFixed(4)}·${cp.toFixed(4)}·${dT.toFixed(4)} = ${Q.toFixed(6)} J`;
+      output.textContent = res;
+    }
+
+    // ---------- 3. Từ trường ----------
+    // 3.1 Lực từ lên hạt tích điện: F = q·v·B·sin(theta)
+    function solveLorentz() {
+      const q = parseFloat(document.getElementById('q').value);
+      const v = parseFloat(document.getElementById('v').value);
+      const B = parseFloat(document.getElementById('B').value);
+      const thetaDeg = parseFloat(document.getElementById('theta').value);
+      const output = document.getElementById('outputLorentz');
+      output.textContent = '';
+      if (isNaN(q) || isNaN(v) || isNaN(B) || isNaN(thetaDeg)) {
+        output.textContent = 'Vui lòng nhập đầy đủ q, v, B và θ.';
+        return;
+      }
+      const thetaRad = math.evaluate('thetaDeg * pi / 180', { thetaDeg: thetaDeg, pi: Math.PI });
+      const sinTheta = math.sin(thetaRad);
+      const F = math.evaluate('abs(q) * v * B * sinTheta', { q: q, v: v, B: B, sinTheta: sinTheta });
+      let res = `θ = ${thetaDeg.toFixed(4)}° = ${thetaRad.toFixed(6)} rad\n`;
+      res += `sinθ = ${sinTheta.toFixed(6)}\n`;
+      res += `F = |q|·v·B·sinθ = ${Math.abs(q).toExponential(4)}·${v.toExponential(4)}·${B.toExponential(4)}·${sinTheta.toFixed(6)} = ${F.toExponential(6)} N`;
+      output.textContent = res;
+    }
+
+    // 3.2 Lực từ trên dây dẫn: F = I·L·B·sin(theta)
+    function solveForceWire() {
+      const I = parseFloat(document.getElementById('I').value);
+      const L = parseFloat(document.getElementById('L').value);
+      const B = parseFloat(document.getElementById('Bwire').value);
+      const thetaDeg = parseFloat(document.getElementById('thetaWire').value);
+      const output = document.getElementById('outputForceWire');
+      output.textContent = '';
+      if (isNaN(I) || isNaN(L) || isNaN(B) || isNaN(thetaDeg)) {
+        output.textContent = 'Vui lòng nhập đầy đủ I, L, B và θ.';
+        return;
+      }
+      const thetaRad = math.evaluate('thetaDeg * pi / 180', { thetaDeg: thetaDeg, pi: Math.PI });
+      const sinTheta = math.sin(thetaRad);
+      const F = math.evaluate('I * L * B * sinTheta', { I: I, L: L, B: B, sinTheta: sinTheta });
+      let res = `θ = ${thetaDeg.toFixed(4)}° = ${thetaRad.toFixed(6)} rad\n`;
+      res += `sinθ = ${sinTheta.toFixed(6)}\n`;
+      res += `F = I·L·B·sinθ = ${I.toFixed(4)}·${L.toFixed(4)}·${B.toFixed(4)}·${sinTheta.toFixed(6)} = ${F.toFixed(6)} N`;
+      output.textContent = res;
+    }
+
+    // ---------- 4. Vật lý hạt nhân ----------
+    // 4.1 Phân rã mũ: N(t), λ
+    function solveHalfLife() {
+      const N0 = parseFloat(document.getElementById('N0').value);
+      const T12 = parseFloat(document.getElementById('T12').value);
+      const t = parseFloat(document.getElementById('tDecay').value);
+      const output = document.getElementById('outputHalfLife');
+      output.textContent = '';
+      if (isNaN(N0) || isNaN(T12) || isNaN(t) || T12 <= 0) {
+        output.textContent = 'Vui lòng nhập đầy đủ N₀, T₁/₂ > 0 và t.';
+        return;
+      }
+      const ln2 = math.log(2);
+      const lambda = ln2 / T12; // hằng số phân rã
+      const Nt = math.evaluate('N0 * exp(-lambda * t)', { N0: N0, lambda: lambda, t: t });
+      let res = `λ = ln(2) / T₁/₂ = ${ln2.toFixed(6)} / ${T12.toFixed(6)} = ${lambda.toExponential(6)} s⁻¹\n`;
+      res += `N(t) = N₀ · e^(−λ t) = ${N0.toExponential(4)} · e^(−${lambda.toExponential(4)}·${t.toFixed(4)}) = ${Nt.toExponential(6)}`;
+      output.textContent = res;
+    }
+
+    // 4.2 Năng lượng liên kết: E = Δm·c²
+    function solveBindingEnergy() {
+      const dm = parseFloat(document.getElementById('dm').value);
+      const c = parseFloat(document.getElementById('c').value);
+      const output = document.getElementById('outputBindingEnergy');
+      output.textContent = '';
+      if (isNaN(dm) || isNaN(c)) {
+        output.textContent = 'Vui lòng nhập đầy đủ Δm và c.';
+        return;
+      }
+      const E = math.evaluate('dm * c^2', { dm: dm, c: c });
+      let res = `E = Δm·c² = ${dm.toExponential(4)} · (${c.toExponential(4)})²\ n`;
+      res += `  = ${E.toExponential(6)} J`;
+      output.textContent = res;
+    }
+  </script>
+
+</body>
+{% endblock %}

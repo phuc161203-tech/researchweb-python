@@ -1,0 +1,1015 @@
+{% extends 'contestTem/_Base.html' %}
+
+{% block header_class %}exam-hide{% endblock %}
+
+{% block content %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Giải Bài Toán Sinh Học THPT Quốc Gia</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        crossorigin="anonymous">
+
+  <!-- Font Awesome (tùy chọn cho icon) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+         crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Tùy chỉnh CSS -->
+  <style>
+    body {
+      background-color: #f5f7fa;
+      padding-top: 70px;
+    }
+    .section-title {
+      margin-top: 40px;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #dee2e6;
+      padding-bottom: 5px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    .card-header h5 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+    .output-area {
+      min-height: 60px;
+      background-color: #eef1f5;
+      padding: 10px;
+      border-radius: 4px;
+      font-family: "Courier New", Courier, monospace;
+      white-space: pre-wrap;
+      color: #2c3e50;
+    }
+    .btn-solve {
+      width: 100%;
+    }
+    textarea {
+      resize: vertical;
+    }
+    @media (max-width: 576px) {
+      .col-sm-6, .col-sm-4 {
+        margin-bottom: 15px;
+      }
+    }
+  </style>
+</head>
+
+ 
+  <div class="container">
+ <!-- Navbar cố định -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Giải Toán Sinh Học THPTQG</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+              aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="#molgen">Di truyền phân tử</a></li>
+          <li class="nav-item"><a class="nav-link" href="#chromgen">Di truyền nhiễm sắc thể</a></li>
+          <li class="nav-item"><a class="nav-link" href="#epigen">Di truyền ngoài nhân</a></li>
+          <li class="nav-item"><a class="nav-link" href="#geneenv">Kiểu gen – Môi trường – Kiểu hình</a></li>
+          <li class="nav-item"><a class="nav-link" href="#breeding">Chọn tạo giống (lai hữu tính)</a></li>
+          <li class="nav-item"><a class="nav-link" href="#popgen">Di truyền quần thể</a></li>
+          <li class="nav-item"><a class="nav-link" href="#humangen">Di truyền học người</a></li>
+          <li class="nav-item"><a class="nav-link" href="#eviden">Bằng chứng tiến hóa</a></li>
+          <li class="nav-item"><a class="nav-link" href="#darwin">Darwin – Chọn lọc tự nhiên</a></li>
+          <li class="nav-item"><a class="nav-link" href="#modern">Thuyết tiến hóa tổng hợp</a></li>
+          <li class="nav-item"><a class="nav-link" href="#macroevo">Tiến hóa lớn – Phát sinh chủng loại</a></li>
+          <li class="nav-item"><a class="nav-link" href="#ecofactor">Môi trường & Nhân tố sinh thái</a></li>
+          <li class="nav-item"><a class="nav-link" href="#population">Quần thể sinh vật</a></li>
+          <li class="nav-item"><a class="nav-link" href="#community">Quần xã sinh vật</a></li>
+          <li class="nav-item"><a class="nav-link" href="#ecosystem">Hệ sinh thái</a></li>
+          <li class="nav-item"><a class="nav-link" href="#restoration">Phục hồi – Bảo tồn – PTBV</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+    <!-- 1. Di truyền phân tử -->
+    <div id="molgen" class="section-title"><h3>1. Di truyền phân tử</h3></div>
+    <div class="row g-4">
+      <!-- 1.1 Tính tỉ lệ % GC, AT trong đoạn DNA -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-danger text-white">
+            <h5>Tính %GC và %AT</h5>
+          </div>
+          <div class="card-body">
+            <form id="formGCContent">
+              <div class="mb-3">
+                <label for="dnaSeq" class="form-label">Nhập chuỗi DNA (chỉ gồm A, T, G, C; không phân biệt hoa thường):</label>
+                <textarea id="dnaSeq" class="form-control" rows="3" placeholder="Ví dụ: ATGCGCATTA..."></textarea>
+              </div>
+              <button type="button" class="btn btn-danger btn-solve" onclick="solveGCContent()">Tính %GC, %AT</button>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputGCContent" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1.2 Tính số codon – chiều dài protein (dựa vào số nucleotit) -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-warning">
+            <h5>Số codon & Chiều dài protein</h5>
+          </div>
+          <div class="card-body">
+            <form id="formCodonLength">
+              <div class="row">
+                <div class="col-sm-8 mb-3">
+                  <label for="nucleotides" class="form-label">Nhập tổng số nucleotit trong mRNA (số nguyên, chia hết cho 3):</label>
+                  <input type="number" step="1" id="nucleotides" class="form-control" placeholder="Ví dụ: 450">
+                </div>
+                <div class="col-sm-4 mb-3 d-flex align-items-end">
+                  <button type="button" class="btn btn-warning btn-solve" onclick="solveCodonLength()">Tính</button>
+                </div>
+              </div>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputCodonLength" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Di truyền nhiễm sắc thể -->
+    <div id="chromgen" class="section-title"><h3>2. Di truyền nhiễm sắc thể</h3></div>
+    <div class="row g-4">
+      <!-- 2.1 Tính xác suất kiểu gen ở đời con (đa gen, XO, XY…) – ví dụ Y-linked, X-linked, gen lặn trội -->
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h5>Xác suất kiểu gen/Xác suất phenotype trong phép lai</h5>
+          </div>
+          <div class="card-body">
+            <p><em>Ví dụ hỗ trợ: Lai đơn tính, gen trội lặn, liên kết giới tính (X-linked), v.v.</em></p>
+            <form id="formPedigree">
+              <div class="row">
+                <div class="col-sm-3 mb-3">
+                  <label for="alleleP1" class="form-label">Kiểu gen P1 (ví dụ: X<sup>AX</sup> X<sup>a</sup>):</label>
+                  <input type="text" id="alleleP1" class="form-control" placeholder="Ví dụ: XAXa">
+                </div>
+                <div class="col-sm-3 mb-3">
+                  <label for="alleleP2" class="form-label">Kiểu gen P2 (ví dụ: X<sup>a</sup> Y):</label>
+                  <input type="text" id="alleleP2" class="form-control" placeholder="Ví dụ: XaY">
+                </div>
+                <div class="col-sm-6 mb-3">
+                  <label class="form-label">Chọn loại di truyền:</label>
+                  <select id="inheritType" class="form-select">
+                    <option value="autosomal">Autosomal (lặn – trội)</option>
+                    <option value="xLinked">X-linked</option>
+                    <option value="yLinked">Y-linked</option>
+                  </select>
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary btn-solve" onclick="solveChromGen()">Tính Xác suất</button>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputChromGen" class="output-area"></div>
+            </div>
+            <small class="text-muted">* Lưu ý: Kết quả chỉ mang tính minh họa cho gen trội/lặn đơn tính hoặc di truyền giới tính đơn giản. Có thể mở rộng cho đa gen, hiệp đồng gen…</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Di truyền ngoài nhân -->
+    <div id="epigen" class="section-title"><h3>3. Di truyền ngoài nhân</h3></div>
+    <div class="row g-4">
+      <!-- 3.1 Ví dụ tính tỉ lệ truyền theo mẹ (mitochondrial inheritance) -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-success text-white">
+            <h5>Truyền Mitochondrial (như: bệnh di truyền mẹ)</h5>
+          </div>
+          <div class="card-body">
+            <p><em>Phương pháp: Tất cả con của mẹ bệnh đều biểu hiện; con của bố bệnh KHÔNG di truyền.</em></p>
+            <form id="formMitochondrial">
+              <div class="mb-3">
+                <label class="form-label">Số con (tổng) của một người mẹ mang mẫu (​N​):</label>
+                <input type="number" step="1" id="numOffspring" class="form-control" placeholder="Ví dụ: 4">
+              </div>
+              <button type="button" class="btn btn-success btn-solve" onclick="solveMitochondrial()">Tính số con bệnh</button>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputMitochondrial" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3.2 Khu vực thuyết minh (qualitative) -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-secondary text-white">
+            <h5>Thuyết minh Di truyền ngoài nhân</h5>
+          </div>
+          <div class="card-body">
+            <textarea id="answerEpigen" class="form-control" rows="6"
+                      placeholder="Người dùng có thể viết luận giải, ví dụ: cơ chế DNA methylation, histone modification, viruses, plasmid…"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Mối quan hệ giữa kiểu gen – môi trường – kiểu hình -->
+    <div id="geneenv" class="section-title"><h3>4. Kiểu gen – Môi trường – Kiểu hình</h3></div>
+    <div class="row g-4">
+      <!-- 4.1 Tính phần trăm ảnh hưởng môi trường (hiện tượng phân hóa kiểu hình) -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-info text-white">
+            <h5>Phần trăm ảnh hưởng Môi trường (P<sub>E</sub>)</h5>
+          </div>
+          <div class="card-body">
+            <p><em>Giả sử: Kthụy đã phân tích biến dị: Var<sub>P</sub> = Var<sub>G</sub> + Var<sub>E</sub></em></p>
+            <form id="formGeneEnv">
+              <div class="row">
+                <div class="col-sm-6 mb-3">
+                  <label for="varG" class="form-label">Var<sub>G</sub> (phương sai do di truyền):</label>
+                  <input type="number" step="any" id="varG" class="form-control" placeholder="Ví dụ: 25">
+                </div>
+                <div class="col-sm-6 mb-3">
+                  <label for="varP" class="form-label">Var<sub>P</sub> (phương sai tổng):</label>
+                  <input type="number" step="any" id="varP" class="form-control" placeholder="Ví dụ: 100">
+                </div>
+              </div>
+              <button type="button" class="btn btn-info btn-solve" onclick="solveGeneEnv()">Tính P<sub>E</sub></button>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputGeneEnv" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 4.2 Thuyết minh -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-dark text-white">
+            <h5>Thuyết minh – Ví dụ</h5>
+          </div>
+          <div class="card-body">
+            <textarea id="answerGeneEnv" class="form-control" rows="6"
+              placeholder="Người dùng có thể viết luận giải: Ví dụ ảnh hưởng biến dị KV, khí hậu, dinh dưỡng đến biểu hiện tính trạng…"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Thành tựu chọn tạo giống bằng phương pháp lai hữu tính -->
+    <div id="breeding" class="section-title"><h3>5. Thành tựu chọn tạo giống – Lai hữu tính</h3></div>
+    <div class="row g-4">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-header bg-warning text-dark">
+            <h5>Thuyết minh – Ví dụ điển hình (F1, F2, đa gen…)</h5>
+          </div>
+          <div class="card-body">
+            <textarea id="answerBreeding" class="form-control" rows="8"
+              placeholder="Người dùng có thể mô tả các phương pháp chọn tạo: Lai hữu tính, lai phân tích, lai ngẫu phối, tạo dòng thuần chủng, lai tam bội, v.v."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Di truyền quần thể -->
+    <div id="popgen" class="section-title"><h3>6. Di truyền quần thể</h3></div>
+    <div class="row g-4">
+      <!-- 6.1 Hardy–Weinberg: Tính tần số alen, kiểu gen -->
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-success text-white">
+            <h5>Hardy–Weinberg: p, q, p², 2pq, q²</h5>
+          </div>
+          <div class="card-body">
+            <form id="formHardyWeinberg">
+              <div class="row">
+                <div class="col-sm-6 mb-3">
+                  <label for="alleleFreqP" class="form-label">Tần số alen p (hữu tính trội):</label>
+                  <input type="number" step="any" id="alleleFreqP" class="form-control" placeholder="Ví dụ: 0.7">
+                </div>
+                <div class="col-sm-6 mb-3 d-flex align-items-end">
+                  <button type="button" class="btn btn-success btn-solve" onclick="solveHardyWeinberg()">Tính tất cả</button>
+                </div>
+              </div>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputHardyWeinberg" class="output-area"></div>
+            </div>
+            <small class="text-muted">* Lưu ý: q = 1 – p.</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6.2 Tần số alen từ tần số người bệnh (homozygous recessive) -->
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-info text-white">
+            <h5>Tính p, q từ tần số q² (căn bậc 2)</h5>
+          </div>
+          <div class="card-body">
+            <form id="formPopFreqFromPhenotype">
+              <div class="row">
+                <div class="col-sm-6 mb-3">
+                  <label for="freqq2" class="form-label">Tần số Homozygous recessive (q²):</label>
+                  <input type="number" step="any" id="freqq2" class="form-control" placeholder="Ví dụ: 0.09">
+                </div>
+                <div class="col-sm-6 mb-3 d-flex align-items-end">
+                  <button type="button" class="btn btn-info btn-solve" onclick="solvePopFreqFromPhenotype()">Tính p, q</button>
+                </div>
+              </div>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputPopFreqFromPhenotype" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Di truyền học người -->
+    <div id="humangen" class="section-title"><h3>7. Di truyền học người</h3></div>
+    <div class="row g-4">
+      <!-- 7.1 Ví dụ tính tần số gen – tần số bệnh hiếm (autosom lặn) -->
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-secondary text-white">
+            <h5>Di truyền hiếm (Autosomal lặn) – Tần số bệnh</h5>
+          </div>
+          <div class="card-body">
+            <p><em>Giả sử: tần số bệnh q² rất nhỏ, p ≈ 1.</em></p>
+            <form id="formRareDisease">
+              <div class="row">
+                <div class="col-sm-6 mb-3">
+                  <label for="freqDisease" class="form-label">Tần số người bệnh (q²):</label>
+                  <input type="number" step="any" id="freqDisease" class="form-control" placeholder="Ví dụ: 0.0004">
+                </div>
+                <div class="col-sm-6 mb-3 d-flex align-items-end">
+                  <button type="button" class="btn btn-secondary btn-solve" onclick="solveRareDisease()">Tính q, p, Tần số dị hợp</button>
+                </div>
+              </div>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputRareDisease" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 7.2 Thuyết minh – Ví dụ pedigree, xét nghiệm, genetic counseling -->
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-dark text-white">
+            <h5>Thuyết minh Di truyền người</h5>
+          </div>
+          <div class="card-body">
+            <textarea id="answerHumanGen" class="form-control" rows="6"
+              placeholder="Người dùng có thể viết luận giải: Ví dụ xây dựng pedigree, genetic counseling; xét nghiệm sàng lọc sơ sinh; di truyền đa gen; v.v."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Các bằng chứng tiến hóa -->
+    <div id="eviden" class="section-title"><h3>8. Các bằng chứng tiến hóa</h3></div>
+    <div class="row g-4">
+      <!-- 8.1 Thuyết minh – Cổ sinh vật học, so sánh giải phẫu, phân tử, địa lý học -->
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h5>Thuyết minh các bằng chứng Tiến hóa</h5>
+          </div>
+          <div class="card-body">
+            <textarea id="answerEvidence" class="form-control" rows="8"
+              placeholder="Nhập luận giải: Bằng chứng hóa thạch, so sánh giải phẫu tương đồng – dị đồng, so sánh phân tử (DNA, protein), phân bố địa lý, phôi thai học."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. Quan niệm của Darwin về chọn lọc tự nhiên và hình thành loài -->
+    <div id="darwin" class="section-title"><h3>9. Darwin – Chọn lọc tự nhiên & Hình thành loài</h3></div>
+    <div class="row g-4">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-header bg-success text-white">
+            <h5>Thuyết minh – Luận giải chi tiết</h5>
+          </div>
+          <div class="card-body">
+            <textarea id="answerDarwin" class="form-control" rows="8"
+              placeholder="Nhập luận giải: Nguyên lý chọn lọc tự nhiên, đa dạng nguồn biến dị, đấu tranh sinh tồn, hình thành loài qua cách li địa lý và sinh thái."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. Thuyết tiến hóa tổng hợp hiện đại -->
+    <div id="modern" class="section-title"><h3>10. Thuyết tiến hóa tổng hợp hiện đại (Neo-Darwinism)</h3></div>
+    <div class="row g-4">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-header bg-warning text-dark">
+            <h5>Thuyết minh – Luận giải hiện đại hóa Darwin</h5>
+          </div>
+          <div class="card-body">
+            <textarea id="answerModernSynthesis" class="form-control" rows="8"
+              placeholder="Nhập luận giải: Tổng hợp di truyền học – Tiến hóa – HÔI nhập Mendel, đột biến, chọn lọc, drift, gene flow, v.v."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11. Tiến hóa lớn và quá trình phát sinh chủng loại -->
+    <div id="macroevo" class="section-title"><h3>11. Tiến hóa lớn & Phát sinh chủng loại</h3></div>
+    <div class="row g-4">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-header bg-info text-white">
+            <h5>Thuyết minh – Quá trình phát sinh chủng loại</h5>
+          </div>
+          <div class="card-body">
+            <textarea id="answerMacroevo" class="form-control" rows="8"
+              placeholder="Nhập luận giải: Phân ly địa lý, cách li sinh thái, cách li hành vi, ví dụ quần đà điểu châu Úc, cá mập vây dài, v.v."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12. Môi trường và các nhân tố sinh thái -->
+    <div id="ecofactor" class="section-title"><h3>12. Môi trường & Các nhân tố sinh thái</h3></div>
+    <div class="row g-4">
+      <!-- 12.1 Tính độ sâu điểm bão hòa oxy (ví dụ O<sub>2</sub> ảnh hưởng đến thủy vực) – mô hình đơn giản -->
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-secondary text-white">
+            <h5>Mô hình O<sub>2</sub> hòa tan – Điểm bão hòa</h5>
+          </div>
+          <div class="card-body">
+            <p><em>Chỉ mang tính tham khảo: Tính nồng độ O<sub>2</sub> hòa tan ở nhiệt độ T (°C) và áp suất khí quyển 1 atm qua công thức Van 't Hoff đơn giản (xấp xỉ).</em></p>
+            <form id="formO2Solubility">
+              <div class="row">
+                <div class="col-sm-6 mb-3">
+                  <label for="tempC" class="form-label">Nhiệt độ T (°C):</label>
+                  <input type="number" step="any" id="tempC" class="form-control" placeholder="Ví dụ: 25">
+                </div>
+                <div class="col-sm-6 mb-3 d-flex align-items-end">
+                  <button type="button" class="btn btn-secondary btn-solve" onclick="solveO2Solubility()">Tính [O₂]</button>
+                </div>
+              </div>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputO2Solubility" class="output-area"></div>
+            </div>
+            <small class="text-muted">* Lưu ý: Chỉ là mô hình xấp xỉ, dùng tham khảo cho dạng toán môi trường.</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- 12.2 Thuyết minh chung về nhân tố sinh thái -->
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-dark text-white">
+            <h5>Thuyết minh Nhân tố Sinh thái</h5>
+          </div>
+          <div class="card-body">
+            <textarea id="answerEcoFactor" class="form-control" rows="6"
+              placeholder="Nhập luận giải: Nhân tố vô sinh (nhiệt độ, nước, ánh sáng, địa hình…), nhân tố sinh vật (cạnh tranh, ký sinh, động vật ăn thịt, v.v.)."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13. Quần thể sinh vật -->
+    <div id="population" class="section-title"><h3>13. Quần thể sinh vật</h3></div>
+    <div class="row g-4">
+      <!-- 13.1 Tính mật độ quần thể (Density = N / V) -->
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-danger text-white">
+            <h5>Mật độ Quần thể: ρ = N / V</h5>
+          </div>
+          <div class="card-body">
+            <form id="formPopDensity">
+              <div class="row">
+                <div class="col-sm-6 mb-3">
+                  <label for="numIndividuals" class="form-label">Số cá thể N:</label>
+                  <input type="number" step="1" id="numIndividuals" class="form-control" placeholder="Ví dụ: 120">
+                </div>
+                <div class="col-sm-6 mb-3">
+                  <label for="areaSize" class="form-label">Diện tích/Thể tích V (km² hoặc m³):</label>
+                  <input type="number" step="any" id="areaSize" class="form-control" placeholder="Ví dụ: 2">
+                </div>
+                <div class="col-sm-12 mb-3 d-flex justify-content-end">
+                  <button type="button" class="btn btn-danger btn-solve" onclick="solvePopDensity()">Tính ρ</button>
+                </div>
+              </div>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputPopDensity" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 13.2 Mô hình tăng trưởng logistic: dN/dt = rN (1 – N/K) -->
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-warning text-dark">
+            <h5>Mô hình Tăng trưởng Logistic</h5>
+          </div>
+          <div class="card-body">
+            <form id="formLogisticGrowth">
+              <div class="row">
+                <div class="col-sm-4 mb-3">
+                  <label for="rRate" class="form-label">Tốc độ tăng r (per capita):</label>
+                  <input type="number" step="any" id="rRate" class="form-control" placeholder="Ví dụ: 0.2">
+                </div>
+                <div class="col-sm-4 mb-3">
+                  <label for="Kcap" class="form-label">Sức chịu tải K:</label>
+                  <input type="number" step="any" id="Kcap" class="form-control" placeholder="Ví dụ: 1000">
+                </div>
+                <div class="col-sm-4 mb-3">
+                  <label for="N0growth" class="form-label">Quy mô ban đầu N₀:</label>
+                  <input type="number" step="any" id="N0growth" class="form-control" placeholder="Ví dụ: 50">
+                </div>
+                <div class="col-sm-4 mb-3">
+                  <label for="timeTgrowth" class="form-label">Thời gian t:</label>
+                  <input type="number" step="any" id="timeTgrowth" class="form-control" placeholder="Ví dụ: 10">
+                </div>
+                <div class="col-sm-8 mb-3 d-flex align-items-end">
+                  <button type="button" class="btn btn-warning btn-solve" onclick="solveLogisticGrowth()">Tính N(t)</button>
+                </div>
+              </div>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputLogisticGrowth" class="output-area"></div>
+            </div>
+            <small class="text-muted">* Mô hình: \(N(t) = \dfrac{K}{1 + \bigl(\frac{K - N₀}{N₀}\bigr) e^{-r t}}\).</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 14. Quần xã sinh vật -->
+    <div id="community" class="section-title"><h3>14. Quần xã sinh vật</h3></div>
+    <div class="row g-4">
+      <!-- 14.1 Tính chỉ số Shannon (Hʹ) – Đa dạng loài -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h5>Chỉ số Shannon (Hʹ)</h5>
+          </div>
+          <div class="card-body">
+            <p><em>Hʹ = – ∑ (p<sub>i</sub> ln p<sub>i</sub>), với p<sub>i</sub> = n<sub>i</sub>/N</em></p>
+            <form id="formShannonIndex">
+              <div class="mb-3">
+                <label for="speciesCounts" class="form-label">Nhập số cá thể từng loài, cách nhau bởi dấu phẩy (ví dụ: 10, 15, 5, 20):</label>
+                <textarea id="speciesCounts" class="form-control" rows="2" placeholder="Ví dụ: 10,15,5,20"></textarea>
+              </div>
+              <button type="button" class="btn btn-primary btn-solve" onclick="solveShannonIndex()">Tính Hʹ</button>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputShannonIndex" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 14.2 Tính độ cường độ tương tác – mật độ bắt mồi, v.v. (chỉ qualitative) -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-secondary text-white">
+            <h5>Mô tả tương tác – Quá trình cấu trúc Quần xã</h5>
+          </div>
+          <div class="card-body">
+            <textarea id="answerCommunity" class="form-control" rows="6"
+              placeholder="Nhập luận giải: Ví dụ phân tích tương tác sinh thái (phản sinh, cộng sinh, ký sinh, cạnh tranh, v.v.)."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 15. Hệ sinh thái -->
+    <div id="ecosystem" class="section-title"><h3>15. Hệ sinh thái</h3></div>
+    <div class="row g-4">
+      <!-- 15.1 Tính năng suất sinh học (Net Primary Productivity – NPP đơn giản) -->
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-danger text-white">
+            <h5>Tính NPP (đơn giản): GPP – R</h5>
+          </div>
+          <div class="card-body">
+            <p><em>GPP = Hệ số quang hợp × Lượng bức xạ (kg C/m²/năm) – Thở tự dưỡng R</em></p>
+            <form id="formNPP">
+              <div class="row">
+                <div class="col-sm-6 mb-3">
+                  <label for="GPP" class="form-label">GPP (kg C/m²/năm):</label>
+                  <input type="number" step="any" id="GPP" class="form-control" placeholder="Ví dụ: 20">
+                </div>
+                <div class="col-sm-6 mb-3 d-flex align-items-end">
+                  <label for="Resp" class="form-label">R (kg C/m²/năm):</label>
+                  <input type="number" step="any" id="Resp" class="form-control" placeholder="Ví dụ: 5">
+                </div>
+                <div class="col-sm-12 d-flex justify-content-end">
+                  <button type="button" class="btn btn-danger btn-solve" onclick="solveNPP()">Tính NPP</button>
+                </div>
+              </div>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputNPP" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 15.2 Tính chuỗi thức ăn – Hiệu suất sinh thái (Ecological efficiency) ~ 10% -->
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-warning text-dark">
+            <h5>Hiệu suất sinh thái (efficiency) ~ %</h5>
+          </div>
+          <div class="card-body">
+            <p><em>Hiệu suất = (Năng lượng ở bậc dinh dưỡng cao hơn / Năng lượng ở bậc thấp hơn) × 100%.</em></p>
+            <form id="formEcoEfficiency">
+              <div class="row">
+                <div class="col-sm-6 mb-3">
+                  <label for="energyLower" class="form-label">Năng lượng bậc thấp (kcal):</label>
+                  <input type="number" step="any" id="energyLower" class="form-control" placeholder="Ví dụ: 10000">
+                </div>
+                <div class="col-sm-6 mb-3 d-flex align-items-end">
+                  <label for="energyHigher" class="form-label">Năng lượng bậc cao (kcal):</label>
+                  <input type="number" step="any" id="energyHigher" class="form-control" placeholder="Ví dụ: 1000">
+                </div>
+                <div class="col-sm-12 d-flex justify-content-end">
+                  <button type="button" class="btn btn-warning btn-solve" onclick="solveEcoEfficiency()">Tính % Efficiency</button>
+                </div>
+              </div>
+            </form>
+            <hr>
+            <div>
+              <h6>Kết quả:</h6>
+              <div id="outputEcoEfficiency" class="output-area"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 16. Sinh thái học phục hồi, bảo tồn và phát triển bền vững -->
+    <div id="restoration" class="section-title"><h3>16. Phục hồi – Bảo tồn – Phát triển bền vững</h3></div>
+    <div class="row g-4">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-header bg-success text-white">
+            <h5>Thuyết minh – Kế hoạch, ví dụ thực tiễn</h5>
+          </div>
+          <div class="card-body">
+            <textarea id="answerRestoration" class="form-control" rows="8"
+              placeholder="Nhập luận giải: Thuyết minh các biện pháp phục hồi hệ sinh thái, bảo tồn đa dạng sinh học, mô hình bền vững (SDGs), ví dụ làng sinh thái, rừng ngập mặn, v.v."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- container -->
+
+  <!-- Thư viện JS bên ngoài -->
+  <!-- Math.js cho phép tính toán (ln, exp, log, v.v.) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.js"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- Bootstrap Bundle JS (gồm Popper & JS) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+          crossorigin="anonymous"></script>
+
+  <!-- JS tính toán cho từng chủ đề -->
+  <script>
+    // ---------- 1. Di truyền phân tử ----------
+    // 1.1 Tính %GC, %AT
+    function solveGCContent() {
+      const seqRaw = document.getElementById('dnaSeq').value.trim();
+      const seq = seqRaw.replace(/\\s+/g, "").toUpperCase();
+      const output = document.getElementById('outputGCContent');
+      output.textContent = "";
+      if (!/^[ATGC]*$/.test(seq) || seq.length === 0) {
+        output.textContent = "Vui lòng nhập chuỗi chỉ gồm A, T, G, C.";
+        return;
+      }
+      const total = seq.length;
+      let countG = 0, countC = 0, countA = 0, countT = 0;
+      for (let ch of seq) {
+        if (ch === "G") countG++;
+        if (ch === "C") countC++;
+        if (ch === "A") countA++;
+        if (ch === "T") countT++;
+      }
+      const percGC = ((countG + countC) / total * 100).toFixed(2);
+      const percAT = ((countA + countT) / total * 100).toFixed(2);
+      output.textContent = 
+        `Tổng số nucleotit: ${total}\n` +
+        `Số G: ${countG}, Số C: ${countC}, Số A: ${countA}, Số T: ${countT}\n` +
+        `%GC = ${(countG + countC)} / ${total} × 100% = ${percGC}%\n` +
+        `%AT = ${(countA + countT)} / ${total} × 100% = ${percAT}%`;
+    }
+
+    // 1.2 Tính số codon & chiều dài protein
+    function solveCodonLength() {
+      const n = parseInt(document.getElementById('nucleotides').value);
+      const output = document.getElementById('outputCodonLength');
+      output.textContent = "";
+      if (isNaN(n) || n <= 0 || n % 3 !== 0) {
+        output.textContent = "Nhập số nguyên dương chia hết cho 3.";
+        return;
+      }
+      const numCodons = n / 3;
+      const proteinLength = numCodons - 1; 
+      // Giả sử codon stop cuối cùng không mã hóa AA
+      output.textContent = 
+        `Tổng nucleotit: ${n}\n` +
+        `Số codon = ${n} / 3 = ${numCodons}\n` +
+        `=> Chiều dài protein (trừ codon STOP) ≈ ${proteinLength} aa`;
+    }
+
+    // ---------- 2. Di truyền nhiễm sắc thể ----------
+    function solveChromGen() {
+      const p1 = document.getElementById('alleleP1').value.trim();
+      const p2 = document.getElementById('alleleP2').value.trim();
+      const type = document.getElementById('inheritType').value;
+      const output = document.getElementById('outputChromGen');
+      output.textContent = "";
+      if (!p1 || !p2) {
+        output.textContent = "Vui lòng nhập kiểu gen P1 và P2.";
+        return;
+      }
+      let result = "";
+      if (type === "autosomal") {
+        // Giả sử format "Aa" or "AA" or "aa"
+        const A1 = p1[0], a1 = p1[1];
+        const A2 = p2[0], a2 = p2[1];
+        // Tạo tất cả 4 tổ hợp P1 × P2
+        // Xét đơn giản: Kiểu gen gồm 2 ký tự, không xét chữ hoa/chữ thường
+        const gametes1 = [p1[0], p1[1]];
+        const gametes2 = [p2[0], p2[1]];
+        const combos = [];
+        for (let g1 of gametes1) {
+          for (let g2 of gametes2) {
+            combos.push(g1 + g2);
+          }
+        }
+        // Đếm
+        const count = {};
+        combos.forEach(c => {
+          const sorted = c.split("").sort().join("");
+          count[sorted] = (count[sorted] || 0) + 1;
+        });
+        result += `Các tổ hợp P1(${p1}) × P2(${p2}) có:\n`;
+        for (let genotype in count) {
+          const freq = (count[genotype] / combos.length * 100).toFixed(2);
+          result += `  Kiểu gen ${genotype}: ${count[genotype]}/4 = ${freq}%\n`;
+        }
+      } else if (type === "xLinked") {
+        // Ví dụ P1: XAXa, P2: XAY (lừa tưởng)
+        result = "Chức năng tính X-linked chưa hỗ trợ hoàn toàn.\nVí dụ cơ bản: nếu P1 = XAXa (cơ thể cái), P2 = XAY (cơ thể đực),\n" +
+                 "— Con gái: 50% XAXA, 50% XAXa\n— Con trai: 50% XAY, 50% XaY";
+      } else if (type === "yLinked") {
+        result = "Y-linked: Tính đơn giản: chỉ con đực mới nhận gene từ bố. Tỉ lệ con đực mang gene = 50% nếu bố đồng hợp tử.";
+      }
+      output.textContent = result;
+    }
+
+    // ---------- 3. Di truyền ngoài nhân ----------
+    function solveMitochondrial() {
+      const N = parseInt(document.getElementById('numOffspring').value);
+      const output = document.getElementById('outputMitochondrial');
+      output.textContent = "";
+      if (isNaN(N) || N <= 0) {
+        output.textContent = "Nhập số con (nguyên dương).";
+        return;
+      }
+      // Mô hình: mẹ bệnh => tất cả con đều bệnh
+      output.textContent = `Mẹ mang đột biến mito, do đó:\n  Số con bệnh = ${N}\n  (Ông gọi: Tất cả con, cả trai lẫn gái, đều biểu hiện.)`;
+    }
+
+    // ---------- 4. Kiểu gen – Môi trường – Kiểu hình ----------
+    function solveGeneEnv() {
+      const varG = parseFloat(document.getElementById('varG').value);
+      const varP = parseFloat(document.getElementById('varP').value);
+      const output = document.getElementById('outputGeneEnv');
+      output.textContent = "";
+      if (isNaN(varG) || isNaN(varP) || varG < 0 || varP <= 0 || varG > varP) {
+        output.textContent = "Nhập Var_G và Var_P: 0 ≤ Var_G ≤ Var_P.";
+        return;
+      }
+      const varE = varP - varG;
+      const percE = (varE / varP * 100).toFixed(2);
+      output.textContent = 
+        `Var_P = ${varP}, Var_G = ${varG}\n` +
+        `=> Var_E = Var_P – Var_G = ${varE}\n` +
+        `% Ảnh hưởng môi trường P_E = ${varE} / ${varP} × 100% = ${percE}%`;
+    }
+
+    // ---------- 5. Chọn tạo giống – Lai hữu tính (chỉ qualitative) ----------
+    // Không có tính toán cụ thể, chỉ vùng textarea.
+
+    // ---------- 6. Di truyền quần thể ----------
+    function solveHardyWeinberg() {
+      const p = parseFloat(document.getElementById('alleleFreqP').value);
+      const output = document.getElementById('outputHardyWeinberg');
+      output.textContent = "";
+      if (isNaN(p) || p < 0 || p > 1) {
+        output.textContent = "Nhập p trong [0,1].";
+        return;
+      }
+      const q = 1 - p;
+      const p2 = (p * p).toFixed(4);
+      const q2 = (q * q).toFixed(4);
+      const two_pq = (2 * p * q).toFixed(4);
+      output.textContent = 
+        `p = ${p.toFixed(4)}, q = 1 – p = ${q.toFixed(4)}\n` +
+        `  p² (AA) = ${p2}\n` +
+        `  2pq (Aa) = ${two_pq}\n` +
+        `  q² (aa) = ${q2}`;
+    }
+
+    function solvePopFreqFromPhenotype() {
+      const q2 = parseFloat(document.getElementById('freqq2').value);
+      const output = document.getElementById('outputPopFreqFromPhenotype');
+      output.textContent = "";
+      if (isNaN(q2) || q2 < 0 || q2 > 1) {
+        output.textContent = "Nhập q² trong [0,1].";
+        return;
+      }
+      const q = Math.sqrt(q2);
+      const p = 1 - q;
+      output.textContent = 
+        `q² = ${q2.toFixed(4)} => q = √${q2.toFixed(4)} = ${q.toFixed(4)}\n` +
+        `p = 1 – q = ${p.toFixed(4)}`;
+    }
+
+    // ---------- 7. Di truyền học người ----------
+    function solveRareDisease() {
+      const q2 = parseFloat(document.getElementById('freqDisease').value);
+      const output = document.getElementById('outputRareDisease');
+      output.textContent = "";
+      if (isNaN(q2) || q2 <= 0 || q2 > 1) {
+        output.textContent = "Nhập tần số bệnh q² trong (0,1].";
+        return;
+      }
+      const q = Math.sqrt(q2);
+      const p = 1 - q;
+      const carrierFreq = (2 * p * q).toFixed(6);
+      output.textContent = 
+        `q² = ${q2.toExponential(4)} => q = √q² = ${q.toFixed(6)}\n` +
+        `p ≈ 1 – q = ${p.toFixed(6)}\n` +
+        `Tần số dị hợp tử (carrier) 2pq ≈ ${carrierFreq}`;
+    }
+
+    // ---------- 8. Bằng chứng tiến hóa (chỉ qualitative) ----------
+    // Dùng textarea
+
+    // ---------- 9. Quan niệm của Darwin (chỉ qualitative) ----------
+    // Dùng textarea
+
+    // ---------- 10. Thuyết tiến hóa tổng hợp hiện đại (chỉ qualitative) ----------
+    // Dùng textarea
+
+    // ---------- 11. Tiến hóa lớn & Phát sinh chủng loại (chỉ qualitative) ----------
+    // Dùng textarea
+
+    // ---------- 12. Môi trường & Nhân tố sinh thái ----------
+    function solveO2Solubility() {
+      const tempC = parseFloat(document.getElementById('tempC').value);
+      const output = document.getElementById('outputO2Solubility');
+      output.textContent = "";
+      if (isNaN(tempC)) {
+        output.textContent = "Nhập nhiệt độ °C.";
+        return;
+      }
+      // Mô hình xấp xỉ: [O2] ≈ 14.6 – 0.4 * T (mg/L) ở 1 atm (chỉ mang tính tham khảo).
+      const conc = 14.6 - 0.4 * tempC;
+      const concFixed = (conc > 0 ? conc.toFixed(3) : 0);
+      output.textContent = 
+        `[O₂] hòa tan (approx) = 14.6 – 0.4 × T(°C)\n` +
+        `  = 14.6 – 0.4×${tempC.toFixed(2)} = ${concFixed} mg/L`;
+    }
+
+    // ---------- 13. Quần thể sinh vật ----------
+    function solvePopDensity() {
+      const N = parseFloat(document.getElementById('numIndividuals').value);
+      const V = parseFloat(document.getElementById('areaSize').value);
+      const output = document.getElementById('outputPopDensity');
+      output.textContent = "";
+      if (isNaN(N) || isNaN(V) || V <= 0) {
+        output.textContent = "Nhập N (>0) và V (>0).";
+        return;
+      }
+      const density = (N / V).toFixed(4);
+      output.textContent = `Mật độ quần thể ρ = N/V = ${N.toFixed(2)} / ${V.toFixed(2)} = ${density}`;
+    }
+
+    function solveLogisticGrowth() {
+      const r = parseFloat(document.getElementById('rRate').value);
+      const K = parseFloat(document.getElementById('Kcap').value);
+      const N0 = parseFloat(document.getElementById('N0growth').value);
+      const t = parseFloat(document.getElementById('timeTgrowth').value);
+      const output = document.getElementById('outputLogisticGrowth');
+      output.textContent = "";
+      if ([r,K,N0,t].some(x => isNaN(x)) || K <= 0 || N0 <= 0) {
+        output.textContent = "Nhập r, K, N₀, t (>0).";
+        return;
+      }
+      // N(t) = K / [1 + ((K – N0)/N0) * e^(–r t)]
+      const expTerm = Math.exp(-r * t);
+      const denom = 1 + ((K - N0) / N0) * expTerm;
+      const Nt = K / denom;
+      output.textContent = 
+        `N(t) = K / [1 + ((K – N₀)/N₀)·e^{–r t}]\n` +
+        `  = ${K.toFixed(2)} / [1 + ((${K.toFixed(2)} – ${N0.toFixed(2)})/${N0.toFixed(2)}) × e^{–${r.toFixed(2)}×${t.toFixed(2)}}]\n` +
+        `  ≈ ${Nt.toFixed(4)}`;
+    }
+
+    // ---------- 14. Quần xã sinh vật ----------
+    function solveShannonIndex() {
+      const raw = document.getElementById('speciesCounts').value.trim();
+      const output = document.getElementById('outputShannonIndex');
+      output.textContent = "";
+      const arr = raw.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x) && x > 0);
+      if (arr.length === 0) {
+        output.textContent = "Nhập danh sách số cá thể >0, cách nhau bởi dấu phẩy.";
+        return;
+      }
+      const N = arr.reduce((a,b) => a+b, 0);
+      let H = 0;
+      arr.forEach(n_i => {
+        const p_i = n_i / N;
+        H -= p_i * Math.log(p_i);
+      });
+      const Hfixed = H.toFixed(4);
+      output.textContent = `Tổng N = ${N.toFixed(2)}\nChỉ số Shannon H' = ${Hfixed}`;
+    }
+
+    // ---------- 15. Hệ sinh thái ----------
+    function solveNPP() {
+      const GPP = parseFloat(document.getElementById('GPP').value);
+      const R = parseFloat(document.getElementById('Resp').value);
+      const output = document.getElementById('outputNPP');
+      output.textContent = "";
+      if (isNaN(GPP) || isNaN(R)) {
+        output.textContent = "Nhập GPP và R.";
+        return;
+      }
+      const NPP = GPP - R;
+      output.textContent = `NPP = GPP – R = ${GPP.toFixed(2)} – ${R.toFixed(2)} = ${NPP.toFixed(2)} (kg C/m²/năm)`;
+    }
+
+    function solveEcoEfficiency() {
+      const E_low = parseFloat(document.getElementById('energyLower').value);
+      const E_high = parseFloat(document.getElementById('energyHigher').value);
+      const output = document.getElementById('outputEcoEfficiency');
+      output.textContent = "";
+      if (isNaN(E_low) || isNaN(E_high) || E_low <= 0) {
+        output.textContent = "Nhập năng lượng bậc thấp (>0) và bậc cao.";
+        return;
+      }
+      const eff = (E_high / E_low * 100).toFixed(2);
+      output.textContent = `Hiệu suất = (${E_high.toFixed(2)} / ${E_low.toFixed(2)}) × 100% = ${eff}%`;
+    }
+
+    // ---------- 16. Phục hồi – Bảo tồn – PTBV (chỉ qualitative) ----------
+    // Dùng textarea
+  </script>
+
+{% endblock %}
+

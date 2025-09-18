@@ -1,0 +1,213 @@
+{% extends 'news247/_Base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+  /* Hiệu ứng hover cho card báo */
+  .card-hover {
+    transition: all 0.3s ease;
+  }
+  .card-hover:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+    transform: translateY(-5px);
+  }
+  /* Tạo độ tròn và đổ bóng cho sidebar */
+  .sidebar-card {
+    border-radius: .75rem;
+    box-shadow: 0 .25rem .5rem rgba(0,0,0,0.1);
+  }
+  /* Khoảng cách giữa các phần */
+  .section-spacing { margin-bottom: 2rem; }
+</style>
+{% endblock %}
+
+{% block main_content %}
+<div class="container my-5">
+  <div class="row">
+    <!-- Sidebar -->
+    <aside class="col-lg-3.5 mb-4">
+      <!-- Weather Card -->
+
+      <div class="card sidebar-card mb-4">
+  <div class="card-header bg-primary text-white font-weight-bold">
+    BẢN ĐỒ HÀNH CHÍNH QUỐC GIA
+  </div>
+  <div class="card-body p-3">
+    <img src="https://datafiles.chinhphu.vn/cpp/1/DieuKhienDaNang/gisbd.png" alt="bando" style="height: 450px;">
+  </div>
+</div>
+<div class="card sidebar-card mb-4">
+  <div class="card-header bg-primary text-white font-weight-bold">
+    Thời tiết
+  </div>
+  <div class="card-body p-3">
+    {% for city, w in weather_data.items %}
+      <div class="weather-city d-flex align-items-center mb-3">
+        <img
+          src="https://openweathermap.org/img/wn/{{ w.icon }}@2x.png"
+          alt="{{ w.desc }}"
+          class="weather-icon mr-2"
+        >
+        <div class="weather-info">
+          <h6 class="mb-0">{{ city }}</h6>
+          <small class="text-muted">
+            {{ w.temp }}°C – {{ w.desc }}
+          </small>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">Không tải được dữ liệu thời tiết.</p>
+    {% endfor %}
+  </div>
+</div>
+
+
+      <!-- Stock Widget: TradingView Advanced Chart -->
+<div class="card sidebar-card mb-4">
+  <div class="card-header bg-primary text-white font-weight-bold">Biểu đồ VN30</div>
+  <div class="card-body p-0">
+    <!-- TradingView Widget BEGIN -->
+    <div class="tradingview-widget-container">
+      <div id="tradingview_vn30_chart"></div>
+      <!-- 1. nạp thư viện TV.js -->
+      <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+      <!-- 2. khởi tạo widget -->
+      <script type="text/javascript">
+        new TradingView.widget({
+          "container_id": "tradingview_vn30_chart",
+          "width": "100%",
+          "height": 300,
+          "symbol": "HOSE:VN30",
+          "interval": "D",               // khung ngày; có thể '60', '240', 'W'…
+          "timezone": "Asia/Ho_Chi_Minh",
+          "theme": "light",             // hoặc 'dark'
+          "style": "1",                 // kiểu nến (1 = Bars, 2 = Candles…)
+          "locale": "vi",
+          "toolbar_bg": "#f1f3f6",
+          "enable_publishing": false,
+          "allow_symbol_change": false,
+          "hide_side_toolbar": false,
+          "details": true,
+          "hotlist": false,
+          "calendar": false,
+          "news": ["headlines"],
+          "studies": [],                // nếu muốn thêm chỉ báo mặc định
+        });
+      </script>
+    </div>
+    <!-- TradingView Widget END -->
+  </div>
+</div>
+
+    </aside>
+    <!-- Main Content -->
+     
+    <main class="col-lg-8">
+      <div class="container my-5">
+  <!-- Banner / Giới thiệu -->
+  <div class="row align-items-center mb-5" style="min-height:240px;">
+    <div class="col-md-7">
+      <h1 class="display-6 font-weight-bold mb-3">Kho Tin Tức & Bài Báo Việt Nam</h1>
+      <p class="lead mb-4">
+        Tìm kiếm, đọc và kết nối với kho dữ liệu các bài báo nghiên cứu, khoa học, thời sự và sự kiện nổi bật nhất. Khám phá tri thức, cập nhật xu hướng!
+      </p>
+      <a href="{% url 'blogScience:new-index' %}" class="btn btn-primary btn-lg shadow-sm px-4">Khám phá tin tức</a>
+    </div>
+    <div class="col-md-5 text-center">
+      <img src="https://ictv.1cdn.vn/2024/08/20/giao-dien-trang-thong-tin-dac-biet-tbt.png" alt="Banner" style="max-width: 140%; height:auto;">
+    </div>
+  </div>
+  <div class="container mt-4 mb-5">
+      <!-- Search Bar -->
+      <div class="section-spacing">
+        <form method="get" class="input-group">
+          <input
+            type="text"
+            name="keyword"
+            value="{{ keyword }}"
+            class="form-control rounded-left"
+            placeholder="🔍 Tìm kiếm bài báo..."
+          >
+          <div class="input-group-append">
+            <button class="btn btn-primary rounded-right" type="submit">Tìm</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Grid Bài Báo -->
+      <div class="row g-4">
+        {% for article in page_obj.object_list %}
+          <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 card-hover">
+              <img src="{{ article.Link_hinh_minh_hoa }}" class="card-img-top" alt="Hình minh họa">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <a href="{% url 'blogScience:new-details' article.pk %}" class="text-primary font-weight-bold">
+                    {{ article.Ten_bai_bao|truncatechars:50 }}
+                  </a>
+                </h5>
+                <p class="text-muted small mb-2"><i>Đăng ngày {{ article.Ngay_dang }}</i></p>
+                <p class="card-text">{{ article.Noi_dung_bai_viet|truncatewords:30 }}</p>
+              </div>
+              <div class="card-footer bg-white border-0">
+                <a href="{% url 'blogScience:new-details' article.pk %}" class="btn btn-outline-primary btn-sm w-100">Xem chi tiết</a>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-12 text-center text-muted">
+            Không tìm thấy bài báo nào phù hợp.
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Phân Trang -->
+      {% if page_obj.paginator.num_pages > 1 %}
+        <nav aria-label="Phân trang" class="section-spacing">
+          <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if keyword %}&keyword={{ keyword }}{% endif %}">&laquo; Trước</a>
+              </li>
+            {% else %}
+              <li class="page-item disabled"><span class="page-link">&laquo; Trước</span></li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+              {% if num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+                {% if num == page_obj.number %}
+                  <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% else %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}{% if keyword %}&keyword={{ keyword }}{% endif %}">{{ num }}</a>
+                  </li>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if keyword %}&keyword={{ keyword }}{% endif %}">Sau &raquo;</a>
+              </li>
+            {% else %}
+              <li class="page-item disabled"><span class="page-link">Sau &raquo;</span></li>
+            {% endif %}
+          </ul>
+        </nav>
+      {% endif %}
+    </main>
+  </div>
+</div>
+
+<!-- Scripts nhúng widget -->
+<script>
+  // Load widget weatherwidget.io
+  !function(d,s,id){
+    var js,fjs=d.getElementsByTagName(s)[0];
+    if(!d.getElementById(id)){
+      js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';
+      fjs.parentNode.insertBefore(js,fjs);
+    }
+  }(document,'script','weatherwidget-io-js');
+</script>
+{% endblock %}

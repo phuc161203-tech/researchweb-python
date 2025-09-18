@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quản Trị Hệ Thống Mạng Nội Bộ</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        crossorigin="anonymous">
+  <!-- Custom CSS -->
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar {
+      min-width: 200px;
+      max-width: 250px;
+      background-color: #343a40;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .sidebar .nav-link {
+      color: #adb5bd;
+    }
+    .sidebar .nav-link:hover {
+      color: #fff;
+      background-color: #495057;
+    }
+    .sidebar .nav-link.active {
+      background-color: #495057;
+      color: #fff;
+    }
+    .content {
+      flex-grow: 1;
+      padding: 20px;
+    }
+    .table-responsive {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    /* Định nghĩa màu sắc cho trạng thái */
+    .badge-session-active {
+      background-color: #28a745;
+    }
+    .badge-session-inactive {
+      background-color: #dc3545;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Quản Trị Mạng Nội Bộ</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Chuyển đổi điều hướng">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <button id="btnBlockEmergency" class="btn btn-warning mx-1" onclick="blockEmergencyAccess()">
+              Chặn truy cập khẩn
+            </button>
+          </li>
+          <li class="nav-item">
+            <button id="btnExportLogs" class="btn btn-success mx-1" onclick="exportLogsToCSV()">
+              Xuất CSV
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <nav class="sidebar d-flex flex-column p-3">
+      <h5 class="text-center mb-4">Menu</h5>
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+          <a class="nav-link active" href="#" onclick="showSection('sectionDashboard')">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="showSection('sectionSessions')">Quản lý Session</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="showSection('sectionActivities')">Hoạt động</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content w-100">
+      <!-- Dashboard Section -->
+      <div id="sectionDashboard">
+        <h3>Dashboard</h3>
+        <p>Chào mừng quản trị viên! Sử dụng menu bên trái để điều hướng.</p>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Số Session đang hoạt động</h5>
+                <p id="activeSessionsCount" class="card-text display-6">0</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card text-white bg-secondary mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Tổng số hoạt động đã ghi nhận</h5>
+                <p id="totalLogsCount" class="card-text display-6">0</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card text-white bg-danger mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Trạng thái truy cập khẩn</h5>
+                <p id="emergencyStatus" class="card-text display-6">Bình thường</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sessions Section -->
+      <div id="sectionSessions" class="d-none">
+        <h3>Quản lý Session</h3>
+        <p>Danh sách các session đang kết nối vào mạng nội bộ:</p>
+        <div class="table-responsive">
+          <table id="tableSessions" class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>Session ID</th>
+                <th>Người dùng</th>
+                <th>IP</th>
+                <th>Trạng thái</th>
+                <th>Thời gian bắt đầu</th>
+                <th>Thời gian cuối</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Dữ liệu mẫu -->
+              <tr>
+                <td>001</td>
+                <td>admin</td>
+                <td>192.168.1.10</td>
+                <td><span class="badge badge-session-active">Active</span></td>
+                <td>2025-06-04 21:00</td>
+                <td>–</td>
+              </tr>
+              <tr>
+                <td>002</td>
+                <td>user01</td>
+                <td>192.168.1.11</td>
+                <td><span class="badge badge-session-inactive">Inactive</span></td>
+                <td>2025-06-04 20:30</td>
+                <td>2025-06-04 21:15</td>
+              </tr>
+              <!-- End dữ liệu mẫu -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Activities Section -->
+      <div id="sectionActivities" class="d-none">
+        <h3>Hoạt động đã ghi nhận</h3>
+        <p>Theo dõi mọi hành động của người dùng trong hệ thống:</p>
+        <div class="table-responsive">
+          <table id="tableActivities" class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>Thời gian</th>
+                <th>Người thực hiện</th>
+                <th>Hành động</th>
+                <th>Chi tiết</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Các dòng sẽ được thêm tự động bởi JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle (Popper + Bootstrap) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+          crossorigin="anonymous"></script>
+  <!-- Custom JavaScript -->
+  <script>
+    // Mảng lưu trữ các log hoạt động
+    const activityLogs = [];
+
+    // Biến trạng thái chặn truy cập khẩn
+    let emergencyBlocked = false;
+
+    // Hiển thị hoặc ẩn các section
+    function showSection(sectionId) {
+      document.querySelectorAll('.content > div').forEach(div => {
+        div.classList.add('d-none');
+      });
+      document.getElementById(sectionId).classList.remove('d-none');
+    }
+
+    // Hàm ghi log hoạt động
+    function logActivity(user, action, detail = '') {
+      const now = new Date();
+      const timestamp = now.toLocaleString('vi-VN', { hour12: false });
+      activityLogs.push({ time: timestamp, user, action, detail });
+      addLogRow(timestamp, user, action, detail);
+      updateDashboardCounts();
+    }
+
+    // Thêm một dòng log vào bảng Activities
+    function addLogRow(time, user, action, detail) {
+      const tbody = document.querySelector('#tableActivities tbody');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${time}</td>
+        <td>${user}</td>
+        <td>${action}</td>
+        <td>${detail}</td>
+      `;
+      tbody.prepend(row); // Thêm ở đầu để hiện các log mới nhất
+    }
+
+    // Cập nhật số liệu trên Dashboard
+    function updateDashboardCounts() {
+      const activeSessions = document.querySelectorAll('.badge-session-active').length;
+      document.getElementById('activeSessionsCount').innerText = activeSessions;
+      document.getElementById('totalLogsCount').innerText = activityLogs.length;
+      document.getElementById('emergencyStatus').innerText = emergencyBlocked ? 'ĐÃ CHẶN' : 'Bình thường';
+      document.getElementById('emergencyStatus').className = emergencyBlocked 
+        ? 'card-text display-6 text-warning'
+        : 'card-text display-6 text-white';
+    }
+
+    // Hàm chặn quyền truy cập khẩn
+    function blockEmergencyAccess() {
+      if (emergencyBlocked) return;
+      emergencyBlocked = true;
+      // Giả lập vô hiệu hóa tất cả nút thao tác quan trọng
+      document.querySelectorAll('button').forEach(btn => {
+        if (btn.id !== 'btnExportLogs') {
+          btn.disabled = true;
+        }
+      });
+      logActivity('SYSTEM', 'Chặn truy cập khẩn', 'Toàn bộ nút thao tác đã bị vô hiệu hóa');
+      updateDashboardCounts();
+      alert('Hệ thống đã chặn quyền truy cập khẩn.');
+    }
+
+    // Hàm xuất logs thành file CSV
+    function exportLogsToCSV() {
+      if (activityLogs.length === 0) {
+        alert('Chưa có hoạt động nào để xuất.');
+        return;
+      }
+      const header = ['Thời gian', 'Người thực hiện', 'Hành động', 'Chi tiết'];
+      const rows = activityLogs.map(log => [log.time, log.user, log.action, log.detail]);
+      let csvContent = '';
+      csvContent += header.join(',') + '\n';
+      rows.forEach(rowArr => {
+        // Escape dấu phẩy trong nội dung chi tiết
+        const escaped = rowArr.map(field => `"${field.replace(/"/g, '""')}"`);
+        csvContent += escaped.join(',') + '\n';
+      });
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      const now = new Date();
+      const filename = `activity_logs_${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}.csv`;
+      link.setAttribute('download', filename);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      logActivity('SYSTEM', 'Xuất CSV', `Đã tạo file ${filename}`);
+    }
+
+    // Ví dụ: Gọi hàm log khi tải trang ở section Sessions
+    document.addEventListener('DOMContentLoaded', () => {
+      logActivity('SYSTEM', 'Khởi động trang', 'Giao diện quản trị được tải');
+      // Giả lập thêm một số hoạt động mẫu
+      logActivity('user01', 'Đăng nhập', 'Session ID: 002, IP: 192.168.1.11');
+      logActivity('admin', 'Kiểm tra Session', 'Session ID: 001 còn hoạt động');
+      updateDashboardCounts();
+    });
+  </script>
+  <script>
+async function refreshSessions() {
+  const res = await fetch("{% url 'app_security:sessions_json' %}");
+  const data = await res.json();
+  const tbody = document.querySelector('#tableSessions tbody');
+  tbody.innerHTML = '';  // reset
+  data.sessions.forEach(s => {
+    tbody.insertAdjacentHTML('beforeend', `
+      <tr>
+        <td>${s.session_key}</td>
+        <td>${s.user}</td>
+        <td>${s.ip}</td>
+        <td>
+          <span class="badge ${s.is_active ? 'badge-session-active' : 'badge-session-inactive'}">
+            ${s.is_active ? 'Active' : 'Inactive'}
+          </span>
+        </td>
+        <td>${s.started}</td>
+        <td>${s.last_activity}</td>
+      </tr>
+    `);
+  });
+  document.getElementById('activeSessionsCount').innerText =
+    data.sessions.filter(s => s.is_active).length;
+}
+
+async function refreshActivities() {
+  const res = await fetch("{% url 'app_security:activities_json' %}");
+  const data = await res.json();
+  const tbody = document.querySelector('#tableActivities tbody');
+  tbody.innerHTML = '';
+  data.activities.forEach(a => {
+    tbody.insertAdjacentHTML('beforeend', `
+      <tr>
+        <td>${a.time}</td>
+        <td>${a.user}</td>
+        <td>${a.action}</td>
+        <td>${a.detail}</td>
+      </tr>
+    `);
+  });
+  document.getElementById('totalLogsCount').innerText = data.activities.length;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  refreshSessions();
+  refreshActivities();
+  setInterval(() => {
+    refreshSessions();
+    refreshActivities();
+  }, 5000); // 5 giây
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Popup Modal Kế Thừa 10 Simulations</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+
+  <style>
+    /* Một số style tuỳ chỉnh (nếu cần) */
+    body {
+      padding: 2rem;
+    }
+    .simulation-button {
+      margin: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="mb-4">Danh Sách Simulations (Popup Modal)</h1>
+
+  <!-- Nút mở modal cho từng simulation -->
+  <div id="button-container" class="d-flex flex-wrap">
+    <!-- 
+      Mỗi button có thuộc tính data-file để xác định file HTML cần load.
+      Bạn có thể thay đổi tên file, text hiển thị,... cho phù hợp.
+    -->
+    <button class="btn btn-primary simulation-button" data-file="gas-properties_vi.html">
+      Tính chất của chất khí
+    </button>
+    <button class="btn btn-primary simulation-button" data-file="my-solar-system_vi.html">
+      Thái Dương Hệ
+    </button>
+    <button class="btn btn-primary simulation-button" data-file="keplers-laws_vi.html">
+      Định luật Kepler
+    </button>
+    <button class="btn btn-primary simulation-button" data-file="build-a-nucleus_vi.html">
+      Tạo Dựng Hạt Nhân
+    </button>
+    <button class="btn btn-primary simulation-button" data-file="projectile-data-lab_vi.html">
+      Phòng thí nghiệm đạn tủ
+    </button>
+    <button class="btn btn-primary simulation-button" data-file="generator_vi.html">
+      Máy phát điện
+    </button>
+    <button class="btn btn-primary simulation-button" data-file="buoyancy_vi.html">
+      Sự nổi
+    </button>
+    <button class="btn btn-primary simulation-button" data-file="models-of-the-hydrogen-atom_vi.html">
+      Mô hình Hydrogen
+    </button>
+    <button class="btn btn-primary simulation-button" data-file="quantum-measurement_vi.html">
+      Thí nghiệm lượng tử
+    </button>
+    <button class="btn btn-primary simulation-button" data-file="magnet-and-compass_vi.html">
+      Nam châm và la bàn
+    </button>
+  </div>
+
+  <!-- Modal chung dùng để hiển thị nội dung từng simulation -->
+  <div
+    class="modal fade"
+    id="simulationModal"
+    tabindex="-1"
+    aria-labelledby="simulationModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="simulationModalLabel">Simulation</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Đóng"
+          ></button>
+        </div>
+        <div class="modal-body" id="simulationModalBody" style="min-height: 70vh;">
+          <!-- Nơi chèn nội dung HTML lấy về -->
+          <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Đang tải...</span>
+            </div>
+            <p class="mt-2">Đang tải nội dung...</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Đóng
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS + Popper -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"
+  ></script>
+
+  <script
+    src="https://code.jquery.com/jquery-3.6.4.min.js"
+    crossorigin="anonymous"
+  ></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const modalEl = document.getElementById('simulationModal');
+      const modal = new bootstrap.Modal(modalEl);
+      const modalTitle = document.getElementById('simulationModalLabel');
+      const modalBody = document.getElementById('simulationModalBody');
+
+      // Khi click vào bất kỳ nút nào trong #button-container
+      document
+        .getElementById('button-container')
+        .addEventListener('click', function (event) {
+          const btn = event.target.closest('button.simulation-button');
+          if (!btn) return; // nếu không phải button cần xử lý, thoát
+
+          const filePath = btn.getAttribute('data-file');
+          if (!filePath) return;
+
+          // Đặt tiêu đề modal dựa trên text button
+          modalTitle.textContent = btn.textContent.trim();
+
+          // Hiển thị spinner/loading ban đầu
+          modalBody.innerHTML = `
+            <div class="text-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Đang tải...</span>
+              </div>
+              <p class="mt-2">Đang tải nội dung...</p>
+            </div>
+          `;
+
+          // Mở modal
+          modal.show();
+
+          // Fetch file HTML
+          fetch(filePath)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error('Không thể tải file: ' + response.statusText);
+              }
+              return response.text();
+            })
+            .then((htmlString) => {
+              // Parse HTML string để lấy nội dung <body>
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(htmlString, 'text/html');
+              // Lấy innerHTML của <body> (hoặc bạn có thể chắt lọc thêm)
+              const bodyContent = doc.body.innerHTML;
+
+              // Đưa nội dung vào modalBody
+              modalBody.innerHTML = bodyContent;
+            })
+            .catch((err) => {
+              modalBody.innerHTML = `
+                <div class="alert alert-danger" role="alert">
+                  Lỗi khi tải nội dung: ${err.message}
+                </div>
+              `;
+            });
+        });
+    });
+  </script>
+</body>
+</html>

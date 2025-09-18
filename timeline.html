@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quản lý Lịch – Timeline Công việc</title>
+  <!-- Bootstrap CSS (v5) -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <!-- Font Awesome (icon) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
+  <style>
+    /* ========== Sidebar + Layout ========== */
+    body {
+      overflow-x: hidden;
+    }
+    #sidebar {
+      min-width: 250px;
+      max-width: 250px;
+      background: #343a40;
+      color: #fff;
+      transition: all 0.3s;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      z-index: 1000;
+    }
+    #sidebar .sidebar-header {
+      padding: 20px;
+      background: #23272b;
+    }
+    #sidebar .nav-link {
+      color: #ddd;
+    }
+    #sidebar .nav-link:hover {
+      background: #495057;
+      color: #fff;
+    }
+    #sidebar .nav-link .fas {
+      margin-right: 8px;
+    }
+    #sidebar.collapsed {
+      margin-left: -250px;
+    }
+
+    #content {
+      width: calc(100% - 250px);
+      margin-left: 250px;
+      transition: all 0.3s;
+    }
+    #content.expanded {
+      margin-left: 0;
+      width: 100%;
+    }
+
+    .navbar {
+      background: #fff;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    /* ========== Timeline Styles ========== */
+    .timeline-wrapper {
+      position: relative;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .timeline-container {
+      display: inline-block;
+      white-space: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-bottom: 20px;
+    }
+    .time-marker {
+      display: inline-block;
+      width: 100px;
+      text-align: center;
+      border-right: 1px solid #ccc;
+      padding: 5px 0;
+      font-size: 0.9rem;
+      color: #555;
+      background: #f8f9fa;
+    }
+    .event {
+      position: absolute;
+      background: #007bff;
+      color: #fff;
+      border-radius: 5px;
+      padding: 5px 8px;
+      font-size: 0.9rem;
+      text-align: center;
+      white-space: normal;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .timeline-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      cursor: pointer;
+      opacity: 0.8;
+    }
+    #prevBtn {
+      left: 10px;
+    }
+    #nextBtn {
+      right: 10px;
+    }
+    /* Đường line chính của timeline */
+    .timeline-line {
+      height: 2px;
+      background: #ccc;
+      position: absolute;
+      bottom: 0;
+      width: max-content; /* rộng theo số marker */
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav id="sidebar">
+    <div class="sidebar-header text-center">
+      <h4>Employee M S</h4>
+      <strong>EMS</strong>
+    </div>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a href="#" class="nav-link ps-4">
+          <i class="fas fa-calendar-alt"></i> Quản lý Lịch
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#submenuEvent" data-bs-toggle="collapse" class="nav-link ps-4">
+          <i class="fas fa-plus"></i> Thêm Sự kiện
+        </a>
+        <ul class="collapse list-unstyled ms-4" id="submenuEvent">
+          <li>
+            <a href="#" class="nav-link ps-4" data-bs-toggle="modal" data-bs-target="#addEventModal">Thêm mới</a>
+          </li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link ps-4">
+          <i class="fas fa-user"></i> Hồ sơ
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link ps-4">
+          <i class="fas fa-sign-out-alt"></i> Đăng xuất
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Page Content -->
+  <div id="content">
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid">
+        <button type="button" id="sidebarCollapse" class="btn btn-primary">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h4 class="ms-3 mb-0">Quản lý Lịch Công việc</h4>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="navbarDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+            >
+              <i class="fas fa-user-circle fa-lg"></i> Nguyễn Văn B
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#">Hồ sơ cá nhân</a></li>
+              <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Area -->
+    <div class="container-fluid position-relative mt-4">
+      <!-- Tiêu đề -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>Timeline Công việc Theo Thời gian</h5>
+        <button
+          class="btn btn-success"
+          data-bs-toggle="modal"
+          data-bs-target="#addEventModal"
+        >
+          <i class="fas fa-plus"></i> Thêm Sự kiện
+        </button>
+      </div>
+
+      <!-- Khung Timeline -->
+      <div class="timeline-wrapper border rounded" style="height: 200px;">
+        <!-- Nút Prev -->
+        <div id="prevBtn" class="timeline-nav btn btn-outline-secondary">
+          <i class="fas fa-chevron-left"></i>
+        </div>
+        <!-- Nút Next -->
+        <div id="nextBtn" class="timeline-nav btn btn-outline-secondary">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+
+        <!-- Time Markers -->
+        <div id="timeline" class="timeline-container">
+          <!-- JS sẽ generate 24 marker từ 00:00 → 23:00 -->
+        </div>
+        <!-- Dòng timeline chính -->
+        <div id="timelineLine" class="timeline-line"></div>
+        <!-- Events Layer -->
+        <div id="eventsLayer" style="position: absolute; top: 60px; height: 100px; width: max-content;">
+          <!-- JS chèn các event tại vị trí offset tính theo giờ -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Thêm Sự kiện -->
+  <div
+    class="modal fade"
+    id="addEventModal"
+    tabindex="-1"
+    aria-labelledby="addEventModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="eventForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addEventModalLabel">Thêm Sự kiện</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="eventTitle" class="form-label">Tên sự kiện</label>
+              <input
+                type="text"
+                class="form-control"
+                id="eventTitle"
+                name="eventTitle"
+                placeholder="Nhập tên sự kiện"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="eventStart" class="form-label">Thời gian bắt đầu</label>
+              <input
+                type="datetime-local"
+                class="form-control"
+                id="eventStart"
+                name="eventStart"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="eventEnd" class="form-label">Thời gian kết thúc</label>
+              <input
+                type="datetime-local"
+                class="form-control"
+                id="eventEnd"
+                name="eventEnd"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="eventDescription" class="form-label">Mô tả</label>
+              <textarea
+                class="form-control"
+                id="eventDescription"
+                name="eventDescription"
+                rows="3"
+                placeholder="Mô tả ngắn về sự kiện"
+              ></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Đóng
+            </button>
+            <button type="submit" class="btn btn-primary">Lưu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== Các Script cần thiết ========== -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+  ></script>
+  <script>
+    $(document).ready(function () {
+      // ========== Toggle Sidebar ==========
+      $("#sidebarCollapse").on("click", function () {
+        $("#sidebar").toggleClass("collapsed");
+        $("#content").toggleClass("expanded");
+      });
+
+      // ========== Khởi tạo Timeline ========== 
+      var timeline = $("#timeline");
+      var timelineLine = $("#timelineLine");
+      var eventsLayer = $("#eventsLayer");
+
+      // Sinh 24 mốc giờ (00:00 → 23:00), mỗi giờ 100px
+      for (var h = 0; h < 24; h++) {
+        var hourText = (h < 10 ? "0" + h : h) + ":00";
+        var marker = $(
+          '<div class="time-marker">' + hourText + "</div>"
+        );
+        timeline.append(marker);
+      }
+      // Cài đặt chiều rộng dòng timeline (24 giờ * 100px)
+      var totalWidth = 24 * 100;
+      timelineLine.css("width", totalWidth + "px");
+
+      // Danh sách sự kiện mẫu (thông thường sẽ load qua AJAX)
+      var sampleEvents = [
+        {
+          id: 1,
+          title: "Cuộc họp A",
+          start: "2025-06-01T09:30", // 9:30 → 9.5 giờ
+          end: "2025-06-01T10:30",
+        },
+        {
+          id: 2,
+          title: "Event B",
+          start: "2025-06-01T14:00", // 14:00
+          end: "2025-06-01T15:00",
+        },
+        {
+          id: 3,
+          title: "Họp Nhóm X",
+          start: "2025-06-01T16:15", // 16.25 giờ
+          end: "2025-06-01T17:00",
+        },
+      ];
+
+      // Hàm tính offset px từ “giờ”: phút thành “giờ decimal”
+      function getTimeDecimal(datetimeStr) {
+        var dt = new Date(datetimeStr);
+        var h = dt.getHours();
+        var m = dt.getMinutes();
+        return h + m / 60;
+      }
+
+      // Render các sự kiện lên timeline
+      sampleEvents.forEach(function (evt) {
+        var startDecimal = getTimeDecimal(evt.start); // ví dụ 9.5
+        var endDecimal = getTimeDecimal(evt.end); // ví dụ 10.5
+        // Tính offset và độ rộng
+        var leftPos = startDecimal * 100; // mỗi giờ 100px
+        var widthPx = (endDecimal - startDecimal) * 100;
+        if (widthPx < 50) {
+          // đảm bảo tối thiểu 50px để hiển thị tên
+          widthPx = 50;
+        }
+
+        var eventBox = $(
+          '<div class="event" style="left:' +
+            leftPos +
+            "px; width:" +
+            widthPx +
+            'px;">' +
+            '<strong>' +
+            evt.title +
+            "</strong><br>" +
+            // Hiển thị khung giờ bắt đầu - kết thúc
+            '<small>' +
+            evt.start.substring(11, 16) +
+            " - " +
+            evt.end.substring(11, 16) +
+            "</small>" +
+            "</div>"
+        );
+
+        eventsLayer.append(eventBox);
+      });
+
+      // Đồng bộ cuộn giữa timeline và eventsLayer
+      timeline.on("scroll", function () {
+        eventsLayer.scrollLeft(timeline.scrollLeft());
+      });
+
+      // Nút Prev / Next để cuộn timeline
+      $("#prevBtn").on("click", function () {
+        timeline.animate({ scrollLeft: "-=500" }, 300);
+        eventsLayer.animate({ scrollLeft: "-=500" }, 300);
+      });
+      $("#nextBtn").on("click", function () {
+        timeline.animate({ scrollLeft: "+=500" }, 300);
+        eventsLayer.animate({ scrollLeft: "+=500" }, 300);
+      });
+
+      // ========== Xử lý Form Thêm Sự kiện ==========
+      $("#eventForm").on("submit", function (e) {
+        e.preventDefault();
+        // Thu thập thông tin từ form
+        var title = $("#eventTitle").val();
+        var start = $("#eventStart").val();
+        var end = $("#eventEnd").val();
+        var desc = $("#eventDescription").val();
+
+        // Tính toán offset và width
+        var startDecimal = getTimeDecimal(start);
+        var endDecimal = getTimeDecimal(end);
+        var leftPos = startDecimal * 100;
+        var widthPx = (endDecimal - startDecimal) * 100;
+        if (widthPx < 50) widthPx = 50;
+
+        // Tạo event box mới
+        var newEvent = $(
+          '<div class="event" style="left:' +
+            leftPos +
+            "px; width:" +
+            widthPx +
+            'px;">' +
+            '<strong>' +
+            title +
+            "</strong><br>" +
+            '<small>' +
+            start.substring(11, 16) +
+            " - " +
+            end.substring(11, 16) +
+            "</small>" +
+            "</div>"
+        );
+        eventsLayer.append(newEvent);
+
+        // Đóng modal & reset form
+        $("#addEventModal").modal("hide");
+        $("#eventForm")[0].reset();
+      });
+    });
+  </script>
+</body>
+</html>

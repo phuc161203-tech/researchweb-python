@@ -1,0 +1,123 @@
+{% extends 'transport/_Base.html' %}
+{% load humanize %}
+{% block content %}
+<div class="container py-4">
+  <h2>Cập nhật Đơn hàng #{{ order.id }}</h2>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="row g-3">
+      {# Render tất cả các field của form theo Bootstrap #}
+      {% for field in form.visible_fields %}
+        <div class="col-md-6">
+          <label for="{{ field.id_for_label }}" class="form-label">
+            {{ field.label }}{% if field.field.required %} *{% endif %}
+          </label>
+          {{ field }}
+          {% if field.help_text %}
+            <small class="form-text text-muted">{{ field.help_text }}</small>
+          {% endif %}
+          {% for err in field.errors %}
+            <div class="text-danger">{{ err }}</div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn btn-success">Lưu thay đổi</button>
+      <a href="{% url 'logistics:customer_order' %}" class="btn btn-secondary ms-2">Hủy</a>
+    </div>
+  </form>
+
+  <hr class="my-5">
+
+  <h3>Chi tiết Đơn hàng hiện tại</h3>
+  <dl class="row">
+    <!-- Thông tin Người gửi -->
+    <dt class="col-sm-3">Người gửi</dt>
+    <dd class="col-sm-9">{{ order.sender_name }}</dd>
+    <dt class="col-sm-3">Điện thoại</dt>
+    <dd class="col-sm-9">{{ order.sender_phone }}</dd>
+    <dt class="col-sm-3">Email</dt>
+    <dd class="col-sm-9">{{ order.sender_email }}</dd>
+    <dt class="col-sm-3">Địa chỉ</dt>
+    <dd class="col-sm-9">
+      {{ order.sender_address }}, {{ order.sender_city }}, 
+      {{ order.sender_province }} {{ order.sender_zip }}, 
+      {{ order.sender_country }}
+    </dd>
+
+    <!-- Thông tin Người nhận -->
+    <dt class="col-sm-3">Người nhận</dt>
+    <dd class="col-sm-9">{{ order.receiver_name }}</dd>
+    <dt class="col-sm-3">Điện thoại</dt>
+    <dd class="col-sm-9">{{ order.receiver_phone }}</dd>
+    <dt class="col-sm-3">Email</dt>
+    <dd class="col-sm-9">{{ order.receiver_email }}</dd>
+    <dt class="col-sm-3">Địa chỉ</dt>
+    <dd class="col-sm-9">
+      {{ order.receiver_address }}, {{ order.receiver_city }}, 
+      {{ order.receiver_province }} {{ order.receiver_zip }}, 
+      {{ order.receiver_country }}
+    </dd>
+
+    <!-- Thông tin gói hàng -->
+    <dt class="col-sm-3">Trọng lượng</dt>
+    <dd class="col-sm-9">{{ order.weight }} kg</dd>
+    <dt class="col-sm-3">Kích thước (L×W×H)</dt>
+    <dd class="col-sm-9">{{ order.length }}×{{ order.width }}×{{ order.height }} cm</dd>
+    <dt class="col-sm-3">Giá trị khai báo</dt>
+    <dd class="col-sm-9">{{ order.declared_value|intcomma }} VND</dd>
+    <dt class="col-sm-3">Phí vận chuyển</dt>
+    <dd class="col-sm-9">{{ order.shipping_cost|intcomma }} VND</dd>
+    <dt class="col-sm-3">Phụ phí khác</dt>
+    <dd class="col-sm-9">{{ order.additional_fee|intcomma }} VND</dd>
+    <dt class="col-sm-3">Giảm giá/KM</dt>
+    <dd class="col-sm-9">{{ order.discount_amount|intcomma }} VND</dd>
+    <dt class="col-sm-3">Số lượng</dt>
+    <dd class="col-sm-9">{{ order.quantity }}</dd>
+    <dt class="col-sm-3">Danh mục</dt>
+    <dd class="col-sm-9">{{ order.category }}</dd>
+    <dt class="col-sm-3">Loại dịch vụ</dt>
+    <dd class="col-sm-9">{{ order.get_service_type_display }}</dd>
+
+    <!-- Thông tin thời gian -->
+    <dt class="col-sm-3">Ngày lấy</dt>
+    <dd class="col-sm-9">{{ order.pickup_date }}</dd>
+    <dt class="col-sm-3">Ngày giao</dt>
+    <dd class="col-sm-9">{{ order.delivery_date }}</dd>
+
+    <!-- Hướng dẫn & ghi chú -->
+    <dt class="col-sm-3">Hướng dẫn lấy hàng</dt>
+    <dd class="col-sm-9">{{ order.pickup_instructions }}</dd>
+    <dt class="col-sm-3">Hướng dẫn giao hàng</dt>
+    <dd class="col-sm-9">{{ order.delivery_instructions }}</dd>
+    <dt class="col-sm-3">Ghi chú thêm</dt>
+    <dd class="col-sm-9">{{ order.additional_notes }}</dd>
+
+    <!-- Thanh toán & bảo hiểm -->
+    <dt class="col-sm-3">Thanh toán</dt>
+    <dd class="col-sm-9">
+      {{ order.get_payment_method_display }}{% if order.payment_method == 'other' %}
+       ({{ order.other_payment_method }}){% endif %}
+    </dd>
+    <dt class="col-sm-3">Bảo hiểm</dt>
+    <dd class="col-sm-9">{{ order.get_insurance_display }}</dd>
+
+    <!-- Kênh & loại khách -->
+    <dt class="col-sm-3">Kênh đặt</dt>
+    <dd class="col-sm-9">{{ order.get_order_channel_display }}</dd>
+    <dt class="col-sm-3">Loại khách</dt>
+    <dd class="col-sm-9">{{ order.get_customer_type_display }}</dd>
+
+    <!-- Trạng thái & tham chiếu -->
+    <dt class="col-sm-3">Trạng thái</dt>
+    <dd class="col-sm-9">{{ order.get_status_display }}</dd>
+    <dt class="col-sm-3">Mã tham chiếu</dt>
+    <dd class="col-sm-9">{{ order.customer_ref }}</dd>
+    <dt class="col-sm-3">Mã khuyến mãi</dt>
+    <dd class="col-sm-9">{{ order.promo_code }}</dd>
+  </dl>
+</div>
+{% endblock %}

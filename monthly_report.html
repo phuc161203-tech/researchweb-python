@@ -1,0 +1,40 @@
+{% extends "transport/_Base.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Báo Cáo Đơn Hàng Tháng {{ month }}/{{ year }}</h2>
+
+  {% if orders %}
+    <table class="table table-bordered table-striped mt-3">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Mã Đơn</th>
+          <th>Người Gửi</th>
+          <th>Người Nhận</th>
+          <th>Trạng Thái</th>
+          <th>Ngày Gửi</th>
+          <th>Ngày Nhận</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ order.id }}</td>
+            <td>{{ order.sender_name }}</td>
+            <td>{{ order.receiver_name }}</td>
+            <td>{{ order.get_status_display }}</td>
+            <td>{{ order.pickup_date }}</td>
+            <td>{{ order.delivery_date }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Chưa có đơn hàng nào trong tháng này.</p>
+  {% endif %}
+
+  <a href="{% url 'logistics:admin_dashboard' %}" class="btn btn-secondary mt-3">Quay về Dashboard</a>
+</div>
+{% endblock %}

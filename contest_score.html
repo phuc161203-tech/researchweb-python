@@ -1,0 +1,153 @@
+{% extends 'contestTem/_Base.html' %}
+{% block title %}Bảng Điểm – {{ exam.title }}{% endblock %}
+
+{% block content %}
+<style>
+  /* Container & Animation */
+  .score-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    animation: fadeIn 0.8s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Header */
+  .score-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .score-header h1 {
+    color: #5e35b1;
+    font-size: 2.2rem;
+    margin: 0;
+  }
+  .form-group select {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #d1c4e9, #bbdefb);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .form-group select:hover {
+    background: linear-gradient(90deg, #b39ddb, #90caf9);
+  }
+
+  /* Table */
+  table.scoreboard {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  table.scoreboard thead {
+    background: linear-gradient(90deg, #8e24aa, #3949ab);
+  }
+  table.scoreboard th {
+    color: #fff;
+    padding: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  table.scoreboard tbody tr {
+    transition: background 0.2s, transform 0.2s;
+  }
+  table.scoreboard tbody tr:nth-child(odd) {
+    background: #f3e5f5;
+  }
+  table.scoreboard tbody tr:nth-child(even) {
+    background: #e8eaf6;
+  }
+  table.scoreboard tbody tr:hover {
+    background: #d1c4e9;
+    transform: scale(1.02);
+    z-index: 1;
+  }
+  table.scoreboard td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+  }
+
+  /* Badges for top ranks */
+  .badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .badge.gold   { background: #FFD700; color: #333; }
+  .badge.silver { background: #C0C0C0; color: #333; }
+  .badge.bronze { background: #CD7F32; color: #fff; }
+</style>
+
+<div class="score-container">
+  <div class="score-header">
+    <h1>🏆 Bảng Điểm – {{ exam.title }}</h1>
+    <form method="get" id="exam-select-form">
+      <div class="form-group">
+        <select name="exam" onchange="this.form.submit()">
+          {% for ex in exams %}
+            <option value="{{ ex.code }}"
+              {% if ex.code == exam.code %}selected{% endif %}>
+              {{ ex.title }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+    </form>
+  </div>
+
+  <table class="scoreboard">
+    <thead>
+      <tr>
+        <th>Hạng</th>
+        <th>Thí sinh</th>
+        <th>Điểm</th>
+        <th>Số câu làm</th>
+        <th>Thời gian nộp</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for sub in submissions %}
+        <tr>
+          <td>
+            {{ forloop.counter }}
+            {% if forloop.counter == 1 %}
+              <span class="badge gold">🥇</span>
+            {% elif forloop.counter == 2 %}
+              <span class="badge silver">🥈</span>
+            {% elif forloop.counter == 3 %}
+              <span class="badge bronze">🥉</span>
+            {% endif %}
+          </td>
+          <td>{{ sub.user.username }}</td>
+          <td>{{ sub.score }}</td>
+          <td>{{ sub.total_answers }}</td>
+          <td>{{ sub.submitted_at|date:"H:i:s d/m/Y" }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5" style="padding: 30px; color: #666;">
+            Chưa có bài làm nào cho cuộc thi này.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

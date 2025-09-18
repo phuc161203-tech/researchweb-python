@@ -1,0 +1,92 @@
+{# consult/templates/consult/prescription_pdf.html #}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body { font-family: DejaVu Sans, sans-serif; font-size: 12px; }
+    h4 { text-align: center; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+    th, td { border: 1px solid #000; padding: 4px; }
+    .header, .footer { width: 100%; text-align: center; margin-bottom: 10px; }
+    .signature { margin-top: 50px; }
+    .signature img { width: 150px; height: auto; }
+  </style>
+  <title>Đơn thuốc</title>
+</head>
+<body>
+  <h4>ĐƠN THUỐC & BIÊN LAI KHÁM BỆNH</h4>
+  <div class="header">
+    <p><strong>Phòng khám: … (Tên phòng khám/bệnh viện)</strong></p>
+    <p><strong>Địa chỉ: …</strong></p>
+    <p><strong>Điện thoại: …</strong></p>
+  </div>
+
+  <table>
+    <tr>
+      <th colspan="2">Thông tin Bệnh nhân</th>
+    </tr>
+    <tr>
+      <td><strong>Họ và tên:</strong></td>
+      <td>{{ prescription.ho_va_ten_benh_nhan }}</td>
+    </tr>
+    <tr>
+      <td><strong>Ngày sinh:</strong></td>
+      <td>{{ prescription.ngay_thang_nam_sinh|date:"d/m/Y" }}</td>
+    </tr>
+    <tr>
+      <td><strong>Giới tính:</strong></td>
+      <td>{{ prescription.gioi_tinh }}</td>
+    </tr>
+    <tr>
+      <td><strong>Địa chỉ:</strong></td>
+      <td>{{ prescription.dia_chi_hien_tai }}</td>
+    </tr>
+    <tr>
+      <td><strong>Điện thoại:</strong></td>
+      <td>{{ prescription.dien_thoai_lien_he }}</td>
+    </tr>
+    <!-- Hiển thị thêm một số trường quan trọng nếu muốn -->
+  </table>
+
+  <table>
+    <tr>
+      <th colspan="2">Chẩn đoán & Đơn thuốc</th>
+    </tr>
+    <tr>
+      <td><strong>Chẩn đoán chính:</strong></td>
+      <td>{{ prescription.chan_doan_chinh }} ({{ prescription.ma_benh_chinh }})</td>
+    </tr>
+    <tr>
+      <td><strong>Chẩn đoán phụ:</strong></td>
+      <td>{{ prescription.chan_doan_phu }} ({{ prescription.ma_benh_phu }})</td>
+    </tr>
+    <tr>
+      <td><strong>Thuốc kê đơn:</strong></td>
+      <td>
+        {{ prescription.ten_thuoc_ke_don }} – {{ prescription.lieu_luong_thuoc }} – 
+        {{ prescription.so_luong_thuoc }} – {{ prescription.cach_dung_thuoc }}
+      </td>
+    </tr>
+    <tr>
+      <td><strong>Thời gian điều trị:</strong></td>
+      <td>{{ prescription.thoi_gian_dieu_tri }}</td>
+    </tr>
+    <!-- Thêm các dòng giống như vậy để hiển thị đầy đủ 248 trường nếu cần -->
+  </table>
+
+  <div class="signature">
+    <div style="float:left; text-align:center; width:50%;">
+      <p><strong>Biên lai khám bệnh</strong></p>
+      <br><br><br>
+      <p>… (Ký, ghi rõ họ tên nhân viên thu phí)</p>
+    </div>
+    <div style="float:right; text-align:center; width:50%;">
+      <p><strong>Đơn thuốc</strong></p>
+      <br><br><br>
+      <p>(Ký, ghi rõ họ tên bác sĩ)</p>
+      <p>{{ prescription.patient.ho_va_ten_benh_nhan }}</p>
+    </div>
+  </div>
+</body>
+</html>

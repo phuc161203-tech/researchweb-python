@@ -1,0 +1,35 @@
+<form id="pending-article-form" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="form-group">
+    {{ form.articleName.label_tag }} {{ form.articleName }}
+  </div>
+  <div class="form-group">
+    {{ form.articleID.label_tag }} {{ form.articleID }}
+  </div>
+  <div class="form-group">
+    {{ form.articleAuthor.label_tag }} {{ form.articleAuthor }}
+  </div>
+  <div class="form-group">
+    {{ form.articleDirection.label_tag }} {{ form.articleDirection }}
+  </div>
+  <div class="form-group">
+    {{ form.articleSubject.label_tag }} {{ form.articleSubject }}
+  </div>
+  <div class="form-group">
+    {{ form.reportFile.label_tag }} {{ form.reportFile }}
+  </div>
+  <div class="form-group">
+    {{ form.candidateImage.label_tag }} {{ form.candidateImage }}
+    <img id="img-preview" src="#" alt="Ảnh ứng viên" style="max-width: 150px; display:none; margin-top:10px;"/>
+  </div>
+  <button type="submit" class="btn btn-primary w-100">Nộp bài báo</button>
+</form>
+<script>
+  document.getElementById('id_candidateImage').onchange = function (evt) {
+    const [file] = this.files;
+    if (file) {
+      document.getElementById('img-preview').src = URL.createObjectURL(file);
+      document.getElementById('img-preview').style.display = 'block';
+    }
+  }
+</script>

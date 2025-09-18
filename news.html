@@ -1,0 +1,136 @@
+{% extends 'greenTem/_Base.html' %}
+
+{% block main_content %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DBSCL News Portal</title>
+
+  <!-- Bootstrap & Font-Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+  <style>
+    body{font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;background:#f6f7f9;color:#333}
+    .topbar{background:#d32f2f;color:#fff;font-size:.875rem}
+    .topbar a{color:#fff;text-decoration:none}
+    .navbar-brand{font-weight:700}
+    .category-nav a{font-size:.9rem}
+    .article-card{border:none;border-radius:8px;transition:.3s;cursor:pointer}
+    .article-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1);transform:translateY(-2px)}
+    .article-card img{object-fit:cover;height:180px}
+    .badge-type{position:absolute;top:.5rem;left:.5rem}
+    footer{background:#212529;color:#fff}
+  </style>
+</head>
+<body>
+  <!-- Top bar -->
+  <div class="topbar py-1">
+    <div class="container d-flex justify-content-between">
+      <span><i class="fa-regular fa-clock"></i> Cập nhật: <span id="now-date"></span></span>
+      <span><a href="#podcast"><i class="fa-solid fa-headphones"></i> Podcast</a></span>
+    </div>
+  </div>
+
+  <!-- Main navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">DBSCL News</a>
+      <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div id="mainNav" class="collapse navbar-collapse">
+        <ul class="navbar-nav me-auto category-nav">
+          <li class="nav-item"><a class="nav-link" href="#environment">Môi trường</a></li>
+          <li class="nav-item"><a class="nav-link" href="#climate">Khí hậu</a></li>
+          <li class="nav-item"><a class="nav-link" href="#agri">Nông nghiệp</a></li>
+          <li class="nav-item"><a class="nav-link" href="#science">Khoa học</a></li>
+          <li class="nav-item"><a class="nav-link" href="#business">Kinh doanh</a></li>
+          <li class="nav-item"><a class="nav-link" href="#education">Giáo dục</a></li>
+          <li class="nav-item"><a class="nav-link" href="#health">Sức khỏe</a></li>
+          <li class="nav-item"><a class="nav-link" href="#world">Thế giới</a></li>
+          <li class="nav-item"><a class="nav-link" href="#life">Đời sống</a></li>
+          <li class="nav-item"><a class="nav-link" href="#opinion">Opinion</a></li>
+          <li class="nav-item"><a class="nav-link" href="#multimedia">Multimedia</a></li>
+        </ul>
+        <form class="d-flex" role="search">
+          <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm kiếm" />
+          <button class="btn btn-sm btn-outline-light" type="submit"><i class="fa fa-search"></i></button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero headline -->
+  <section class="bg-light py-4 border-bottom">
+    <div class="container">
+      <h1 class="display-6 fw-bold">Tin nóng: Đồng bằng sông Cửu Long đối phó hạn – mặn 2025</h1>
+      <p class="lead">Theo dự báo, xâm nhập mặn sẽ tiếp tục gia tăng 30 % trong tháng 6.</p>
+    </div>
+  </section>
+
+  <!-- Article grid -->
+  <main class="py-5">
+    <div class="container">
+      <div class="row g-4" id="news-grid">
+        <!-- JS sẽ nạp thẻ article-card vào đây -->
+      </div>
+    </div>
+  </main>
+
+  <footer class="py-4">
+    <div class="container text-center small">
+      &copy; 2025 DBSCL News – Phát triển bền vững vì tương lai.
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    /* 12 loại hình thức hiển thị: article, gallery, video, infographic, podcast,
+       interview, data-chart, timeline, op-ed, Q&A, live-blog, listicle */
+    const TYPES = [
+      {k:'article',icon:'fa-file-lines',label:'Bài viết'},
+      {k:'gallery',icon:'fa-images',label:'Gallery'},
+      {k:'video',icon:'fa-circle-play',label:'Video'},
+      {k:'infographic',icon:'fa-chart-pie',label:'Infographic'},
+      {k:'podcast',icon:'fa-headphones',label:'Podcast'},
+      {k:'interview',icon:'fa-comments',label:'Phỏng vấn'},
+      {k:'data',icon:'fa-chart-line',label:'Data'},
+      {k:'timeline',icon:'fa-stream',label:'Timeline'},
+      {k:'opinion',icon:'fa-lightbulb',label:'Opinion'},
+      {k:'qa',icon:'fa-question',label:'Hỏi-đáp'},
+      {k:'live',icon:'fa-bolt',label:'Live'},
+      {k:'list',icon:'fa-list-ol',label:'List'},
+    ];
+
+    const SAMPLE = Array.from({length:24}).map((_,i)=>({
+      id:i,
+      title:`Tiêu đề tin số ${i+1}`,
+      img:`https://source.unsplash.com/600x40${i%10+1}/?mekong`,
+      excerpt:`Tóm tắt nội dung ngắn gọn để hiển thị trên trang chủ...`,
+      type:TYPES[i%12]
+    }));
+
+    function renderArticle(a){
+      return `
+      <div class="col-md-4">
+        <div class="card article-card h-100" onclick="location.href='#';">
+          <div class="position-relative">
+            <span class="badge bg-danger badge-type"><i class="fa-solid ${a.type.icon}"></i></span>
+            <img src="${a.img}" class="card-img-top" alt="${a.title}">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">${a.title}</h5>
+            <p class="card-text small">${a.excerpt}</p>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    document.getElementById('news-grid').innerHTML = SAMPLE.map(renderArticle).join('');
+    document.getElementById('now-date').textContent =
+      new Date().toLocaleString('vi-VN',{weekday:'short',hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',year:'numeric'});
+  </script>
+</body>
+{% endblock %}

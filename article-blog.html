@@ -1,0 +1,507 @@
+{% extends 'articleDetail/_Base.html' %}
+{% load static %}
+
+{% block main_content %}
+<div class="container">
+  <div class="page-banner">
+    <div class="row justify-content-center align-items-center h-100">
+      <div class="col-md-6">
+        <nav aria-label="Breadcrumb">
+          <ul class="breadcrumb justify-content-center py-0 bg-transparent">
+            <li class="breadcrumb-item"><a href="{% url 'blogScience:article-blog' %}">Home</a></li>
+            <li class="breadcrumb-item active">Blog</li>
+          </ul>
+        </nav>
+        <h1 class="text-center">Blog</h1>
+      </div>
+    </div><!-- ... Banner như cũ ... -->
+  </div>
+</div>
+
+<!-- Nút Đăng ký nhận cập nhật mới & Nộp bài báo khoa học -->
+<div class="text-center mb-4">
+  <button class="btn btn-outline-success ml-2" data-toggle="modal" data-target="#subscribeModal">
+    Đăng ký nhận thông tin cập nhật
+  </button>
+  <button class="btn btn-outline-success ml-2" data-toggle="modal" data-target="#submitArticleModal">
+    Nộp bài báo khoa học
+  </button>
+</div>
+
+<div class="page-section">
+  <div class="container">
+    <div class="row">
+      <!-- Main content -->
+      <div class="col-lg-9">
+        <form method="get" class="form-search-blog mb-4">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <select name="category" class="custom-select bg-light">
+                <option value="">Tất cả danh mục</option>
+                {% for cat in categories %}
+                  <option value="{{ cat.id }}" {% if request.GET.category|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <input type="text" name="keyword" value="{{ request.GET.keyword }}" class="form-control" placeholder="Nhập từ khóa..">
+            <div class="input-group-append">
+              <select name="order" class="custom-select">
+                <option value="desc" {% if request.GET.order == "desc" or not request.GET.order %}selected{% endif %}>Mới nhất</option>
+                <option value="asc" {% if request.GET.order == "asc" %}selected{% endif %}>Cũ nhất</option>
+              </select>
+              <button type="submit" class="btn btn-secondary">Lọc <span class="mai-filter"></span></button>
+            </div>
+          </div>
+        </form>
+        <!-- Danh sách bài báo -->
+        <div class="row my-5">
+          {% for san_pham in danh_sach_san_pham_moi %}
+          <div class="col-lg-4 col-md-6 py-3">
+            <div class="card-blog">
+              <div class="header">
+                <div class="post-thumb d-flex justify-content-center align-items-center" style="height: 180px;">
+                  <iframe src="https://arxiv.org/pdf/{{ san_pham.articleID }}.pdf"
+                    style="width:100%;height:180px;border:1px solid #e0e0e0;border-radius:12px;box-shadow:0 2px 16px #e0e0e033;" allowfullscreen></iframe>
+                </div>
+              </div>
+              <div class="body text-center">
+                <h5 class="post-title">
+                  <a href="{% url 'blogScience:article-blog-details' san_pham.pk %}">
+                    {{ san_pham.articleName }}
+                  </a>
+                </h5>
+                <div>
+                  <span class="post-title">Tác giả: {{ san_pham.articleAuthor }}</span><br>
+                  <span class="post-title">Chuyên ngành: {{ san_pham.articleSubject }}</span><br>
+                </div>
+                <div class="post-date">Ngày đăng: {{ san_pham.articleDate|date:"d/m/Y" }}</div>
+                <div class="mt-2">
+                  <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pdfModal"
+                    data-pdf="https://arxiv.org/pdf/{{ san_pham.articleID }}.pdf">
+                    Xem trước
+                  </button>
+                  <a class="btn btn-success btn-sm" href="/media/pdfs/{{ san_pham.articleFolder }}/{{ san_pham.articleID }}.pdf" download>
+                    Tải về
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <!-- Phân trang -->
+        <nav aria-label="Page navigation">
+          <ul class="pagination justify-content-center flex-wrap">
+            {% if page_obj.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page=1">&laquo;</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}">Trước</a>
+              </li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+              {% if num == page_obj.number %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+              {% elif num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+                <li class="page-item"><a class="page-link" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ num }}">{{ num }}</a></li>
+              {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.next_page_number }}">Sau</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.paginator.num_pages }}">&raquo;</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+      <!-- Sidebar nổi bật -->
+       <div class="col-lg-3">
+  <!-- Khung Pending Articles -->
+   {% if user.is_authenticated and not user.is_superuser %}
+<div class="card mb-4">
+  <div class="card-header bg-secondary text-white">
+    <h6 class="mb-0">Bài báo bạn đã nộp</h6>
+  </div>
+  <ul class="list-group list-group-flush">
+    {% for art in own_articles %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ art.articleName|truncatechars:25 }}
+
+        {% if art.status == 'approved' %}
+          <span class="badge badge-success">{{ art.get_status_display }}</span>
+        {% else %}
+          <span class="badge badge-warning">{{ art.get_status_display }}</span>
+        {% endif %}
+
+        {% if art.status == 'approved' %}
+          <a href="{% url 'blogScience:article-blog-details' art.pk %}" class="btn btn-sm btn-outline-primary">
+            Chi tiết
+          </a>
+        {% endif %}
+      </li>
+    {% empty %}
+      <li class="list-group-item text-muted">Chưa nộp bài báo nào.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{# Thay đoạn này: #}
+{% if user.is_authenticated and user.is_superuser %}
+<div class="card mb-4">
+  <div class="card-header bg-warning text-dark">
+    <h6 class="mb-0">Chờ duyệt ({{ pending_articles|length }})</h6>
+  </div>
+  <ul class="list-group list-group-flush">
+    {% if pending_articles %}
+      {% for pa in pending_articles %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          {{ pa.articleName|truncatechars:25 }}
+
+          <div>
+            <a href="{% url 'blogScience:approve-pending-article' pa.pk %}"
+               class="btn btn-sm btn-success"
+               onclick="return confirm('Bạn có chắc muốn duyệt \"{{ pa.articleName }}\"?')">
+              Duyệt
+            </a>
+            <!-- Nút Hủy duyệt -->
+            <button class="btn btn-sm btn-danger" onclick="showCancelPendingArticle({{ pa.pk }});">
+              Hủy duyệt
+            </button>
+            <!-- Nút Xem trước (modal popup đã có) -->
+            <button class="btn btn-sm btn-info"
+                    data-toggle="modal"
+                    data-target="#reviewPendingArticleModal"
+                    onclick="showReviewPendingArticle({{ pa.pk }});">
+              Xem trước
+            </button>
+          </div>
+        </li>
+      {% endfor %}
+    {% else %}
+      <li class="list-group-item text-muted">Không có bài nào.</li>
+    {% endif %}
+  </ul>
+</div>
+{% endif %}
+
+  <!-- Khung Tin nổi bật (giữ nguyên của bạn) -->
+  <div class="card mb-4">
+    <div class="card-header bg-info text-white">
+      <h5 class="mb-0">Tin tức nổi bật</h5>
+    </div>
+    <ul class="list-group list-group-flush">
+      {% for baibao in news_featured %}
+        <li class="list-group-item">
+          <a href="{% url 'blogScience:new-details' baibao.pk %}">{{ baibao.Ten_bai_bao }}</a>
+          <br>
+          <small class="text-muted">{{ baibao.Ngay_dang|date:"d/m/Y" }}</small>
+        </li>
+      {% empty %}
+        <li class="list-group-item text-muted">Không có tin nổi bật.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+      <div class="col-lg-3">
+        <div class="card mb-4">
+          <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Tin tức nổi bật</h5>
+          </div>
+          <ul class="list-group list-group-flush">
+            {% for baibao in news_featured %}
+              <li class="list-group-item">
+                <a href="{% url 'blogScience:new-details' baibao.pk %}">{{ baibao.Ten_bai_bao }}</a>
+                <br>
+                <small class="text-muted">{{ baibao.Ngay_dang|date:"d/m/Y" }}</small>
+              </li>
+            {% empty %}
+              <li class="list-group-item text-muted">Không có tin nổi bật.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal đăng ký nhận thông tin cập nhật -->
+<div class="modal fade" id="subscribeModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form id="subscribeForm" method="post" action="{% url 'blogScience:subscribe' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title">Đăng ký nhận thông tin cập nhật</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          {{ subscriber_form.email.label_tag }}
+          {{ subscriber_form.email }} <br> <br>
+          {{ subscriber_form.name.label_tag }}
+          {{ subscriber_form.name }}
+          <div id="subscribeResult"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Đăng ký</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Modal PDF -->
+ <!-- Modal Nộp bài báo khoa học -->
+<div class="modal fade" id="submitArticleModal" tabindex="-1" role="dialog" aria-labelledby="submitArticleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nộp bài báo khoa học mới</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="submitArticleModalBody">
+        <!-- Nội dung form sẽ load bằng AJAX -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal PDF Preview -->
+<div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="pdfModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl" role="document" style="max-width:90%;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="pdfModalLabel">Xem trước bài báo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body p-0">
+        <iframe id="pdfFrame" src="" width="100%" height="700" style="border:none;"></iframe>
+      </div>
+      <!-- 1️⃣ Thêm footer ở đây -->
+      <div class="modal-footer">
+        <!-- Nút mở file gốc trong tab mới -->
+        <a id="pdfOriginalLink"
+           href="#"
+           target="_blank"
+           class="btn btn-info">
+          Xem file gốc
+        </a>
+        <!-- Nút đóng modal -->
+        <button type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Review Pending Article -->
+<div class="modal fade" id="reviewPendingArticleModal" tabindex="-1" role="dialog" aria-labelledby="reviewPendingArticleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Chi tiết bài báo nộp</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="reviewPendingArticleModalBody">
+        <!-- AJAX load content here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Nộp bài báo khoa học -->
+<div class="modal fade" id="submitArticleModal1" tabindex="-1" role="dialog" aria-labelledby="submitArticleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Đăng ký nhận thông tin cập nhật</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="submitArticleModalBody">
+        <!-- Nội dung form sẽ load bằng AJAX -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showReviewPendingArticle(pk) {
+    $('#reviewPendingArticleModalBody').html('Đang tải...');
+    $('#reviewPendingArticleModal').modal('show');
+    $.get("{% url 'blogScience:review-pending-article' 0 %}".replace('0', pk), function(data){
+      $('#reviewPendingArticleModalBody').html(data);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // PDF Modal
+    $('#pdfModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget);
+      var pdfUrl = button.data('pdf');
+      var modal = $(this);
+      modal.find('#pdfFrame').attr('src', pdfUrl);
+    });
+    $('#pdfModal').on('hidden.bs.modal', function (e) {
+      $(this).find('#pdfFrame').attr('src', '');
+    });
+
+    // HTML Modal
+    $('#htmlModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget);
+      var htmlUrl = button.data('html');
+      var modal = $(this);
+      modal.find('#htmlFrame').attr('src', htmlUrl);
+    });
+    $('#htmlModal').on('hidden.bs.modal', function (e) {
+      $(this).find('#htmlFrame').attr('src', '');
+    });
+
+// Subcribe
+    $('#subscribeModal').on('show.bs.modal', function () {
+    var modal = $(this);
+    $.ajax({
+        url: '/duong-dan-load-modal/',  // Route trả về subscribe_modal_content.html
+        success: function (data) {
+            modal.find('.modal-body').html(data);
+        }
+    })
+
+    // Lắng nghe submit
+    $(document).on('submit', '#subscribeForm', function(e){
+        e.preventDefault();
+        var form = $(this);
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            success: function(data){
+                if(data.success){
+                    $('#subscribeResult').html('<div class="alert alert-success">' + data.message + '</div>');
+                    form.trigger('reset');
+                } else {
+                    $('#subscribeResult').html('<div class="alert alert-danger">Vui lòng kiểm tra lại thông tin!</div>');
+                }
+            }
+        });
+    });
+});
+
+    // Modal Nộp bài báo khoa học
+    $('#submitArticleModal').on('show.bs.modal', function () {
+      $('#submitArticleModalBody').load("{% url 'blogScience:submit-article' %}");
+    });
+    $(document).on('submit', '#pending-article-form', function(e){
+      e.preventDefault();
+      var formData = new FormData(this);
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'blogScience:submit-article' %}",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response){
+          if (response.success) {
+            $('#submitArticleModalBody').html(
+              `<div class="alert alert-success text-center">Nộp bài báo thành công!</div>
+              <div class="text-center mt-3">
+                <button class="btn btn-info" onclick="showReviewPendingArticle(${response.pk})">
+                  Xem lại bài vừa nộp
+                </button>
+              </div>`
+            );
+          } else {
+            let html = '<div class="alert alert-danger">Vui lòng kiểm tra lại các trường bên dưới:</div>';
+            for (let k in response.errors) {
+              html += '<div><strong>' + k + ':</strong> ' + response.errors[k].join(', ') + '</div>';
+            }
+            $('#submitArticleModalBody').prepend(html);
+
+
+            
+          }
+        }
+      });
+    });
+  });
+
+  
+</script>
+<!-- ... Modal PDF giữ nguyên ... -->
+
+<script>
+  $('#subscribeForm').on('submit', function(e){
+      e.preventDefault();
+      var $form = $(this);
+      $.ajax({
+          url: $form.attr('action'),
+          type: 'POST',
+          data: $form.serialize(),
+          success: function(resp){
+              if(resp.success){
+                  $('#subscribeResult').html('<div class="alert alert-success">'+resp.message+'</div>');
+                  $form[0].reset();
+              }else{
+                  $('#subscribeResult').html('<div class="alert alert-danger">Vui lòng kiểm tra lại thông tin!</div>');
+              }
+          }
+      });
+  });
+
+  $('#pdfModal').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget);
+  var pdfUrl = button.data('pdf');
+  var modal = $(this);
+
+  // gán cho iframe
+  modal.find('#pdfFrame').attr('src', pdfUrl);
+  // gán cho nút "Xem file gốc"
+  modal.find('#pdfOriginalLink').attr('href', pdfUrl);
+});
+$('#pdfModal').on('hidden.bs.modal', function () {
+  // reset src khi đóng modal
+  $(this).find('#pdfFrame').attr('src', '');
+  // reset link
+  $(this).find('#pdfOriginalLink').attr('href', '#');
+});
+
+</script>
+{# Modal Hủy duyệt bài báo #}
+<div class="modal fade" id="cancelArticleModal" tabindex="-1" role="dialog" aria-labelledby="cancelArticleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" id="cancelArticleModalContent">
+      {# Nội dung form sẽ được load vào đây qua AJAX từ URL cancel_pending_article_confirm #}
+    </div>
+  </div>
+</div>
+
+<script>
+  function showCancelPendingArticle(pk) {
+    $('#cancelArticleModalContent').html('<div class="text-center p-4">Đang tải...</div>');
+    $('#cancelArticleModal').modal('show');
+    // Gọi AJAX để lấy nội dung modal (form nhập lý do)
+    $.get("{% url 'blogScience:cancel-pending-article-confirm' 0 %}".replace('0', pk), function(data) {
+      $('#cancelArticleModalContent').html(data);
+    });
+  }
+
+  
+</script>
+
+{% endblock %}

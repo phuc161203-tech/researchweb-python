@@ -1,0 +1,76 @@
+<style>
+    .custom-modal-header {
+        background: linear-gradient(90deg, #7f53ac 0%, #647dee 100%);
+        color: #fff;
+        padding: 1.2rem 1.5rem;
+        border-radius: 0.5rem 0.5rem 0 0;
+    }
+    .custom-modal-body {
+        background: #f6f9ff;
+        padding: 2rem 2.5rem;
+        border-radius: 0 0 0.5rem 0.5rem;
+    }
+    .form-label { font-weight: 600; color: #6a38a0;}
+    .form-control, .form-select, .form-check-input {
+        border-radius: 1.5rem; border: 1px solid #c3bef7; margin-bottom: 1rem; padding-left: 1rem;
+    }
+    .btn-gradient {
+        background: linear-gradient(90deg, #7f53ac 0%, #647dee 100%);
+        color: #fff; border: none; border-radius: 2rem; font-size: 1.2rem; font-weight: bold; padding: 0.8rem 2.5rem; margin-top: 1.5rem; width: 100%;
+    }
+    .btn-gradient:hover { background: linear-gradient(90deg, #647dee 0%, #7f53ac 100%);}
+    @media (max-width: 768px) {
+        .custom-modal-body { padding: 1rem;}
+    }
+</style>
+<div class="custom-modal-header d-flex align-items-center justify-content-between">
+    <h4 class="mb-0 font-weight-bold"><i class="fas fa-ticket-alt mr-2"></i> Đăng ký tham dự sự kiện</h4>
+    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="font-size: 2rem;">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="custom-modal-body">
+    <form id="eventRegForm" method="post" enctype="multipart/form-data" autocomplete="off">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                <label class="form-label">Họ tên</label><br>{{ form.full_name }} <br>
+                <label class="form-label">Email</label><br>{{ form.email }} <br>
+                <label class="form-label">Số điện thoại cơ quan</label><br>{{ form.work_phone }} <br>
+                <label class="form-label">Số điện thoại cá nhân</label><br>{{ form.cell_phone }}<br>
+                <label class="form-label">Chức vụ</label><br>{{ form.job_title }}<br>
+                <label class="form-label">Công ty/Đơn vị</label><br>{{ form.company }}<br>
+                <label class="form-label">Địa chỉ đầy đủ</label><br>{{ form.address }}<br>
+                <label class="form-label">Website</label><br>{{ form.website }}<br>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Giới thiệu công ty</label><br>{{ form.company_desc }}<br>
+                <label class="form-label">Sản phẩm/Dịch vụ</label><br>{{ form.products }}<br>
+                <label class="form-label">Hình thức gian hàng</label><br>{{ form.booth_type }}<br>
+                <label class="form-label">Danh sách nhân sự (tên, email, SĐT)</label><br>{{ form.staff_list }}<br>
+                <label class="form-label">Đối thủ không muốn gần</label><br>{{ form.competitors }}<br>
+                <label class="form-label">Upload logo/tài liệu công ty</label><br>{{ form.company_logo }}<br>
+            </div>
+        </div>
+        {{ form.event_name }}{{ form.event_date }}
+        <button type="submit" class="btn btn-gradient mt-4">Đăng ký</button>
+    </form>
+</div>
+<script>
+$('#eventRegForm').submit(function(e){
+  e.preventDefault();
+  var formData = new FormData(this);
+  $.ajax({
+    type: 'POST',
+    url: "{% url 'blogScience:event-registration' %}",
+    data: formData,
+    contentType: false,
+    processData: false,
+    success: function(data){
+      $('#registerModalContent').html(data.html);
+    }
+  });
+  return false;
+});
+</script>
+

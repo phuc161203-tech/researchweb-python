@@ -1,0 +1,48 @@
+<div class="modal-body">
+  {% if reg.company_logo %}
+    <div class="text-center mb-3">
+      <img src="{{ reg.company_logo.url }}" alt="Logo" style="max-width:120px;border-radius:8px;">
+    </div>
+  {% endif %}
+  <ul class="list-group mb-4">
+    <li class="list-group-item"><strong>Sự kiện:</strong> {{ reg.event_name }}</li>
+    <li class="list-group-item"><strong>Ngày:</strong> {{ reg.event_date }}</li>
+    <li class="list-group-item"><strong>Họ tên:</strong> {{ reg.full_name }}</li>
+    <li class="list-group-item"><strong>Email:</strong> {{ reg.email }}</li>
+    <li class="list-group-item"><strong>Điện thoại CQ:</strong>{{ reg.work_phone }}</li>
+    <li class="list-group-item"><strong>Điện thoại cá nhân:</strong>{{ reg.cell_phone }}</li>
+    <li class="list-group-item"><strong>Chức vụ:</strong>{{ reg.job_title }}</li>
+    <li class="list-group-item"><strong>Công ty:</strong>{{ reg.company }}</li>
+    <li class="list-group-item"><strong>Địa chỉ:</strong>{{ reg.address }}</li>
+    <li class="list-group-item"><strong>Website:</strong>{% if reg.website %}<a href="{{ reg.website }}" target="_blank">{{ reg.website }}</a>{% endif %}</li>
+    <li class="list-group-item"><strong>Giới thiệu Cty:</strong>{{ reg.company_desc }}</li>
+    <li class="list-group-item"><strong>Sản phẩm/DV:</strong>{{ reg.products }}</li>
+    <li class="list-group-item"><strong>Hình thức gian hàng:</strong>
+        {% if reg.booth_type == "in_person" %}Gian hàng trực tiếp
+        {% elif reg.booth_type == "virtual" %}Gian hàng online
+        {% elif reg.booth_type == "both" %}Trực tiếp & Online
+        {% endif %}
+    </li>
+    <li class="list-group-item"><strong>Nhân sự đi kèm:</strong>{{ reg.staff_list }}</li>
+    <li class="list-group-item"><strong>Không muốn gần:</strong>{{ reg.competitors }}</li>
+     </ul>
+  <div class="d-flex justify-content-end">
+    <a href="{% url 'blogScience:event_registration_pdf' reg.pk %}" 
+       target="_blank" 
+       class="btn btn-outline-primary me-2">
+      Xem PDF
+    </a>
+    <button class="btn btn-success"
+            onclick="window.open('{% url 'blogScience:event_registration_pdf' reg.pk %}').print()">
+      In Phiếu
+    </button>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+</div>
+
+
+
+
+

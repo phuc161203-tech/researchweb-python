@@ -1,0 +1,27 @@
+{# consult/templates/consult/new_conversation.html #}
+{% extends "mentalConsult/_Base.html" %}
+{% load static %}
+
+{% block title %}Tạo cuộc trò chuyện mới{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h4>Chọn bệnh nhân để bắt đầu cuộc trò chuyện mới</h4>
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="patientSelect" class="form-label">Danh sách bệnh nhân</label>
+      <select class="form-select" id="patientSelect" name="patient_id" required>
+        <option value="" selected disabled>--- Chọn bệnh nhân ---</option>
+        {% for p in all_patients %}
+          <option value="{{ p.id }}">
+            {{ p.ho_va_ten_benh_nhan }} — ({{ p.user.username }}/{{ p.email }})
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Bắt đầu chat</button>
+    <a href="{% url 'consult:chat' %}" class="btn btn-secondary">Hủy</a>
+  </form>
+</div>
+{% endblock %}

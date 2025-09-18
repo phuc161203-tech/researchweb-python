@@ -1,0 +1,422 @@
+{% extends 'transport/_Base.html' %}
+{% load static humanize %}
+
+{% block title %}Đặt Hàng – Khách Hàng{% endblock %}
+
+{% block extra_css %}
+<style>
+  .form-card { background-color: #ffffff; border-radius: 0.5rem; box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); padding: 2rem; margin-bottom: 2rem; }
+  .section-title { font-size: 1.5rem; font-weight: 600; color: #0d6efd; margin-bottom: 1rem; position: relative; }
+  .section-title::before { content: ""; position: absolute; left: 0; bottom: -0.25rem; width: 3rem; height: 0.25rem; background-color: #0d6efd; border-radius: 0.125rem; }
+  .required::after { content: " *"; color: #dc3545; }
+  .form-control, .form-select, textarea { border-radius: 0.25rem; box-shadow: none; }
+  .form-label { font-weight: 500; }
+  table th, table td { vertical-align: middle !important; }
+  * { box-sizing: border-box; }
+  /* Slideshow styles */
+  .slideshow-container { max-width: 1000px; position: relative; margin: 2rem auto; }
+  .mySlides { display: none; }
+  .fade { animation-name: fade; animation-duration: 1.5s; }
+  @keyframes fade { from {opacity: .4} to {opacity: 1} }
+  .prev, .next { cursor: pointer; position: absolute; top: 50%; width: auto; margin-top: -22px; padding: 16px; color: white; font-weight: bold; font-size: 18px; transition: 0.6s ease; user-select: none; }
+  .prev { left: 0; border-radius: 0 3px 3px 0; }
+  .next { right: 0; border-radius: 3px 0 0 3px; }
+  .prev:hover, .next:hover { background-color: rgba(0,0,0,0.8); }
+  .text { color: #f2f2f2; font-size: 15px; padding: 8px 12px; position: absolute; bottom: 8px; width: 100%; text-align: center; }
+  .numbertext { color: #f2f2f2; font-size: 12px; padding: 8px 12px; position: absolute; top: 0; }
+  .dot { cursor: pointer; height: 15px; width: 15px; margin: 0 2px; background-color: #bbb; border-radius: 50%; display: inline-block; transition: background-color 0.6s ease; }
+  .active, .dot:hover { background-color: #717171; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Slideshow container -->
+<div class="slideshow-container">
+  <div class="mySlides fade">
+    <div class="numbertext">1 / 3</div>
+    <img src="https://images.careerviet.vn/content/images/trach-nhiem-careerbuilder.jpg" style="width:100%; border-radius:0.5rem;">
+    <div class="text">Chính sách giao hàng nhanh chóng</div>
+  </div>
+  <div class="mySlides fade">
+    <div class="numbertext">2 / 3</div>
+    <img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdVXTKReKH6wAA2jP-cnfCkCdyW5BXFKLwBuEannN--ZugF7RkReRdswMp_0RcNIgyyHygjexiBjCZk3_I2VOCeH7mZCsY4q3x_XWs-TsXyKR1XhAAzot4ALei5cEcR9dgAjZ8c7Q?key=oTUaPL36FrhYqbxPKAYD-CKb" style="width:100%; border-radius:0.5rem;" style="width:100%; border-radius:0.5rem;">
+    <div class="text">Đội ngũ nhân viên chuyên nghiệp</div>
+  </div>
+  <div class="mySlides fade">
+    <div class="numbertext">3 / 3</div>
+    <img src="https://thanhnien.mediacdn.vn/Uploaded/quochungqc/2022_11_15/ghn-1-4862.jpg" style="width:100%; border-radius:0.5rem;">
+    <div class="text">Giá cả cạnh tranh, minh bạch</div>
+  </div>
+  <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+  <a class="next" onclick="plusSlides(1)">&#10095;</a>
+</div>
+<div style="text-align:center; margin-bottom:2rem;">
+  <span class="dot" onclick="currentSlide(1)"></span>
+  <span class="dot" onclick="currentSlide(2)"></span>
+  <span class="dot" onclick="currentSlide(3)"></span>
+</div>
+
+<div class="container">
+  <div class="row">
+    <!-- Left column: Bảng Giá Tham Khảo -->
+    <div class="col-md-6">
+      <h4 class="section-title">Bảng Giá Tham Khảo</h4>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr><th>Tỉnh/Thành</th><th>Phí (VND)</th></tr>
+          </thead>
+          <tbody>
+            {% for prov, fee in fee_map.items %}
+            <tr><td>{{ prov }}</td><td>{{ fee|intcomma }} VND</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="table-responsive mt-3">
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr><th>Quốc Gia</th><th>Phí (VND)</th></tr>
+          </thead>
+          <tbody>
+            {% for code,name,fee in country_fee_list %}
+            <tr><td>{{ name }}</td><td>{{ fee|intcomma }} VND</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Right column: Form -->
+    <div class="col-md-6">
+      <div class="form-card">
+        <h2 class="section-title">Form Tiếp Nhận Thông Tin Giao Hàng</h2>
+        <form method="post" action="{% url 'logistics:customer_order' %}">
+          {% csrf_token %}
+          <div class="row gx-3 gy-3">
+
+            <div class="col-md-6">
+              <label for="id_sender_name" class="form-label required">Tên Người Gửi</label>
+              {{ form.sender_name }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_sender_phone" class="form-label required">Số Điện Thoại Người Gửi</label>
+              {{ form.sender_phone }}
+            </div>
+            <div class="col-md-12">
+              <label for="id_sender_email" class="form-label required">Email Người Gửi</label>
+              {{ form.sender_email }}
+            </div>
+            <div class="col-md-12">
+              <label for="id_sender_address" class="form-label required">Địa Chỉ Người Gửi</label>
+              {{ form.sender_address }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_sender_city" class="form-label required">Thành Phố Người Gửi</label>
+              {{ form.sender_city }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_sender_province" class="form-label required">Tỉnh/Quận Người Gửi</label>
+              {{ form.sender_province }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_sender_zip" class="form-label required">Postal Code Người Gửi</label>
+              {{ form.sender_zip }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_sender_country" class="form-label required">Quốc Gia Người Gửi</label>
+              {{ form.sender_country }}
+            </div>
+
+            <div class="col-md-6">
+              <label for="id_receiver_name" class="form-label required">Tên Người Nhận</label>
+              {{ form.receiver_name }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_receiver_phone" class="form-label required">Số Điện Thoại Người Nhận</label>
+              {{ form.receiver_phone }}
+            </div>
+            <div class="col-md-12">
+              <label for="id_receiver_email" class="form-label required">Email Người Nhận</label>
+              {{ form.receiver_email }}
+            </div>
+            <div class="col-md-12">
+              <label for="id_receiver_address" class="form-label required">Địa Chỉ Người Nhận</label>
+              {{ form.receiver_address }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_receiver_city" class="form-label required">Thành Phố Người Nhận</label>
+              {{ form.receiver_city }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_receiver_province" class="form-label required">Tỉnh/Thành Người Nhận</label>
+<select id="id_receiver_province" name="receiver_province" class="form-select" required>
+  <option value="">Chọn tỉnh…</option>
+  {% for prov in province_list %}
+    <option value="{{ prov }}" {% if form.receiver_province.value == prov %}selected{% endif %}>{{ prov }}</option>
+  {% endfor %}
+</select>
+            </div>
+            <div class="col-md-6">
+              <label for="id_receiver_zip" class="form-label required">Postal Code Người Nhận</label>
+              {{ form.receiver_zip }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_receiver_country" class="form-label required">Quốc Gia Người Nhận</label>
+<select id="id_receiver_country" name="receiver_country" class="form-select" required>
+  <option value="">Chọn quốc gia…</option>
+  {% for code,name,fee in country_fee_list %}
+    <option value="{{ code }}" data-fee="{{ fee }}" {% if form.receiver_country.value == code %}selected{% endif %}>{{ name }}</option>
+  {% endfor %}
+</select>
+            </div>
+
+            <div class="col-md-4">
+              <label for="id_weight" class="form-label required">Khối Lượng (kg)</label>
+              {{ form.weight }}
+            </div>
+            <div class="col-md-4">
+              <label for="id_length" class="form-label required">Chiều Dài (cm)</label>
+              {{ form.length }}
+            </div>
+            <div class="col-md-4">
+              <label for="id_width" class="form-label required">Chiều Rộng (cm)</label>
+              {{ form.width }}
+            </div>
+            <div class="col-md-4">
+              <label for="id_height" class="form-label required">Chiều Cao (cm)</label>
+              {{ form.height }}
+            </div>
+            <div class="col-md-4">
+              <label for="id_declared_value" class="form-label required">Giá Trị Khai Báo (VND)</label>
+              {{ form.declared_value }}
+            </div>
+            <div class="col-md-4">
+              <label for="id_category" class="form-label required">Danh Mục Hàng</label>
+              {{ form.category }}
+            </div>
+            <div class="col-md-4">
+              <label for="id_quantity" class="form-label required">Số Lượng</label>
+              {{ form.quantity }}
+            </div>
+            <div class="col-md-4">
+              <label for="id_service_type" class="form-label required">Loại Dịch Vụ</label>
+              {{ form.service_type }}
+            </div>
+            <div class="col-md-4">
+              <label for="id_pickup_date" class="form-label required">Ngày Gửi</label>
+              {{ form.pickup_date }}
+            </div>
+            <div class="col-md-4">
+              <label for="id_delivery_date" class="form-label required">Ngày Nhận</label>
+              {{ form.delivery_date }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_payment_method" class="form-label required">Phương Thức Thanh Toán</label>
+              {{ form.payment_method }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_other_payment_method" class="form-label">Khác</label>
+              {{ form.other_payment_method }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_shipping_cost" class="form-label required">Phí Vận Chuyển (VND)</label>
+              {{ form.shipping_cost }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_insurance" class="form-label required">Bảo Hiểm</label>
+              {{ form.insurance }}
+            </div>
+            <div class="col-md-12">
+              <label for="id_pickup_instructions" class="form-label">Hướng Dẫn Lấy Hàng</label>
+              {{ form.pickup_instructions }}
+            </div>
+            <div class="col-md-12">
+              <label for="id_delivery_instructions" class="form-label">Hướng Dẫn Giao Hàng</label>
+              {{ form.delivery_instructions }}
+            </div>
+            <div class="col-md-12">
+              <label for="id_additional_notes" class="form-label">Ghi Chú Khác</label>
+              {{ form.additional_notes }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_customer_ref" class="form-label">Mã Tham Chiếu</label>
+              {{ form.customer_ref }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_promo_code" class="form-label">Mã Khuyến Mại</label>
+              {{ form.promo_code }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_discount_amount" class="form-label">Giảm Giá (VND)</label>
+              {{ form.discount_amount }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_additional_fee" class="form-label">Phí Phụ Thu (VND)</label>
+              {{ form.additional_fee }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_order_channel" class="form-label required">Kênh Đơn</label>
+              {{ form.order_channel }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_customer_type" class="form-label required">Loại Khách Hàng</label>
+              {{ form.customer_type }}
+            </div>
+          </div>
+          <div class="mt-3 text-end">
+  <strong>Tổng Chi Phí: </strong><span id="total_cost_display">0 VND</span>
+</div>
+<div class="mt-3 text-end">
+  <button type="submit" class="btn btn-primary">Gửi Báo Đơn</button>
+</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Danh Sách Đơn Hàng Của Bạn -->
+  <div class="mt-5">
+    <h3 class="section-title">Danh Sách Đơn Hàng Của Bạn</h3>
+    {% if orders %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Ngày Tạo</th>
+            <th>Người Nhận</th>
+            <th>Phí Vận Chuyển</th>
+            <th>Cước Hàng Không</th>
+            <th>Bảo Hiểm</th>
+            <th>Hướng Dẫn Lấy</th>
+            <th>Hướng Dẫn Giao</th>
+            <th>Ghi Chú</th>
+            <th>Tổng Thanh Toán</th>
+            <th>Hành Động</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+            <td>{{ order.receiver_name }}</td>
+            <td>{{ order.shipping_cost|intcomma }} VND</td>
+            <td>{{ order.air_cost|intcomma }} VND</td>
+            <td>{{ order.insurance }}</td>
+            <td>{{ order.pickup_instructions }}</td>
+            <td>{{ order.delivery_instructions }}</td>
+            <td>{{ order.additional_notes }}</td>
+            <td>{{ order.total_cost|intcomma }} VND</td>
+            <td><a href="{% url 'logistics:edit_order' order.id %}" class="btn btn-sm btn-outline-primary">Sửa</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <p class="text-muted">Bạn chưa có đơn hàng nào.</p>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Slideshow functions (giữ nguyên nếu cần)
+var slideIndex = 0;
+function plusSlides(n) {
+  slideIndex += n;
+  if (slideIndex >= slides.length) slideIndex = 0;
+  if (slideIndex < 0) slideIndex = slides.length - 1;
+  showCurrentSlide();
+}
+function currentSlide(n) {
+  slideIndex = n;
+  showCurrentSlide();
+}
+function showCurrentSlide() {
+  const slides = document.getElementsByClassName('mySlides');
+  const dots = document.getElementsByClassName('dot');
+  for (let i = 0; i < slides.length; i++) {
+    slides[i].style.display = 'none';
+    dots[i].className = dots[i].className.replace(' active', '');
+  }
+  slides[slideIndex].style.display = 'block';
+  dots[slideIndex].className += ' active';
+}
+function autoSlide() {
+  slideIndex++;
+  const slides = document.getElementsByClassName('mySlides');
+  if (slideIndex >= slides.length) slideIndex = 0;
+  showCurrentSlide();
+  setTimeout(autoSlide, 2000);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // 1. Initialize slideshow (nếu có)
+  showCurrentSlide();
+  setTimeout(autoSlide, 2000);
+
+  // 2. Lấy các element cần thiết
+  const provEl     = document.getElementById('id_receiver_province');
+  const countryEl  = document.getElementById('id_receiver_country');
+  const shipEl     = document.getElementById('id_shipping_cost');
+  const lEl        = document.getElementById('id_length');
+  const wEl        = document.getElementById('id_width');
+  const hEl        = document.getElementById('id_height');
+  const extraEl    = document.getElementById('id_additional_fee');
+  const discEl     = document.getElementById('id_discount_amount');
+  const totalDisp  = document.getElementById('total_cost_display');
+  const feeMap     = JSON.parse('{{ fee_map_json|escapejs }}');
+
+  // 3. Tính phí thể tích
+  function computeVolumetricFee() {
+    const l = parseFloat(lEl.value) || 0;
+    const w = parseFloat(wEl.value) || 0;
+    const h = parseFloat(hEl.value) || 0;
+    const vol = (l * w * h) / 1e6;
+    if (vol > 0 && vol < 5) return 100000;
+    if (vol >= 5 && vol < 50) return 200000;
+    if (vol >= 50 && vol < 100) return 300000;
+    if (vol >= 100 && vol < 1000) return 1000000;
+    return 0;
+  }
+
+  // 4. Cập nhật phí vận chuyển nội địa = province_fee + volumetric_fee
+  function updateShippingCost() {
+    const df = feeMap[provEl.value] || 0;
+    const vf = computeVolumetricFee();
+    shipEl.value = df + vf;
+  }
+
+  // 5. Lấy phí quốc tế từ data-fee của <option>
+  function computeCountryFee() {
+    const opt = countryEl.selectedOptions[0];
+    return opt ? (parseFloat(opt.dataset.fee) || 0) : 0;
+  }
+
+  // 6. Tính tổng và hiện ra màn hình
+  function updateTotalCost() {
+    const ship    = parseFloat(shipEl.value)    || 0;
+    const country = computeCountryFee();
+    const extra   = parseFloat(extraEl.value)   || 0;
+    const disc    = parseFloat(discEl.value)    || 0;
+    const total   = ship + country + extra - disc;
+    totalDisp.textContent = total.toLocaleString('vi-VN') + ' VND';
+  }
+
+  // 7. Gắn listener để khi thay đổi bất kỳ input nào => tính lại
+  [provEl, countryEl, lEl, wEl, hEl, extraEl, discEl].forEach(el => {
+    el.addEventListener('change', () => { updateShippingCost(); updateTotalCost(); });
+    el.addEventListener('input',  () => { updateShippingCost(); updateTotalCost(); });
+  });
+
+  // 8. Khởi tạo giá trị ban đầu
+  updateShippingCost();
+  updateTotalCost();
+});
+</script>
+{% endblock %}
+

@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <!-- Basic Meta Tags -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chi Tiết Bài Tập – FitnessCoach</title>
+
+  <!-- SEO Meta -->
+  <meta name="description" content="Xem chi tiết bài tập Push-up: kỹ thuật, dụng cụ cần thiết, video hướng dẫn, mức độ khó, và lợi ích cho cơ ngực và cơ tay." />
+  <meta name="keywords" content="Push-up, bài tập đẩy tay, chi tiết bài tập, hướng dẫn tập, FitnessCoach" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+
+  <!-- Font Awesome CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+
+  <!-- Custom CSS (giả sử đã bao gồm trong index.html) -->
+  <style>
+    /* ===== Global & Reused Styles ===== */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      margin-top: 0;
+    }
+    a.skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: #000;
+      color: #fff;
+      padding: 8px;
+      z-index: 100;
+    }
+    a.skip-link:focus {
+      top: 0;
+    }
+    .navbar-brand {
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .breadcrumb {
+      background-color: transparent;
+      padding: 0;
+      margin-bottom: 1rem;
+    }
+    #detailHero {
+      background: url('https://images.unsplash.com/photo-1599058917210-3f9c8286b075?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80')
+        no-repeat center center/cover;
+      height: 40vh;
+      position: relative;
+      color: white;
+    }
+    #detailHero .overlay {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    #detailHero .hero-content {
+      position: relative;
+      z-index: 2;
+      top: 50%;
+      transform: translateY(-50%);
+      text-align: center;
+    }
+    #detailHero h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+    #detailHero .badge {
+      font-size: 0.9rem;
+      margin-left: 0.5rem;
+    }
+    #workoutInfo .info-item {
+      margin-bottom: 1rem;
+    }
+    #workoutInfo .info-item i {
+      width: 24px;
+      text-align: center;
+      margin-right: 0.5rem;
+      color: #007bff;
+    }
+    #stepsList li {
+      margin-bottom: 1.5rem;
+    }
+    #stepsList li img {
+      max-width: 100%;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+    }
+    #relatedWorkouts .card {
+      transition: transform 0.3s ease;
+    }
+    #relatedWorkouts .card:hover {
+      transform: translateY(-5px);
+    }
+    footer {
+      background-color: #343a40;
+      color: #eee;
+      padding: 1.5rem 0;
+    }
+    footer a {
+      color: #ffd700;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    /* ===== Responsive Media Queries ===== */
+    @media (max-width: 576px) {
+      #detailHero h1 {
+        font-size: 2rem;
+      }
+      #detailHero p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Skip Link for Accessibility -->
+  <a href="#mainContent" class="skip-link">Bỏ qua điều hướng</a>
+
+  <!-- Navbar (Giống index.html) -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" aria-label="Main navigation">
+    <div class="container">
+      <a class="navbar-brand" href="#">FitnessCoach</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#mainNavbar"
+        aria-controls="mainNavbar"
+        aria-expanded="false"
+        aria-label="Mở menu điều hướng"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNavbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="#hero">Trang Chủ</a></li>
+          <li class="nav-item"><a class="nav-link" href="#workouts">Bài Tập</a></li>
+          <li class="nav-item"><a class="nav-link" href="#blog">Blog</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Liên Hệ</a></li>
+        </ul>
+        <ul class="navbar-nav mb-2 mb-lg-0">
+          <li class="nav-item">
+            <form class="d-flex" role="search" aria-label="Tìm kiếm bài tập">
+              <input
+                class="form-control me-2"
+                type="search"
+                placeholder="Tìm kiếm bài tập"
+                aria-label="Search"
+                id="workoutSearch"
+              />
+              <button class="btn btn-outline-light" type="submit">
+                <i class="fas fa-search"></i>
+              </button>
+            </form>
+          </li>
+          <li class="nav-item mx-2">
+            <button id="darkModeToggle" class="btn btn-outline-light btn-sm" aria-label="Chuyển đổi chế độ sáng/tối">
+              <i class="fas fa-moon"></i>
+            </button>
+          </li>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="userMenu"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i class="fas fa-user-circle"></i> Tài Khoản
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng Nhập</a></li>
+              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#signupModal">Đăng Ký</a></li>
+              <li><hr class="dropdown-divider" /></li>
+              <li><a class="dropdown-item" href="#profile">Hồ Sơ</a></li>
+              <li><a class="dropdown-item" href="#" id="logoutLink">Đăng Xuất</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main id="mainContent">
+    <!-- Hero/Banner của trang Chi tiết bài tập -->
+    <section id="detailHero">
+      <div class="overlay"></div>
+      <div class="hero-content container text-white">
+        <h1>
+          Push-up
+          <span class="badge bg-warning text-dark">Mức độ: Trung bình</span>
+        </h1>
+        <p class="lead">Tăng cường sức mạnh cơ ngực, cơ tay sau và vai bằng bài tập chống đẩy cơ bản.</p>
+        <button id="startWorkoutBtn" class="btn btn-light btn-lg mt-3" aria-label="Bắt đầu tập Push-up">
+          <i class="fas fa-play"></i> Bắt Đầu Tập
+        </button>
+      </div>
+    </section>
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="container mt-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Trang Chủ</a></li>
+        <li class="breadcrumb-item"><a href="#workouts">Bài Tập</a></li>
+        <li class="breadcrumb-item"><a href="#workouts?category=strength">Sức Mạnh</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Push-up</li>
+      </ol>
+    </nav>
+
+    <!-- Thông tin tổng quan về bài tập -->
+    <section id="workoutInfo" class="py-4">
+      <div class="container">
+        <div class="row g-4">
+          <!-- Cột bên trái: Ảnh & Thông tin cơ bản -->
+          <div class="col-lg-4">
+            <img
+              src="https://images.unsplash.com/photo-1599058917210-3f9c8286b075?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              alt="Push-up"
+              class="img-fluid rounded mb-3"
+              loading="lazy"
+            />
+            <div class="info-item d-flex align-items-center">
+              <i class="fas fa-stopwatch"></i><strong>Thời gian thực hiện:</strong>&nbsp;<span>Khoảng 30-45 giây mỗi set</span>
+            </div>
+            <div class="info-item d-flex align-items-center">
+              <i class="fas fa-dumbbell"></i><strong>Dụng cụ:</strong>&nbsp;<span>Thảm yoga hoặc mặt phẳng ổn định</span>
+            </div>
+            <div class="info-item d-flex align-items-center">
+              <i class="fas fa-fire-alt"></i><strong>Calories tiêu hao:</strong>&nbsp;<span>Khoảng 7-10 kcal/phút</span>
+            </div>
+            <div class="info-item d-flex align-items-center">
+              <i class="fas fa-heart-rate"></i><strong>Nhịp tim:</strong>&nbsp;<span>120-140 bpm (ước tính)</span>
+            </div>
+            <div class="d-grid gap-2 mt-3">
+              <!-- Nút lưu yêu thích -->
+              <button id="favoriteDetailBtn" class="btn btn-outline-warning" aria-label="Thêm Push-up vào yêu thích">
+                <i class="fas fa-star"></i> Yêu Thích
+              </button>
+              <!-- Nút chia sẻ -->
+              <div class="d-flex justify-content-between">
+                <button class="btn btn-outline-primary flex-grow-1 me-2" aria-label="Chia sẻ lên Facebook">
+                  <i class="fab fa-facebook-f"></i>
+                </button>
+                <button class="btn btn-outline-info flex-grow-1 me-2" aria-label="Chia sẻ lên Twitter">
+                  <i class="fab fa-twitter"></i>
+                </button>
+                <button class="btn btn-outline-danger flex-grow-1" aria-label="Chia sẻ lên Pinterest">
+                  <i class="fab fa-pinterest-p"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cột bên phải: Mô tả chi tiết -->
+          <div class="col-lg-8">
+            <!-- Giới thiệu -->
+            <article>
+              <h2 class="h4 mb-3">Giới thiệu</h2>
+              <p>
+                Push-up (chống đẩy) là một trong những bài tập cơ bản nhưng hiệu quả nhất để
+                phát triển cơ ngực, cơ tay sau (triceps) và cơ vai. Bài tập này không yêu cầu dụng cụ
+                phức tạp, chỉ cần một mặt phẳng thẳng, phù hợp để tập tại nhà hoặc phòng gym.
+                <br /><strong>Lợi ích chính:</strong>
+                <ul>
+                  <li>Tăng sức mạnh cơ ngực và cơ tay sau.</li>
+                  <li>Cải thiện sự ổn định thân mình (core stability).</li>
+                  <li>Đốt mỡ và cải thiện nhịp tim.</li>
+                </ul>
+              </p>
+            </article>
+
+            <!-- Hướng dẫn kỹ thuật (Steps) -->
+            <article class="mt-5">
+              <h2 class="h4 mb-3">Kỹ thuật thực hiện</h2>
+              <ol id="stepsList">
+                <li>
+                  <strong>Chuẩn bị tư thế:</strong>
+                  <p>Đặt hai tay rộng hơn vai khoảng 1,5 lần, ngón tay hướng về phía trước. Hai chân duỗi thẳng, mũi chân chống xuống sàn.</p>
+                  <img
+                    src="https://images.unsplash.com/photo-1612392061785-8a95ebbafdcf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60"
+                    alt="Tư thế chuẩn bị Push-up"
+                    loading="lazy"
+                  />
+                </li>
+                <li>
+                  <strong>Hạ thấp thân người:</strong>
+                  <p>Hạ cơ thể từ từ, giữ lưng thẳng, eo không trùng xuống. Khuỷu tay mở góc 45° so với thân người. Hạ đến khi ngực gần chạm sàn.</p>
+                  <img
+                    src="https://images.unsplash.com/photo-1554284126-0ec237c93085?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60"
+                    alt="Hạ thấp thân trong Push-up"
+                    loading="lazy"
+                  />
+                </li>
+                <li>
+                  <strong>Đẩy lên:</strong>
+                  <p>Đẩy mạnh hai tay để nâng thân người lên vị trí ban đầu. Thở ra khi đẩy lên.</p>
+                  <img
+                    src="https://images.unsplash.com/photo-1599941010284-8e43c2c6201b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60"
+                    alt="Đẩy lên trong Push-up"
+                    loading="lazy"
+                  />
+                </li>
+                <li>
+                  <strong>Hoàn thành một lần lặp:</strong>
+                  <p>Khi duỗi thẳng tay, co cơ ngực, giãn cơ vai và cơ tay sau. Thở vào khi trở lại tư thế ban đầu. Lặp lại đúng kỹ thuật.</p>
+                </li>
+                <li>
+                  <strong>Tuỳ chọn biến thể:</strong>
+                  <p>
+                    - <em>Push-up nghiêng (incline)</em>: Tay đặt trên ghế cao hoặc bậc thềm, giảm mức độ khó.<br />
+                    - <em>Push-up dốc (decline)</em>: Chân đặt cao hơn tay (trên ghế), tăng độ khó.<br />
+                    - <em>Push-up Diamond</em>: Hai tay chụm vào tạo hình kim cương, tập trung vào cơ tay sau.
+                  </p>
+                </li>
+              </ol>
+            </article>
+
+            <!-- Video hướng dẫn -->
+            <article class="mt-5">
+              <h2 class="h4 mb-3">Video hướng dẫn</h2>
+              <div class="ratio ratio-16x9">
+                <iframe
+                  src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                  title="Hướng dẫn Push-up"
+                  allowfullscreen
+                  loading="lazy"
+                ></iframe>
+              </div>
+            </article>
+
+            <!-- Lợi ích & Chú ý -->
+            <article class="mt-5">
+              <h2 class="h4 mb-3">Lợi ích & Chú ý</h2>
+              <ul>
+                <li><strong>Lợi ích:</strong> Cải thiện sức mạnh phần trên cơ thể, hỗ trợ giảm cân, tăng cường sự ổn định cột sống và vai.</li>
+                <li><strong>Chú ý:</strong> Luôn giữ thân người thẳng, không để mông hạ quá thấp hoặc lưng võng. Nếu đau lưng, giảm mức độ (dùng đầu gối làm điểm tựa).</li>
+                <li><strong>Khởi động:</strong> Phải khởi động khớp vai và cổ tay trước khi tập. Ví dụ xoay vai, xoay cổ tay, giãn cơ ngực nhẹ nhàng.</li>
+                <li><strong>Kết thúc:</strong> Kéo giãn cơ ngực và cơ vai sau khi tập xong (stretching) để giảm căng cơ, hạn chế chấn thương.</li>
+              </ul>
+            </article>
+
+            <!-- Các nhóm cơ tham gia -->
+            <article class="mt-5">
+              <h2 class="h4 mb-3">Nhóm cơ chính</h2>
+              <div class="row">
+                <div class="col-md-6">
+                  <ul>
+                    <li>Cơ ngực lớn (Pectoralis Major)</li>
+                    <li>Cơ tay sau (Triceps Brachii)</li>
+                    <li>Cơ vai trước (Anterior Deltoids)</li>
+                  </ul>
+                </div>
+                <div class="col-md-6">
+                  <ul>
+                    <li>Cơ bụng (Core Stabilizers)</li>
+                    <li>Cơ lưng dưới (Lower Back)</li>
+                    <li>Cơ mông (Glutes)</li>
+                  </ul>
+                </div>
+              </div>
+            </article>
+
+            <!-- Tải PDF hướng dẫn -->
+            <article class="mt-5">
+              <button id="downloadGuidePDF" class="btn btn-outline-secondary" aria-label="Tải PDF hướng dẫn Push-up">
+                <i class="fas fa-file-pdf"></i> Tải Hướng Dẫn PDF
+              </button>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bài tập liên quan -->
+    <section id="relatedWorkouts" class="py-5 bg-light">
+      <div class="container">
+        <div class="row mb-4">
+          <div class="col text-center">
+            <h2 class="fw-bold">Bài Tập Liên Quan</h2>
+            <p>Thử các bài tập tương tự để tăng độ đa dạng.</p>
+          </div>
+        </div>
+        <div class="row g-4">
+          <div class="col-md-4 workout-item" data-category="strength">
+            <div class="card h-100">
+              <img
+                src="https://images.unsplash.com/photo-1612392061785-8a95ebbafdcf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60"
+                class="card-img-top"
+                alt="Incline Push-up"
+                loading="lazy"
+              />
+              <div class="card-body">
+                <h5 class="card-title">Incline Push-up</h5>
+                <p class="card-text">Giảm độ nghiêng, đặt tay lên ghế để dễ hơn so với push-up tiêu chuẩn.</p>
+                <a href="incline-pushup.html" class="btn btn-outline-primary btn-sm">Xem Chi Tiết</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 workout-item" data-category="strength">
+            <div class="card h-100">
+              <img
+                src="https://images.unsplash.com/photo-1599941010284-8e43c2c6201b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60"
+                class="card-img-top"
+                alt="Decline Push-up"
+                loading="lazy"
+              />
+              <div class="card-body">
+                <h5 class="card-title">Decline Push-up</h5>
+                <p class="card-text">Tăng độ khó bằng cách đặt chân lên ghế, nâng cao cường độ tác động.</p>
+                <a href="decline-pushup.html" class="btn btn-outline-primary btn-sm">Xem Chi Tiết</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 workout-item" data-category="strength">
+            <div class="card h-100">
+              <img
+                src="https://images.unsplash.com/photo-1605296867304-46d5465a13f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60"
+                class="card-img-top"
+                alt="Diamond Push-up"
+                loading="lazy"
+              />
+              <div class="card-body">
+                <h5 class="card-title">Diamond Push-up</h5>
+                <p class="card-text">Hai tay chụm gần nhau hình kim cương, tập trung vào cơ tay sau.</p>
+                <a href="diamond-pushup.html" class="btn btn-outline-primary btn-sm">Xem Chi Tiết</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bài viết liên quan (Blog Preview) -->
+    <section id="blogPreview" class="py-5">
+      <div class="container">
+        <div class="row mb-4">
+          <div class="col text-center">
+            <h2 class="fw-bold">Bài Viết Liên Quan</h2>
+            <p>Đọc thêm các bài viết về tập ngực và tập tay.</p>
+          </div>
+        </div>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="card h-100">
+              <img src="blog1.jpg" class="card-img-top" alt="Bài viết 1" loading="lazy" />
+              <div class="card-body">
+                <h5 class="card-title">Cách Tối Ưu Hóa Push-up</h5>
+                <p class="card-text">Mẹo để thực hiện push-up đúng kỹ thuật và hiệu quả hơn.</p>
+                <a href="blog-optimize-pushup.html" class="btn btn-outline-primary btn-sm">Đọc Thêm</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card h-100">
+              <img src="blog2.jpg" class="card-img-top" alt="Bài viết 2" loading="lazy" />
+              <div class="card-body">
+                <h5 class="card-title">Lịch Trình Tập Ngực 4 Tuần</h5>
+                <p class="card-text">Kế hoạch tập ngực chi tiết để tăng cơ cơ ngực và sức mạnh.</p>
+                <a href="blog-chest-plan.html" class="btn btn-outline-primary btn-sm">Đọc Thêm</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card h-100">
+              <img src="blog3.jpg" class="card-img-top" alt="Bài viết 3" loading="lazy" />
+              <div class="card-body">
+                <h5 class="card-title">Phát Triển Cơ Tay Sau Hiệu Quả</h5>
+                <p class="card-text">Các bài tập bổ trợ và chiến lược nâng tạ để cơ tay sau nổi bật.</p>
+                <a href="blog-triceps.html" class="btn btn-outline-primary btn-sm">Đọc Thêm</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bình luận người dùng cho bài tập -->
+    <section id="commentsSection" class="py-5 bg-light">
+      <div class="container">
+        <div class="row mb-4">
+          <div class="col text-center">
+            <h2 class="fw-bold">Bình Luận</h2>
+            <p>Chia sẻ cảm nhận sau khi tập Push-up hoặc đặt câu hỏi.</p>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-md-8">
+            <!-- Form bình luận -->
+            <form id="detailCommentForm" aria-label="Form bình luận bài tập">
+              <div class="mb-3">
+                <label for="commenterName" class="form-label">Họ và tên</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="commenterName"
+                  placeholder="Nhập tên"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="commenterEmail" class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="commenterEmail"
+                  placeholder="Nhập email"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="commentText" class="form-label">Bình luận</label>
+                <textarea
+                  class="form-control"
+                  id="commentText"
+                  rows="4"
+                  placeholder="Viết bình luận..."
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Gửi Bình Luận</button>
+            </form>
+            <hr />
+            <!-- Danh sách bình luận (placeholder) -->
+            <div id="commentsList">
+              <!-- Mẫu bình luận 1 -->
+              <div class="mb-4">
+                <div class="d-flex justify-content-between">
+                  <strong>Nguyễn Thị A</strong>
+                  <small>01/06/2025</small>
+                </div>
+                <p>"Bài tập rất tuyệt, tôi đã thấy cơ ngực săn chắc hơn sau 2 tuần."</p>
+              </div>
+              <!-- Mẫu bình luận 2 -->
+              <div class="mb-4">
+                <div class="d-flex justify-content-between">
+                  <strong>Trần Văn B</strong>
+                  <small>28/05/2025</small>
+                </div>
+                <p>"Lần đầu tiên tôi gặp khó khăn khi giữ lưng thẳng, video hướng dẫn giúp tôi chỉnh sửa được tư thế."</p>
+              </div>
+              <!-- Nếu không có bình luận, hiển thị: -->
+              <!-- <p>Chưa có bình luận nào. Hãy là người đầu tiên chia sẻ!</p> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer (Giống index.html) -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <h5>Về Chúng Tôi</h5>
+          <p>
+            FitnessCoach là nền tảng đa năng hỗ trợ bạn luyện tập, dinh dưỡng và cộng đồng.
+          </p>
+        </div>
+        <div class="col-md-4 mb-3">
+          <h5>Liên Kết</h5>
+          <ul class="list-unstyled">
+            <li><a href="#workouts">Bài Tập</a></li>
+            <li><a href="#videoTutorials">Video</a></li>
+            <li><a href="#nutritionTips">Dinh Dưỡng</a></li>
+            <li><a href="#blog">Blog</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4 mb-3">
+          <h5>Kết Nối Với Chúng Tôi</h5>
+          <a href="#" class="text-decoration-none me-2" aria-label="Facebook"><i class="fab fa-facebook fa-lg"></i></a>
+          <a href="#" class="text-decoration-none me-2" aria-label="Instagram"><i class="fab fa-instagram fa-lg"></i></a>
+          <a href="#" class="text-decoration-none" aria-label="YouTube"><i class="fab fa-youtube fa-lg"></i></a>
+          <p class="mt-3">&copy; 2025 FitnessCoach. All Rights Reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modals (Login, Signup) giống index.html -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel">Đăng Nhập</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+        <div class="modal-body">
+          <form id="loginForm" aria-label="Form đăng nhập">
+            <div class="mb-3">
+              <label for="loginEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="loginEmail" placeholder="Nhập email" required />
+            </div>
+            <div class="mb-3">
+              <label for="loginPassword" class="form-label">Mật khẩu</label>
+              <input type="password" class="form-control" id="loginPassword" placeholder="Nhập mật khẩu" required />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Đăng Nhập</button>
+          </form>
+          <hr />
+          <div class="text-center">
+            <p>Hoặc đăng nhập bằng</p>
+            <button class="btn btn-outline-danger me-2"><i class="fab fa-google"></i> Google</button>
+            <button class="btn btn-outline-primary"><i class="fab fa-facebook-f"></i> Facebook</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="signupModalLabel">Đăng Ký</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+        <div class="modal-body">
+          <form id="signupForm" aria-label="Form đăng ký">
+            <div class="mb-3">
+              <label for="signupName" class="form-label">Họ và tên</label>
+              <input type="text" class="form-control" id="signupName" placeholder="Nhập họ và tên" required />
+            </div>
+            <div class="mb-3">
+              <label for="signupEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="signupEmail" placeholder="Nhập email" required />
+            </div>
+            <div class="mb-3">
+              <label for="signupPassword" class="form-label">Mật khẩu</label>
+              <input type="password" class="form-control" id="signupPassword" placeholder="Nhập mật khẩu" required />
+            </div>
+            <button type="submit" class="btn btn-success w-100">Đăng Ký</button>
+          </form>
+          <hr />
+          <div class="text-center">
+            <p>Hoặc đăng ký bằng</p>
+            <button class="btn btn-outline-danger me-2"><i class="fab fa-google"></i> Google</button>
+            <button class="btn btn-outline-primary"><i class="fab fa-facebook-f"></i> Facebook</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS (Popper) -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"
+    defer
+  ></script>
+
+  <!-- Custom JS -->
+  <script>
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    darkModeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const icon = darkModeToggle.querySelector('i');
+      if (document.body.classList.contains('dark-mode')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+      }
+    });
+
+    // Favorite Button Logic (Detail)
+    const favoriteDetailBtn = document.getElementById('favoriteDetailBtn');
+    let isFavorited = false;
+    favoriteDetailBtn.addEventListener('click', () => {
+      isFavorited = !isFavorited;
+      if (isFavorited) {
+        favoriteDetailBtn.classList.add('text-warning');
+        favoriteDetailBtn.innerHTML = '<i class="fas fa-star"></i> Đã Yêu Thích';
+      } else {
+        favoriteDetailBtn.classList.remove('text-warning');
+        favoriteDetailBtn.innerHTML = '<i class="fas fa-star"></i> Yêu Thích';
+      }
+    });
+
+    // Comment Form (Detail) - Placeholder
+    const detailCommentForm = document.getElementById('detailCommentForm');
+    const commentsList = document.getElementById('commentsList');
+    detailCommentForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('commenterName').value.trim();
+      const email = document.getElementById('commenterEmail').value.trim();
+      const text = document.getElementById('commentText').value.trim();
+      if (name && email && text) {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('vi-VN');
+        const commentDiv = document.createElement('div');
+        commentDiv.className = 'mb-4';
+        commentDiv.innerHTML = `
+          <div class="d-flex justify-content-between">
+            <strong>${name}</strong>
+            <small>${dateStr}</small>
+          </div>
+          <p>${text}</p>
+        `;
+        commentsList.prepend(commentDiv);
+        detailCommentForm.reset();
+      }
+    });
+
+    // Download PDF Guide (Placeholder)
+    document.getElementById('downloadGuidePDF').addEventListener('click', () => {
+      // TODO: Tạo hoặc liên kết đến file PDF thực tế
+      alert('Tải hướng dẫn Push-up dưới dạng PDF (placeholder).');
+    });
+
+    // Start Workout Button (Placeholder: có thể kết nối đến timer hoặc phần mềm theo dõi)
+    document.getElementById('startWorkoutBtn').addEventListener('click', () => {
+      // Ví dụ: Chuyển đến phần Timer hoặc mở modal
+      window.location.href = '#timer'; // hoặc điều hướng thực tế bạn muốn
+    });
+  </script>
+</body>
+</html>

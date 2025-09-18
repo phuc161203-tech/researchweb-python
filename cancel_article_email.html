@@ -1,0 +1,24 @@
+{# templates/articleDetail/cancel_article_email.html #}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Thông báo hủy duyệt bài báo</title>
+</head>
+<body>
+    <p>Chào {{ user.get_full_name }},</p>
+
+    <p>Bài báo của bạn có tiêu đề <strong>"{{ article.articleName }}"</strong> đã bị hủy duyệt.</p>
+
+    <p><strong>Lý do hủy duyệt:</strong></p>
+    <blockquote style="border-left: 3px solid #ddd; padding-left: 10px; color: #555;">
+        {{ reason }}
+    </blockquote>
+
+    <p>Nếu bạn có thắc mắc hoặc muốn liên hệ lại, vui lòng phản hồi email này hoặc truy cập vào hệ thống để biết thêm chi tiết.</p>
+
+    <br>
+    <p>Trân trọng,<br>
+       Ban Quản Trị</p>
+</body>
+</html>

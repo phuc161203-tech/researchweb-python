@@ -1,0 +1,433 @@
+{# logistics/templates/transport/khobai.html #}
+{% extends 'transport/_Base.html' %}
+{% load static %}
+
+{% block title %}Kho Bãi – Quản Lý Xe & Máy Bay{% endblock %}
+
+{% block extra_css %}
+  <link href="{% static 'css/custom.css' %}" rel="stylesheet" />
+  {# Nếu cần FontAwesome cho icon #}
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-pBeDQ2ZpdjQy1kBIzH/7QlHrmkZyxAqIzfVBzLKjj+raWnd3U9lPfS8syXPSnpGo0jYl2K+SG90+hM/3B+r2mQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <style>
+    /* custom.css */
+
+/* ===== Spinner cho trạng thái “loading” ===== */
+.icon-spinner {
+  color: #ff9800;
+  font-size: 1.2rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== Style cho trạng thái “departed” ===== */
+/* Mình dùng icon máy bay nhỏ (fa-plane-up) để chỉ “đã xuất” */
+.icon-departed {
+  color: #009688;
+  font-size: 1.2rem;
+  /* Ví dụ thêm hiệu ứng fade-in */
+  animation: fadeIn 0.5s ease-in;
+}
+
+/* ===== Style cho trạng thái “completed” ===== */
+/* Mình sẽ dùng icon check-circle để chỉ “hoàn tất” */
+.icon-completed {
+  color: #4CAF50;
+  font-size: 1.2rem;
+  animation: pulse 1.2s infinite;
+}
+
+/* ===== Keyframes cho fadeIn (departed) và pulse (completed) ===== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulse {
+  0%   { transform: scale(0.9); opacity: 0.8; }
+  50%  { transform: scale(1);   opacity: 1;   }
+  100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+/* ===== Style cho trạng thái “empty” (trống) ===== */
+.icon-empty {
+  color: #BDBDBD;
+  font-size: 1.2rem;
+}
+
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="container content">
+    <!-- PHẦN NHẬP LIỆU 64 TRƯỜNG -->
+    <section class="mb-5">
+      <div class="input-card status-{{ card_status }}" id="masterInputCard">
+        <h2>Nhập Liệu 64 Thông Tin Chi Tiết</h2>
+
+        <form id="masterInputForm" method="post" action="{% url 'logistics:save_gate' %}">
+          {% csrf_token %}
+          <div class="row mb-3">
+            <!-- Chọn Cửa -->
+            <div class="col-md-4">
+              <label for="gate" class="form-label">Chọn Cửa:</label>
+              <select id="gate" name="gate" class="form-select" required>
+                <option value="" disabled selected>-- Chọn Cửa --</option>
+                {% for gate in warehouse_gates %}
+                  <option value="{{ gate.gate_name }}">{{ gate.gate_name }}</option>
+                {% endfor %}
+                {% for gate in airport_gates %}
+                  <option value="{{ gate.gate_name }}">{{ gate.gate_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Chọn Trạng Thái -->
+            <div class="col-md-4">
+              <label for="status" class="form-label">Chọn Trạng Thái:</label>
+              <select id="status" name="status" class="form-select" required>
+                <option value="empty"   {% if card_status == 'empty'   %}selected{% endif %}>Trống</option>
+                <option value="loading" {% if card_status == 'loading' %}selected{% endif %}>Đang tải hàng</option>
+                <option value="departed"{% if card_status == 'departed'%}selected{% endif %}>Đã xuất bến</option>
+                <option value="completed"{% if card_status == 'completed'%}selected{% endif %}>Hoàn tất tải hàng</option>
+              </select>
+            </div>
+
+            <!-- Nút Lưu Toàn Bộ Dữ Liệu -->
+            <div class="col-md-4 d-flex align-items-end justify-content-end">
+              <button type="submit" class="btn btn-success">Lưu Toàn Bộ Dữ Liệu</button>
+            </div>
+          </div> <!-- end .row -->
+
+          <!-- 64 Trường Chi Tiết -->
+          <div class="fields-container">
+            <div class="row" id="fieldsGrid">
+              {% for field in detail_fields %}
+                <div class="col-md-4 mb-3">
+                  <label class="form-label">{{ field }}</label>
+                  <input
+                    type="text"
+                    name="{{ field }}"
+                    class="form-control"
+                    value=""
+                  />
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- PHẦN 1: Sơ Đồ Kho Gỗ Vấp (Xe Tải) -->
+    <section class="mb-5">
+      <div class="row mb-2">
+        <div class="col-12">
+          <h2 class="text-primary mb-3">1. Tổng Quan Kho Gò Vấp (Xe Tải)</h2>
+        </div>
+      </div>
+      <div class="row">
+        <!-- Sơ đồ bên trái -->
+        <div class="col-lg-4">
+          <div class="diagram-container">
+            <div class="diagram-sidebar">
+              <h2>Tổng Kho Gò Vấp</h2>
+            </div>
+            <div class="diagram-gates" id="warehouseGates">
+              {% for gate in warehouse_gates %}
+                <div class="gate-row" data-gate="{{ gate.gate_name }}">
+                  <div class="gate-label">{{ gate.gate_name }}</div>
+                  <div class="gate-bar"></div>
+                  {% if gate.current_status == 'loading' %}
+                    <i class="fa-solid fa-truck gate-icon icon-spinner"></i>
+                  {% elif gate.current_status == 'departed' %}
+                    <i class="fa-solid fa-truck gate-icon icon-departed"></i>
+                  {% elif gate.current_status == 'completed' %}
+                    <i class="fa-solid fa-truck gate-icon icon-completed"></i>
+                  {% else %}
+                    <i class="fa-solid fa-truck gate-icon icon-empty"></i>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Bảng trạng thái bên phải -->
+        <div class="col-lg-8">
+          <div class="table-responsive">
+            <table class="status-table table">
+              <thead>
+                <tr>
+                  <th>Cửa</th>
+                  <th>Tình Trạng</th>
+                  <th>Thông Tin Tóm Tắt</th>
+                  <th>Hành Động</th>
+                </tr>
+              </thead>
+              <tbody id="warehouseStatusBody">
+                {% for gate in warehouse_gates %}
+                  <tr data-gate="{{ gate.gate_name }}">
+                    <td>{{ gate.gate_name }}</td>
+                    <td>{{ gate.current_status|default:"Chưa xác định" }}</td>
+                    <td>{{ gate.current_status|default:"Chưa có dữ liệu" }}</td>
+                    <td>
+                      <button
+                        class="btn btn-sm btn-primary btn-view"
+                        data-bs-toggle="modal"
+                        data-bs-target="#detailModal"
+                        data-gate="{{ gate.gate_name }}"
+                        data-type="warehouse"
+                      >
+                        Xem chi tiết
+                      </button>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="4" class="text-center">Không có cửa kho</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 2: Sơ Đồ Kho Tân Sơn Nhất (Máy Bay) -->
+    <section class="mb-5">
+      <div class="row mb-2">
+        <div class="col-12">
+          <h2 class="text-primary mb-3">2. Tổng Quan Kho Tân Sơn Nhất (Máy Bay)</h2>
+        </div>
+      </div>
+      <div class="row">
+        <!-- Sơ đồ bên trái -->
+        <div class="col-lg-4">
+          <div class="diagram-container">
+            <div class="diagram-sidebar">
+              <h2>Tổng Kho Tân Sơn Nhất</h2>
+            </div>
+            <div class="diagram-gates" id="airportGates">
+              {% for gate in airport_gates %}
+                <div class="gate-row" data-gate="{{ gate.gate_name }}">
+                  <div class="gate-label">{{ gate.gate_name }}</div>
+                  <div class="gate-bar"></div>
+                  {% if gate.current_status == 'loading' %}
+                    <i class="fa-solid fa-plane gate-icon icon-loading"></i>
+                  {% elif gate.current_status == 'departed' %}
+                    <i class="fa-solid fa-plane gate-icon icon-departed"></i>
+                  {% elif gate.current_status == 'completed' %}
+                    <i class="fa-solid fa-plane gate-icon icon-completed"></i>
+                  {% else %}
+                    <i class="fa-solid fa-plane gate-icon icon-empty"></i>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Bảng trạng thái bên phải -->
+        <div class="col-lg-8">
+          <div class="table-responsive">
+            <table class="status-table table">
+              <thead>
+                <tr>
+                  <th>Cửa</th>
+                  <th>Tình Trạng</th>
+                  <th>Thông Tin Tóm Tắt</th>
+                  <th>Hành Động</th>
+                </tr>
+              </thead>
+              <tbody id="airportStatusBody">
+                {% for gate in airport_gates %}
+                  <tr data-gate="{{ gate.gate_name }}">
+                    <td>{{ gate.gate_name }}</td>
+                    <td>{{ gate.current_status|default:"Chưa xác định" }}</td>
+                    <td>{{ gate.current_status|default:"Chưa có dữ liệu" }}</td>
+                    <td>
+                      <button
+                        class="btn btn-sm btn-primary btn-view"
+                        data-bs-toggle="modal"
+                        data-bs-target="#detailModal"
+                        data-gate="{{ gate.gate_name }}"
+                        data-type="airport"
+                      >
+                        Xem chi tiết
+                      </button>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="4" class="text-center">Không có cửa sân bay</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal xem chi tiết read-only -->
+  <div
+    class="modal fade"
+    id="detailModal"
+    tabindex="-1"
+    aria-labelledby="detailModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="detailModalLabel">Thông Tin Chi Tiết</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Đóng"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div id="detailContent"></div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Đóng
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+  ></script>
+  <script src="{% static 'js/custom.js' %}"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // 1) Handler cho nút “Xem chi tiết” (Modal)
+      const detailModal = document.getElementById("detailModal");
+      detailModal.addEventListener("show.bs.modal", function (event) {
+        const button = event.relatedTarget;
+        const gateName = button.getAttribute("data-gate");
+        const gateType = button.getAttribute("data-type");
+        fetch(
+          "{% url 'logistics:get_gate_details' %}"
+            + "?gate_name=" + encodeURIComponent(gateName)
+            + "&gate_type=" + encodeURIComponent(gateType)
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            const container = document.getElementById("detailContent");
+            container.innerHTML = "";
+            for (const [key, value] of Object.entries(data)) {
+              const p = document.createElement("p");
+              p.innerHTML = `<strong>${key}:</strong> ${value}`;
+              container.appendChild(p);
+            }
+          })
+          .catch((err) => console.error("Lấy chi tiết lỗi:", err));
+      });
+
+      // 2) Handler cho form “Nhập Liệu 64 Trường”
+      const formEl = document.getElementById("masterInputForm");
+      const gateSelect = document.getElementById("gate");
+
+      function fillForm(data) {
+        {% for field in detail_fields %}
+          const inputEl_{{ forloop.counter }} = document.querySelector(
+            'input[name="{{ field }}"]'
+          );
+          if (inputEl_{{ forloop.counter }}) {
+            inputEl_{{ forloop.counter }}.value = data["{{ field }}"] || "";
+          }
+        {% endfor %}
+        if (data["Trạng Thái Hiện Tại"] !== undefined) {
+          document.getElementById("status").value =
+            data["Trạng Thái Hiện Tại"];
+        }
+      }
+
+      gateSelect.addEventListener("change", function () {
+        const selectedGate = this.value;
+        if (!selectedGate) return;
+        fetch(
+          "{% url 'logistics:get_gate_details' %}"
+            + "?gate_name=" + encodeURIComponent(selectedGate)
+            + "&gate_type=warehouse"
+        )
+          .then((resp) => resp.json())
+          .then((data) => fillForm(data))
+          .catch((err) => console.error("Lấy chi tiết lỗi:", err));
+      });
+
+      formEl.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const url = formEl.getAttribute("action");
+        const formData = new FormData(formEl);
+
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
+          },
+          body: formData,
+        })
+          .then((resp) => {
+            if (!resp.ok) {
+              throw new Error(`HTTP error! status: ${resp.status}`);
+            }
+            return resp.json();
+          })
+          .then((data) => {
+            fillForm(data);
+            alert("Lưu thành công!");
+            location.reload();
+
+          })
+          .catch((err) => {
+            console.error("Lỗi khi lưu:", err);
+            alert("Đã có lỗi khi lưu dữ liệu. Vui lòng thử lại.");
+          });
+      });
+
+      // 3) Nếu URL có ?gate_name=…&gate_type=warehouse, auto chọn dropdown + fill form
+      const params = new URLSearchParams(window.location.search);
+      const initialGate = params.get("gate_name");
+      const initialType = params.get("gate_type");
+      if (initialGate && initialType === "warehouse") {
+        gateSelect.value = initialGate;
+        fetch(
+          "{% url 'logistics:get_gate_details' %}"
+            + "?gate_name=" + encodeURIComponent(initialGate)
+            + "&gate_type=" + encodeURIComponent(initialType)
+        )
+          .then((resp) => resp.json())
+          .then((data) => fillForm(data))
+          .catch((err) => console.error("Lấy chi tiết lỗi:", err));
+      }
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,92 @@
+
+
+{% extends 'articleDetail/_Base.html' %}
+
+{% block main_content %}
+
+<h1>DEBUG: Đây là file article-contact.html</h1>
+
+
+<div class="container">
+  <div class="page-banner">
+    <div class="row justify-content-center align-items-center h-100">
+      <div class="col-md-6">
+        <nav aria-label="Breadcrumb">
+          <ul class="breadcrumb justify-content-center py-0 bg-transparent">
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+            <li class="breadcrumb-item active">Contact</li>
+          </ul>
+        </nav>
+        <h1 class="text-center">Contact Us</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-section">
+  <div class="container">
+    <div class="row text-center align-items-center">
+      <div class="col-lg-4 py-3">
+        <div class="display-4 text-center text-primary"><span class="mai-pin"></span></div>
+        <p class="mb-3 font-weight-medium text-lg">Address</p>
+        <p class="mb-0 text-secondary">203 Fake St. Mountain View, San Francisco, California, USA</p>
+      </div>
+      <div class="col-lg-4 py-3">
+        <div class="display-4 text-center text-primary"><span class="mai-call"></span></div>
+        <p class="mb-3 font-weight-medium text-lg">Phone</p>
+        <p class="mb-0"><a href="#" class="text-secondary">+1 232 3235 324</a></p>
+        <p class="mb-0"><a href="#" class="text-secondary">+00 1122 3344 5566</a></p>
+      </div>
+      <div class="col-lg-4 py-3">
+        <div class="display-4 text-center text-primary"><span class="mai-mail"></span></div>
+        <p class="mb-3 font-weight-medium text-lg">Email Address</p>
+        <p class="mb-0"><a href="#" class="text-secondary">support@seogram.com</a></p>
+        <p class="mb-0"><a href="#" class="text-secondary">hello@seogram.com</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid mt-4">
+    <div class="row">
+      <div class="col-lg-6 mb-5 mb-lg-0">
+        {% if thong_tin %}
+    <div>{{ thong_tin|safe }}</div>
+{% endif %}
+
+<form method="post" action="" class="contact-form">
+    {% csrf_token %}
+    <div>
+        <label>First Name</label>
+        {{ form.firstName }}
+    </div>
+    <div>
+        <label>Last Name</label>
+        {{ form.lastName }}
+    </div>
+    <div>
+        <label>Email</label>
+        {{ form.email }}
+    </div>
+    <div>
+        <label>Subject</label>
+        {{ form.subject }}
+    </div>
+    <div>
+        <label>Message</label>
+        {{ form.message }}
+    </div>
+    <br>
+    <br>
+<button type="submit" class="btn btn-primary btn-lg px-5">
+    <i class="fa fa-paper-plane"></i> Gửi liên hệ
+</button></form>
+      </div>
+      <div class="col-lg-6 px-0">
+        <div class="maps-container">
+          <div id="google-maps"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

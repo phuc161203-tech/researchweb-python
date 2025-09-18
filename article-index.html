@@ -1,0 +1,127 @@
+{% extends 'articleDetail/_Base.html' %}
+{% load static %}
+
+{% block main_content %}
+<div class="container py-4">
+
+  <!-- Breadcrumb -->
+  <div class="mb-4">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-white p-2 rounded">
+        <li class="breadcrumb-item"><a href="{% url 'blogScience:article-index' %}"><i class="mai-home"></i> Trang chủ</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Trang tổng hợp bài báo</li>
+      </ol>
+    </nav>
+  </div>
+
+  <!-- Banner Section -->
+  <div class="row align-items-center mb-5" style="min-height:300px;">
+    <div class="col-md-6">
+      <h1 class="display-4 font-weight-bold mb-3">Vietnam Science Research & Publication</h1>
+      <p class="lead mb-4">Kho dữ liệu các công trình khoa học và sự kiện R&D hàng đầu Việt Nam. Tìm kiếm, đọc, kết nối và đóng góp tri thức!</p>
+      <div class="d-flex">
+        <a href="{% url 'blogScience:article-blog' %}" class="btn btn-primary btn-lg mr-3 shadow-sm px-4">Bắt đầu khám phá</a>
+        <a href="{% url 'blogScience:submit-article' %}" class="btn btn-outline-primary btn-lg shadow-sm px-4">Nộp bài báo</a>
+      </div>
+    </div>
+    <div class="col-md-6 text-center">
+      <img src="{% static 'articleDetail/img/science_banner.png' %}" alt="Banner" style="max-width: 90%; height:auto;">
+    </div>
+  </div>
+
+  <!-- Quick Navigation Cards -->
+  <div class="row mb-5">
+    <div class="col-lg-4 mb-4">
+      <div class="card h-100 border-0 shadow-lg text-center hover-shadow transition">
+        <div class="card-body">
+          <img src="{% static 'articleDetail/img/icon-article.svg' %}" alt="Articles" style="height:50px;">
+          <h4 class="font-weight-bold my-3">Research Articles</h4>
+          <p class="text-muted">Kho hàng ngàn bài báo nghiên cứu khoa học, luận văn, báo cáo chuyên đề.</p>
+          <a href="{% url 'blogScience:article-blog' %}" class="btn btn-primary btn-block">Truy cập</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 mb-4">
+      <div class="card h-100 border-0 shadow-lg text-center hover-shadow transition">
+        <div class="card-body">
+          <img src="{% static 'articleDetail/img/icon-event.svg' %}" alt="Events" style="height:50px;">
+          <h4 class="font-weight-bold my-3">R&D Events</h4>
+          <p class="text-muted">Thông tin các hội thảo, seminar, ngày hội sáng tạo khoa học, giải thưởng.</p>
+          <a href="{% url 'blogScience:article-about' %}" class="btn btn-primary btn-block">Xem sự kiện</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 mb-4">
+      <div class="card h-100 border-0 shadow-lg text-center hover-shadow transition">
+        <div class="card-body">
+          <img src="{% static 'articleDetail/img/icon-contact.svg' %}" alt="Contact" style="height:50px;">
+          <h4 class="font-weight-bold my-3">Contact / Góp ý</h4>
+          <p class="text-muted">Kết nối với ban biên tập hoặc gửi phản hồi, đóng góp ý tưởng cho hệ thống.</p>
+          <a href="{% url 'blogScience:article-contact' %}" class="btn btn-primary btn-block">Liên hệ</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured Articles Section (from BaiBao model) -->
+  <div class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="font-weight-bold mb-0">Bài báo tiêu biểu</h2>
+      <a href="{% url 'blogScience:article-blog' %}" class="btn btn-link font-weight-bold">Xem tất cả <span class="mai-arrow-forward"></span></a>
+    </div>
+    <div class="row">
+      <div class="container py-5">
+    <h2 class="mb-4">Kho dữ liệu các bài báo khoa học</h2>
+
+    {% if featured_articles %}
+        <div class="row">
+            {% for article in featured_articles %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        {% if article.Link_hinh_minh_hoa %}
+                            <img src="{{ article.Link_hinh_minh_hoa }}" class="card-img-top" alt="Hình minh họa bài báo" style="height:200px;object-fit:cover;">
+                        {% else %}
+                            <img src="{% static 'articleDetail/img/default-image.png' %}" class="card-img-top" alt="No image" style="height:200px;object-fit:cover;">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{% url 'blogScience:news-details' article.pk %}" class="text-primary font-weight-bold" style="font-size: 1.1rem;">
+                                    {{ article.Ten_bai_bao|truncatechars:60 }}
+                                </a>
+                            </h5>
+                            <p class="card-text mb-1">
+                                <span class="badge badge-info">{{ article.Ten_bao }}</span>
+                            </p>
+                            <p class="card-text" style="font-size:0.95em; color:#777;">
+                                Ngày đăng: {{ article.Ngay_dang|default:"Chưa cập nhật" }}
+                            </p>
+                            <p class="card-text" style="font-size:0.97em;">
+                                {{ article.Noi_dung_bai_viet|truncatechars:110 }}
+                            </p>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <a href="{% url 'blogScience:news-details' article.pk %}" class="btn btn-outline-primary btn-sm">Xem chi tiết</a>
+                            {% if article.Link_bai_bao %}
+                                <a href="{{ article.Link_bai_bao }}" class="btn btn-link btn-sm text-secondary float-right" target="_blank">
+                                    <i class="fa fa-external-link-alt"></i> Bài báo gốc
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning">Chưa có bài báo nào được đăng!</div>
+    {% endif %}
+</div>
+  </div>
+
+  <!-- Slogan/Statement -->
+  <div class="my-5 py-4 bg-light rounded text-center shadow-sm">
+    <h3 class="font-weight-bold mb-2">Khoa học mở cho mọi người</h3>
+    <p class="lead mb-0">Cộng đồng nghiên cứu và sáng tạo Việt Nam cùng phát triển tri thức cho tương lai.</p>
+  </div>
+</div>
+{% endblock %}
+

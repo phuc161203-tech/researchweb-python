@@ -1,0 +1,116 @@
+{% extends "mentalConsult/_Base.html" %}
+{% load static %}
+
+{% block title %}Chào mừng - Tư vấn Tâm lý Trực tuyến{% endblock %}
+
+{% block extra_css %}
+<style>
+  body { background: linear-gradient(135deg, #ffe6f2, #e6f7ff); font-family: 'Segoe UI', sans-serif; }
+  .jumbotron { position: relative; background: url("https://media.istockphoto.com/id/1395140929/vector/seamless-pattern-with-bright-multicolored-happy-faces-modern-background-vector-illustration.jpg?s=612x612&w=0&k=20&c=0pW1LeMxyEfzXpjSwH13L__w69Y75pfs88TJrCDpVkI=") center/cover no-repeat; color: #fff; padding: 6rem 2rem; overflow: hidden; text-shadow: 0 2px 5px rgba(0,0,0,0.7); }
+  .cat { position: absolute; width: 80px; opacity: .8; animation: float 6s ease-in-out infinite; }
+  @keyframes float { 0% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-20px) rotate(15deg); } 100% { transform: translateY(0) rotate(0); } }
+  .feature-icon { font-size: 2.5rem; color: #ff6699; }
+  .blog-card img { height: 180px; object-fit: cover; }
+  .category-filter .btn { margin: .2rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+  <div class="container">
+    <a class="navbar-brand text-primary" href="#">🐱 Tâm lý Online</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#features">Tính năng</a></li>
+        <li class="nav-item"><a class="nav-link" href="#blog-section">Blog</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact-section">Liên hệ</a></li>
+        <li class="nav-item"><a class="btn btn-primary" href="{% url 'consult:onboarding' %}">Bắt đầu Chat</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<header class="jumbotron text-center mb-5">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSifNho1ebQpZBEsFh27D2mjPWJYGFTkG_7iw&s" class="cat" style="top:20px; left:30px">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSifNho1ebQpZBEsFh27D2mjPWJYGFTkG_7iw&s" class="cat" style="top:100px; right:40px; animation-duration:7s">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSifNho1ebQpZBEsFh27D2mjPWJYGFTkG_7iw&s" class="cat" style="bottom:30px; left:120px; animation-duration:6s">
+  <div class="container">
+    <h1 class="display-4 fw-bold">Chào mừng đến với Tư Vấn Tâm Lý Trực Tuyến</h1>
+    <p class="lead">Chăm sóc cảm xúc, tình yêu, gia đình, học tập và cuộc sống.</p>
+    <a href="{% url 'consult:onboarding' %}" class="btn btn-lg btn-warning shadow">Bắt đầu Chat</a>
+  </div>
+</header>
+
+<main class="container mb-5">
+  <!-- Features Section -->
+  <section id="features" class="mb-5">
+    <h2 class="h3 mb-4 text-center text-primary">Tính Năng Hỗ Trợ</h2>
+    <div class="row g-4">
+      <div class="col-md-4 text-center">
+        <i class="feature-icon bi bi-chat-dots"></i>
+        <h5 class="mt-2">Chat 24/7</h5>
+        <p>Trò chuyện an toàn với chuyên gia bất cứ lúc nào.</p>
+      </div>
+      <div class="col-md-4 text-center">
+        <i class="feature-icon bi bi-telephone-forward"></i>
+        <h5 class="mt-2">Gọi điện</h5>
+        <p>Hỗ trợ qua đường dây nóng bảo mật.</p>
+      </div>
+      <div class="col-md-4 text-center">
+        <i class="feature-icon bi bi-camera-video"></i>
+        <h5 class="mt-2">Video Call</h5>
+        <p>Gặp gỡ trực tiếp với chuyên gia qua video.</p>
+      </div>
+      <div class="col-md-4 text-center">
+        <i class="feature-icon bi bi-file-earmark-medical"></i>
+        <h5 class="mt-2">Kê Đơn Thuốc</h5>
+        <p>Đơn thuốc nhanh chóng, bảo mật và chính xác.</p>
+      </div>
+      <div class="col-md-4 text-center">
+        <i class="feature-icon bi bi-book"></i>
+        <h5 class="mt-2">Thư Viện Bài Viết</h5>
+        <p>Ngàn bài viết chia sẻ kinh nghiệm sống.</p>
+      </div>
+      <div class="col-md-4 text-center">
+        <i class="feature-icon bi bi-people"></i>
+        <h5 class="mt-2">Diễn Đàn</h5>
+        <p>Chia sẻ và kết nối cùng cộng đồng.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Section -->
+  <section id="blog-section" class="mb-5">
+    <h2 class="h3 mb-3 text-center text-success">Blog & Chia Sẻ</h2>
+    <div class="category-filter text-center mb-4">
+      {% for cat in categories %}
+        <a href="?category={{ cat.slug }}" class="btn btn-outline-secondary">{{ cat.name }}</a>
+      {% endfor %}
+    </div>
+    <div class="row g-4">
+      {% for post in blog_posts %}
+      <div class="col-md-4">
+        <div class="card blog-card h-100 shadow-sm">
+          <img src="{{ post.image }}" class="card-img-top" alt="{{ post.title }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ post.title }}</h5>
+            <p class="card-text">{{ post.excerpt }}</p>
+            <a href="{{ post.get_absolute_url }}" class="btn btn-outline-primary">Xem thêm</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact-section" class="text-center">
+    <h2 class="h4 mb-3 text-secondary">Liên Hệ</h2>
+    <p>📞 <a href="tel:19001234" class="text-decoration-none">1900 1234</a> &nbsp; | &nbsp; ✉️ <a href="mailto:support@tuvan.com">support@tuvan.com</a></p>
+    <p>🏢 123 Đường ABC, Quận 1, TP.HCM</p>
+  </section>
+</main>
+{% endblock %}

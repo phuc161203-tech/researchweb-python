@@ -1,0 +1,101 @@
+{% extends 'news247/_Base.html' %}
+{% load static %}
+
+{% block main_content %}
+<main>
+    <!-- About Section Start -->
+    <div class="about-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="about-right mb-90">
+                        <div class="about-img mb-3">
+                            <img src="{% static 'news247/img/about_hero.jpg' %}" alt="About News247" class="img-fluid rounded">
+                        </div>
+                        <div class="section-tittle mb-30 pt-30">
+                            <h3>Giới thiệu về chuyên trang Tin tức</h3>
+                        </div>
+                        <div class="about-prea">
+                            <p class="about-pera1 mb-25">
+                                News247 là chuyên trang tổng hợp, phân tích và cập nhật các tin tức nổi bật về khoa học, công nghệ, giáo dục và đời sống xã hội từ các nguồn báo uy tín. Mục tiêu của chúng tôi là cung cấp tri thức, góc nhìn đa chiều và lan tỏa các giá trị tích cực đến cộng đồng bạn đọc trẻ.
+                            </p>
+                            <p class="about-pera1 mb-25">
+                                Các nội dung bài viết, bản tin được tuyển chọn kỹ lưỡng từ các đầu báo hàng đầu, biên tập lại để phù hợp với ngôn ngữ, văn hóa và nhu cầu của độc giả Việt Nam, hướng tới một môi trường báo chí học thuật, minh bạch, đa dạng và hiện đại.
+                            </p>
+                            <p class="about-pera1 mb-25">
+                                Hãy đồng hành cùng News247 để khám phá các chủ đề nóng hổi, những sự kiện quốc tế, xu thế khoa học mới nhất và các câu chuyện truyền cảm hứng!
+                            </p>
+                        </div>
+                        <!-- Bài báo nổi bật -->
+                        <div class="section-tittle mt-4">
+                            <h4>Bài báo tiêu biểu</h4>
+                        </div>
+                        <ul class="list-group mb-4">
+                            {% for article in featured_articles %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'blogScience:news-details' article.pk %}">{{ article.Ten_bai_bao }}</a>
+                                    <span class="badge badge-primary badge-pill">{{ article.Ngay_dang|date:"d/m/Y" }}</span>
+                                </li>
+                            {% empty %}
+                                <li class="list-group-item">Chưa có bài báo nổi bật.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <!-- Section Tittle -->
+                    <div class="section-tittle mb-40">
+                        <h3>Kết nối mạng xã hội</h3>
+                    </div>
+                    <!-- Social Follow -->
+                    <div class="single-follow mb-45">
+                        <div class="single-box">
+                            <div class="follow-us d-flex align-items-center">
+                                <div class="follow-social">
+                                    <a href="#"><img src="{% static 'news247/img/icon-fb.png' %}" alt=""></a>
+                                </div>
+                                <div class="follow-count">
+                                    <span>8,045</span>
+                                    <p>Fans</p>
+                                </div>
+                            </div>
+                            <div class="follow-us d-flex align-items-center">
+                                <div class="follow-social">
+                                    <a href="#"><img src="{% static 'news247/img/icon-tw.png' %}" alt=""></a>
+                                </div>
+                                <div class="follow-count">
+                                    <span>8,045</span>
+                                    <p>Followers</p>
+                                </div>
+                            </div>
+                            <div class="follow-us d-flex align-items-center">
+                                <div class="follow-social">
+                                    <a href="#"><img src="{% static 'news247/img/icon-ins.png' %}" alt=""></a>
+                                </div>
+                                <div class="follow-count">
+                                    <span>8,045</span>
+                                    <p>Followers</p>
+                                </div>
+                            </div>
+                            <div class="follow-us d-flex align-items-center">
+                                <div class="follow-social">
+                                    <a href="#"><img src="{% static 'news247/img/icon-yo.png' %}" alt=""></a>
+                                </div>
+                                <div class="follow-count">
+                                    <span>8,045</span>
+                                    <p>Subscribers</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- News Poster -->
+                    <div class="news-poster d-none d-lg-block">
+                        <img src="{% static 'news247/img/news_card.jpg' %}" alt="Poster" class="img-fluid rounded">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- About Section End -->
+</main>
+{% endblock %}

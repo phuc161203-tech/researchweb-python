@@ -1,0 +1,243 @@
+{% extends 'courseSale/_Base.html' %}
+{% block main_content %}
+
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+      <!-- CARD THÔNG TIN KHÓA HỌC -->
+      <div class="card shadow mb-4">
+        <div class="row g-0">
+          <div class="col-md-5">
+            {% if course.courseImage %}
+              <img src="{{ course.courseImage.url }}" class="img-fluid h-100 w-100" style="object-fit:cover;" alt="{{ course.courseName }}">
+            {% else %}
+              <img src="/static/default-course.jpg" class="img-fluid h-100 w-100" style="object-fit:cover;" alt="No Image">
+            {% endif %}
+          </div>
+          <div class="col-md-7">
+            <div class="card-body">
+              <h3 class="card-title mb-2">{{ course.courseName }}</h3>
+              <span class="badge bg-secondary">{{ course.courseCategory.name }}</span>
+              <span class="ms-3"><i class="fa fa-clock text-primary"></i> {{ course.courseDuration }}</span>
+              <hr>
+              <h5 class="fw-bold">Mô tả khoá học</h5>
+              <div style="min-height:100px;">{{ course.courseDescription|linebreaks }}</div>
+              <button class="btn btn-success mt-4" id="joinNowBtn" type="button">Đăng ký khoá học</button>
+              <a href="{% url 'blogScience:sale-courses' %}" class="btn btn-link mt-4">← Quay lại danh sách khoá học</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÌNH LUẬN/CẢM NGHĨ -->
+      <div class="card mb-4">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Cảm nghĩ học viên / Giải đáp thắc mắc</h5>
+        </div>
+        <div class="card-body pb-0">
+          <form id="commentForm" class="mb-4">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-4 mb-2"><input type="text" name="name" class="form-control" placeholder="Tên của bạn *" required></div>
+              <div class="col-md-4 mb-2"><input type="email" name="email" class="form-control" placeholder="Email *" required></div>
+              <div class="col-md-4 mb-2"><input type="text" name="content" class="form-control" placeholder="Cảm nghĩ / Thắc mắc *" required></div>
+            </div>
+            <input type="hidden" name="course_id" value="{{ course.pk }}">
+            <button type="submit" class="btn btn-primary mt-2">Gửi bình luận</button>
+          </form>
+          <div id="commentList">
+            {% for cmt in comments %}
+              <div class="border-bottom py-2 mb-2">
+                <div class="fw-bold">{{ cmt.name }}</div>
+                <div style="font-size:14px;">{{ cmt.content }}</div>
+                <div class="text-muted" style="font-size:12px;">{{ cmt.created_at|date:"d/m/Y H:i" }}</div>
+              </div>
+            {% empty %}
+              <div class="text-muted">Chưa có cảm nghĩ/bình luận nào.</div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="card-footer">
+          {% if page_obj.has_other_pages %}
+          <nav>
+            <ul class="pagination justify-content-center my-2">
+              {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if per_page %}&per_page={{ per_page }}{% endif %}">←</a></li>{% endif %}
+              {% for num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}{% if per_page %}&per_page={{ per_page }}{% endif %}">{{ num }}</a></li>
+              {% endfor %}
+              {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if per_page %}&per_page={{ per_page }}{% endif %}">→</a></li>{% endif %}
+            </ul>
+          </nav>
+          <form method="get" class="d-inline-block">
+            <label for="perPage" class="me-2">Số cảm nghĩ/trang:</label>
+            <select name="per_page" id="perPage" onchange="this.form.submit()">
+              {% for n in per_options %}
+                <option value="{{ n }}" {% if per_page|stringformat:'s' == n|stringformat:'s' %}selected{% endif %}>{{ n }}</option>
+              {% endfor %}
+            </select>
+            <input type="hidden" name="page" value="{{ page_obj.number }}">
+          </form>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- MODAL – ĐĂNG KÝ KHÓA HỌC -->
+      <div class="modal fade" id="courseRegisterModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+            <form id="registerCourseForm" autocomplete="off">
+              {% csrf_token %}
+              <div class="modal-header">
+                <h5 class="modal-title">Đăng ký khoá học: <span>{{ course.courseName }}</span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+              </div>
+              <div class="modal-body">
+                <!-- FORM-->
+                <div id="formArea">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="mb-2"><label>Họ và tên *</label><input type="text" name="full_name" class="form-control" required></div>
+                      <div class="mb-2"><label>Ngày sinh *</label><input type="date" name="dob" class="form-control" required></div>
+                      <div class="mb-2"><label>Email *</label><input type="email" name="email" class="form-control" required></div>
+                      <div class="mb-2"><label>Số điện thoại</label><input type="text" name="phone" class="form-control"></div>
+                      <div class="mb-2"><label>Nơi sinh</label><input type="text" name="birth_place" class="form-control"></div>
+                      <div class="mb-2"><label>CMND/CCCD *</label><input type="text" name="id_card" class="form-control" required></div>
+                      <div class="mb-2"><label>Giới tính</label><select name="gender" class="form-control"><option value="Nam">Nam</option><option value="Nữ">Nữ</option></select></div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="mb-2"><label>Mục tiêu khoá học</label><input type="text" name="target" class="form-control"></div>
+                      <div class="mb-2"><label>Mã giảm giá</label><input type="text" name="discount_code" class="form-control"></div>
+                      <div class="mb-2"><label>Ghi chú</label><textarea name="note" class="form-control"></textarea></div>
+                    </div>
+                  </div>
+                  <input type="hidden" name="course_id" value="{{ course.pk }}">
+                </div>
+                <!-- BIÊN NHẬN -->
+                <div id="receiptPreview" style="display:none;">
+                  <div id="pdfReceiptContent" style="padding:24px;background:#fff;max-width:600px;margin:0 auto;">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                      <img src="/static/logo_official.png" height="56" alt="Logo">
+                      <div>
+                        <h3 class="m-0 text-success">ĐƠN ĐĂNG KÝ KHÓA HỌC</h3>
+                        <div style="font-size:14px;">{{ course.courseName }}<br><b>Mã số:</b> {{ course.pk }}</div>
+                      </div>
+                    </div>
+                    <table class="table table-bordered mb-4"><tbody id="receiptTableBody"></tbody></table>
+                    <div class="d-flex justify-content-between">
+                      <div><div>Hotline: <b>0123 456 789</b></div><div>Email: <b>admissions@university.edu.vn</b></div></div>
+                      <div><img src="/static/signature.png" height="40"><div style="font-size:13px;">Chữ ký xác nhận</div></div>
+                    </div>
+                    <div class="mt-2" style="font-size:12px;color:gray;">* Quý học viên vui lòng mang theo biên nhận này khi đến nhập học.<br><b>Địa chỉ:</b> 123 Nguyễn Văn Cừ, Q.5, TP.HCM | <b>Website:</b> www.university.edu.vn</div>
+                    <div class="d-flex justify-content-end mt-2"><button type="button" class="btn btn-outline-primary me-2" id="downloadPdfBtn">Tải biên nhận PDF</button><button type="button" class="btn btn-secondary" id="backToRegisterBtn">Quay lại</button></div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer" id="registerFooter"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button><button type="button" class="btn btn-info" id="previewReceiptBtn">Xem trước biên nhận</button><button type="submit" class="btn btn-success" id="submitRegisterBtn">Gửi đăng ký</button></div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- END MODAL -->
+    </div>
+  </div>
+</div>
+
+<!-- MODAL THÔNG BÁO THÀNH CÔNG -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center"><div class="modal-header border-0 justify-content-center"><h5 class="modal-title text-success"><i class="fa fa-check-circle"></i> Đăng ký thành công</h5></div><div class="modal-body"><div class="mb-2">Cảm ơn bạn đã đăng ký khóa học.<br>Chúng tôi sẽ liên hệ xác nhận sớm nhất!</div><button class="btn btn-primary" data-bs-dismiss="modal">Đóng</button></div></div></div>
+</div>
+
+<!-- TOAST THÀNH CÔNG -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index:1055;"><div id="registerSuccessToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true"><div class="d-flex"><div class="toast-body">🎉 Bạn đã đăng ký khóa học thành công!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div></div></div>
+
+<!-- LIBS & JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" integrity="sha512-pHd3J2DTZHXirMRHkRkNvztNFVQVw1Gc7YCOUMIqFZ3VAbwYSEuxsjjXN+vEihQ/HVbUaz2bmiFjC0XT+XoDAQ==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+$(function () {
+  // Mở modal
+  $('#joinNowBtn').on('click', () => {
+    $('#registerCourseForm')[0].reset();
+    $('#receiptPreview').hide();
+    $('#formArea, #registerFooter').show();
+    $('#courseRegisterModal').modal('show');
+  });
+
+  // Preview biên nhận
+  $('#previewReceiptBtn').on('click', () => {
+    const formEl = $('#registerCourseForm')[0];
+    if (!formEl.checkValidity()) { formEl.reportValidity(); return; }
+    let tbody = '';
+    $('#registerCourseForm').serializeArray().forEach(i => {
+      if (['csrfmiddlewaretoken','course_id'].includes(i.name)) return;
+      const label = $(`[name="${i.name}"]`).closest('.mb-2').find('label').text() || i.name;
+      tbody += `<tr><th style="width:180px;">${label}</th><td>${i.value || '-'}</td></tr>`;});
+    $('#receiptTableBody').html(tbody);
+    $('#formArea, #registerFooter').hide();
+    $('#receiptPreview').show();
+  });
+
+  // Quay lại form
+  $('#receiptPreview').on('click', '#backToRegisterBtn', () => {
+    $('#receiptPreview').hide();
+    $('#formArea, #registerFooter').show();
+  });
+
+  // Tải PDF
+  $('#receiptPreview').on('click', '#downloadPdfBtn', () => {
+    html2pdf().from(document.getElementById('pdfReceiptContent')).save('bien-nhan-dang-ky-khoa-hoc.pdf');
+  });
+
+  // Gửi đăng ký
+  $('#registerCourseForm').on('submit', function (e) {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(this));
+    $.ajax({
+      url: '{% url 'blogScience:ajax-course-register' %}',
+      method: 'POST',
+      contentType: 'application/json',
+      headers: {'X-CSRFToken': '{{ csrf_token }}'},
+      data: JSON.stringify(data),
+      success: res => {
+        if (res.success) {
+          const toast = new bootstrap.Toast(document.getElementById('registerSuccessToast'), {delay: 4000});
+          toast.show();
+          $('#courseRegisterModal').modal('hide');
+          setTimeout(() => $('#successModal').modal('show'), 600);
+        } else {
+          toastr.error(res.error || 'Đăng ký thất bại!');
+        }
+      },
+      error: () => toastr.error('Lỗi kết nối, thử lại.')
+    });
+  });
+
+  // Bình luận
+  $('#commentForm').on('submit', function (e) {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(this));
+    $.ajax({
+      url: '{% url 'blogScience:ajax-course-comment' %}',
+      method: 'POST',
+      contentType: 'application/json',
+      headers: {'X-CSRFToken': '{{ csrf_token }}'},
+      data: JSON.stringify(data),
+      success: res => {
+        if (res.success) {
+          toastr.success('Cảm ơn bạn đã gửi bình luận!');
+          this.reset();
+          setTimeout(() => location.reload(), 800);
+        } else {
+          toastr.error(res.error || 'Không gửi được bình luận.');
+        }
+      },
+      error: () => toastr.error('Có lỗi khi gửi bình luận.')
+    });
+  });
+});
+</script>
+{% endblock %}
+

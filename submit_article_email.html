@@ -1,0 +1,11 @@
+<p>Xin chào {{ user.get_full_name|default:user.username }},</p>
+<p>Bạn đã nộp bài báo khoa học với thông tin sau:</p>
+<ul>
+  <li><strong>Tên bài báo:</strong> {{ article.articleName }}</li>
+  <li><strong>Mã số:</strong> {{ article.articleID }}</li>
+  <li><strong>Tác giả:</strong> {{ article.articleAuthor }}</li>
+  <li><strong>Chuyên ngành:</strong> {{ article.articleSubject }}</li>
+</ul>
+<p>Trạng thái hiện tại: <em>Chờ duyệt</em></p>
+<p>Bạn có thể xem chi tiết <a href="{{ detail_url }}">tại đây</a>.</p>
+<p>Trân trọng,<br/>Ban biên tập blogScience</p>

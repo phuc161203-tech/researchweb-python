@@ -1,0 +1,1131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quản Lý Báo Cáo Cá Nhân</title>
+
+  <!-- ===================== Bootstrap 5 CSS ===================== -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <!-- ===================== DataTables CSS (Bootstrap 5) ===================== -->
+  <link
+    href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css"
+    rel="stylesheet"
+  />
+
+  <!-- ===================== Font Awesome ===================== -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
+
+  <style>
+    /* ==================== Background và Font ==================== */
+    body {
+      background: linear-gradient(135deg, #eef2f7 0%, #d3e0ea 50%, #ffffff 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #343a40;
+      transition: background 0.5s ease-in-out;
+    }
+
+    /* ==================== Header ==================== */
+    .page-header {
+      margin-bottom: 1.5rem;
+    }
+    .page-header h2 {
+      font-weight: 700;
+      color: #0d6efd;
+    }
+
+    /* ==================== Summary Cards ==================== */
+    .summary-card {
+      border: none;
+      border-radius: 12px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      overflow: hidden;
+    }
+    .summary-card:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+    .summary-card .card-body {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .summary-card i {
+      font-size: 2.5rem;
+      transition: color 0.3s;
+    }
+    .summary-card .card-title {
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+      color: #6c757d;
+    }
+    .summary-card h4 {
+      font-size: 1.75rem;
+      font-weight: 600;
+    }
+
+    /* ==================== Badge ==================== */
+    .badge-pending {
+      background-color: #ffca2c;
+      color: #212529;
+      padding: 0.45rem 0.75rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .badge-approved {
+      background-color: #28a745;
+      color: #fff;
+      padding: 0.45rem 0.75rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .badge-rejected {
+      background-color: #dc3545;
+      color: #fff;
+      padding: 0.45rem 0.75rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+
+    /* ==================== Buttons chung ==================== */
+    .btn-primary,
+    .btn-secondary {
+      border-radius: 6px;
+      font-weight: 500;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+    }
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ==================== “Tạo Báo Cáo” Form ==================== */
+    .form-section {
+      margin-bottom: 2rem;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 1.5rem;
+    }
+    .form-section h5 {
+      color: #0d6efd;
+      margin-bottom: 1rem;
+    }
+    .form-section .form-control,
+    .form-section .form-select {
+      border-radius: 6px;
+    }
+    .form-section .form-control:focus,
+    .form-section .form-select:focus {
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    /* ==================== DataTable Styles ==================== */
+    table.dataTable thead th {
+      background: #0d6efd;
+      color: #fff;
+      font-weight: 600;
+      border: none;
+    }
+    table.dataTable tbody tr:hover {
+      background-color: #e9f2ff;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+      padding: 0.3em 0.6em;
+      margin: 0 0.15em;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+      background-color: #0d6efd !important;
+      color: #fff !important;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+      background-color: #0b5ed7 !important;
+      color: #fff !important;
+    }
+
+    /* ==================== Bộ lọc (Filter Section) ==================== */
+    .filter-card {
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      background-color: #ffffff;
+    }
+    .filter-card .form-label {
+      font-weight: 500;
+      color: #495057;
+    }
+    .filter-card .btn-outline-secondary {
+      border-radius: 6px;
+      font-weight: 500;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .filter-card .btn-outline-secondary:hover {
+      background-color: #e2e6ea;
+      transform: translateY(-1px);
+    }
+
+    /* ==================== Modal chung ==================== */
+    .modal-content {
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s;
+    }
+    .modal-content:hover {
+      transform: scale(1.005);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    .modal-header {
+      background: linear-gradient(90deg, #0d6efd, #0062e6);
+      color: #fff;
+      border-bottom: none;
+    }
+    .modal-footer {
+      border-top: none;
+      background-color: #f8f9fa;
+    }
+
+    /* ==================== File List ==================== */
+    .file-list li {
+      list-style: none;
+      padding: 0.3rem 0;
+      font-size: 0.95rem;
+      color: #343a40;
+      transition: color 0.3s;
+    }
+    .file-list li:hover {
+      color: #0d6efd;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid p-4">
+
+    <!-- ================= Header ================= -->
+    <div class="row page-header align-items-center">
+      <div class="col-md-8">
+        <h2>Hệ Thống Quản Lý Báo Cáo Cá Nhân</h2>
+      </div>
+      <div class="col-md-4 text-md-end">
+        {% if user.is_authenticated %}
+          <a href="{% url 'app_customer:account' %}">
+            <span class="me-3 text-dark"><i class="fas fa-user"></i> {{ user.username }}</span>
+          </a>
+          <a href="{% url 'app_customer:logout' %}">Logout</a>
+        {% else %}
+          <a href="{% url 'app_customer:dang-nhap' %}" class="text-white">Login / Register</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- ================= Summary Cards ================= -->
+    <div class="row g-3 mb-4">
+      <div class="col-sm-6 col-md-3">
+        <div class="card summary-card">
+          <div class="card-body">
+            <i class="fas fa-file-alt text-primary"></i>
+            <div>
+              <h6 class="card-title">Tổng Báo Cáo</h6>
+              <h4 id="totalReports">0</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-3">
+        <div class="card summary-card">
+          <div class="card-body">
+            <i class="fas fa-clock text-warning"></i>
+            <div>
+              <h6 class="card-title">Chờ Duyệt</h6>
+              <h4 id="pendingReports">0</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-3">
+        <div class="card summary-card">
+          <div class="card-body">
+            <i class="fas fa-check-circle text-success"></i>
+            <div>
+              <h6 class="card-title">Đã Duyệt</h6>
+              <h4 id="approvedReports">0</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-3">
+        <div class="card summary-card">
+          <div class="card-body">
+            <i class="fas fa-times-circle text-danger"></i>
+            <div>
+              <h6 class="card-title">Từ Chối</h6>
+              <h4 id="rejectedReports">0</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= “Tạo Báo Cáo” Form ================= -->
+    <div class="form-section mb-5">
+      <h5>Gửi Báo Cáo Mới</h5>
+      <form id="adminReportForm" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row gy-3">
+          <!-- Cột trái: Tiêu đề & Mô tả -->
+          <div class="col-lg-6 col-md-12">
+            <div class="mb-3">
+              <label for="reportTitle" class="form-label">
+                Tiêu đề Báo Cáo <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="reportTitle"
+                name="reportTitle"
+                placeholder="Nhập tiêu đề báo cáo"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="reportDescription" class="form-label">
+                Mô tả chi tiết
+              </label>
+              <textarea
+                class="form-control"
+                id="reportDescription"
+                name="reportDescription"
+                rows="4"
+                placeholder="Mô tả chi tiết..."
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Cột phải: Loại & Ngày lập & File & Ghi chú nội bộ -->
+          <div class="col-lg-6 col-md-12">
+            <div class="mb-3">
+              <label for="reportCategory" class="form-label">
+                Loại Báo Cáo <span class="text-danger">*</span>
+              </label>
+              <select
+                class="form-select"
+                id="reportCategory"
+                name="reportCategory"
+                required
+              >
+                <option value="">-- Chọn loại báo cáo --</option>
+                <option value="Tài chính">Tài chính</option>
+                <option value="Nhân sự">Nhân sự</option>
+                <option value="Hoạt động">Hoạt động</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Công nghệ">Công nghệ</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="reportDate" class="form-label">
+                Ngày lập Báo Cáo <span class="text-danger">*</span>
+              </label>
+              <input
+                type="date"
+                class="form-control"
+                id="reportDate"
+                name="reportDate"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="reportFiles" class="form-label">
+                Đính kèm Sổ sách / Tài liệu
+              </label>
+              <input
+                class="form-control"
+                type="file"
+                id="reportFiles"
+                name="reportFiles[]"
+                multiple
+              />
+              <div class="form-text">
+                Cho phép upload nhiều file: Excel, PDF, CSV, Hình ảnh. (Tối đa 10MB/file.)
+              </div>
+              <ul class="file-list list-unstyled" id="uploadedFileList"></ul>
+            </div>
+            <div class="mb-3">
+              <label for="internalNotes" class="form-label">
+                Ghi chú nội bộ
+              </label>
+              <textarea
+                class="form-control"
+                id="internalNotes"
+                name="internalNotes"
+                rows="3"
+                placeholder="Ghi chú chỉ bạn (Admin) nhìn thấy"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Nút Gửi / Reset -->
+          <div class="col-12 text-end">
+            <button type="reset" class="btn btn-secondary me-2">
+              <i class="fas fa-eraser"></i> Làm lại
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-paper-plane"></i> Gửi Báo Cáo
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- ================= “Danh Sách Báo Cáo” luôn hiển thị ================= -->
+    <!-- Filter -->
+    <div class="filter-card mb-4">
+      <div class="row align-items-end">
+        <div class="col-md-3 mb-3">
+          <label for="filterStatus" class="form-label">Lọc Trạng Thái</label>
+          <select class="form-select" id="filterStatus">
+            <option value="">-- Tất cả --</option>
+            <option value="Chờ duyệt">Chờ duyệt</option>
+            <option value="Đã duyệt">Đã duyệt</option>
+            <option value="Từ chối">Từ chối</option>
+          </select>
+        </div>
+        <div class="col-md-3 mb-3">
+          <label for="filterDate" class="form-label">Lọc Ngày</label>
+          <input
+            type="date"
+            class="form-control"
+            id="filterDate"
+            placeholder="Chọn ngày"
+          />
+        </div>
+        <div class="col-md-6 text-md-end mb-3">
+          <button id="clearFilters" class="btn btn-outline-secondary">
+            <i class="fas fa-times-circle me-1"></i> Xóa Bộ Lọc
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bảng DataTable hiển thị danh sách báo cáo của user / tất cả (nếu superadmin) -->
+    <div class="table-responsive mb-5">
+      <table
+        id="reportsTable"
+        class="table table-striped table-bordered"
+        style="width: 100%;"
+      >
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Tiêu đề</th>
+            <th>Loại</th>
+            <th>Ngày lập</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- ================= Modal: Xem Chi Tiết Báo Cáo ================= -->
+    <div
+      class="modal fade"
+      id="viewReportModal"
+      tabindex="-1"
+      aria-labelledby="viewReportModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="viewReportModalLabel">
+              Chi tiết Báo Cáo
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row gy-2">
+              <div class="col-md-6">
+                <strong>Tiêu đề:</strong>
+                <p id="viewTitle">–</p>
+              </div>
+              <div class="col-md-6">
+                <strong>Loại:</strong>
+                <p id="viewCategory">–</p>
+              </div>
+              <div class="col-md-6">
+                <strong>Người thực hiện:</strong>
+                <p id="viewAuthor">–</p>
+              </div>
+              <div class="col-md-6">
+                <strong>Ngày lập:</strong>
+                <p id="viewDate">–</p>
+              </div>
+              <div class="col-md-6">
+                <strong>Trạng thái:</strong>
+                <p>
+                  <span
+                    id="viewStatusBadge"
+                    class="badge badge-pending"
+                    >–</span
+                  >
+                </p>
+              </div>
+              <div class="col-12">
+                <strong>Mô tả chi tiết:</strong>
+                <p id="viewDescription">–</p>
+              </div>
+              <div class="col-12">
+                <strong>Ghi chú nội bộ:</strong>
+                <p id="viewInternalNotes">–</p>
+              </div>
+              <div class="col-12">
+                <strong>File đính kèm:</strong>
+                <ul id="viewFileList" class="list-group list-group-flush">
+                  <!-- Danh sách file đính kèm sẽ hiện lên đây -->
+                </ul>
+              </div>
+
+              <!-- Nếu user là superuser hoặc staff, hiển thị textarea để nhập feedback -->
+              <div class="col-12 mt-3" id="adminFeedbackSection" style="display: none;">
+                <label for="adminFeedbackInput" class="form-label">
+                  Phản hồi của Admin:
+                </label>
+                <textarea
+                  class="form-control"
+                  id="adminFeedbackInput"
+                  rows="3"
+                  placeholder="Nhập phản hồi cho báo cáo..."
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <!-- Nút Duyệt (chỉ superuser/staff) -->
+            <button
+              type="button"
+              class="btn btn-success"
+              id="approveReportBtn"
+              style="display: none;"
+            >
+              <i class="fas fa-check me-1"></i> Duyệt
+            </button>
+
+            <!-- Nút Từ chối (chỉ superuser/staff) -->
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="rejectReportBtn"
+              style="display: none;"
+            >
+              <i class="fas fa-times me-1"></i> Từ chối
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= Modal: Chỉnh sửa Báo Cáo ================= -->
+    <div
+      class="modal fade"
+      id="editReportModal"
+      tabindex="-1"
+      aria-labelledby="editReportModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editReportModalLabel">
+              Chỉnh sửa Báo Cáo
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="editReportForm" enctype="multipart/form-data">
+              {% csrf_token %}
+              <input type="hidden" id="editReportId" name="reportId" />
+              <div class="row gy-3">
+                <!-- Cột trái: Tiêu đề Báo cáo & Mô tả -->
+                <div class="col-lg-6 col-md-12">
+                  <div class="mb-3">
+                    <label for="editReportTitle" class="form-label">
+                      Tiêu đề Báo Cáo <span class="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editReportTitle"
+                      name="reportTitle"
+                      placeholder="Nhập tiêu đề báo cáo"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="editReportDescription" class="form-label">
+                      Mô tả chi tiết
+                    </label>
+                    <textarea
+                      class="form-control"
+                      id="editReportDescription"
+                      name="reportDescription"
+                      rows="4"
+                      placeholder="Mô tả chi tiết..."
+                    ></textarea>
+                  </div>
+                </div>
+
+                <!-- Cột phải: Loại & Ngày lập & File & Ghi chú nội bộ -->
+                <div class="col-lg-6 col-md-12">
+                  <div class="mb-3">
+                    <label for="editReportCategory" class="form-label">
+                      Loại Báo Cáo <span class="text-danger">*</span>
+                    </label>
+                    <select
+                      class="form-select"
+                      id="editReportCategory"
+                      name="reportCategory"
+                      required
+                    >
+                      <option value="">-- Chọn loại báo cáo --</option>
+                      <option value="Tài chính">Tài chính</option>
+                      <option value="Nhân sự">Nhân sự</option>
+                      <option value="Hoạt động">Hoạt động</option>
+                      <option value="Marketing">Marketing</option>
+                      <option value="Công nghệ">Công nghệ</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="editReportDate" class="form-label">
+                      Ngày lập Báo Cáo <span class="text-danger">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="editReportDate"
+                      name="reportDate"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="editReportFiles" class="form-label">
+                      Đính kèm Sổ sách / Tài liệu
+                    </label>
+                    <input
+                      class="form-control"
+                      type="file"
+                      id="editReportFiles"
+                      name="reportFiles[]"
+                      multiple
+                    />
+                    <div class="form-text">
+                      Cho phép upload nhiều file: Excel, PDF, CSV, Hình ảnh. (Tối đa 10MB/file.)
+                    </div>
+                    <ul class="file-list list-unstyled" id="editUploadedFileList"></ul>
+                  </div>
+                  <div class="mb-3">
+                    <label for="editInternalNotes" class="form-label">
+                      Ghi chú nội bộ
+                    </label>
+                    <textarea
+                      class="form-control"
+                      id="editInternalNotes"
+                      name="internalNotes"
+                      rows="3"
+                      placeholder="Ghi chú chỉ bạn (Admin) nhìn thấy"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <!-- Nút Lưu / Hủy -->
+                <div class="col-12 text-end">
+                  <button
+                    type="button"
+                    class="btn btn-secondary me-2"
+                    data-bs-dismiss="modal"
+                  >
+                    <i class="fas fa-times-circle"></i> Hủy
+                  </button>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Lưu Thay Đổi
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- /container-fluid -->
+
+  <!-- ========================= Khai báo biến JS ========================= -->
+  <script>
+    const IS_SUPERUSER_VARIANT = {{ user.is_superuser|yesno:"true,false" }};
+    const CURRENT_USERNAME = "{{ user.username }}";
+  </script>
+
+  <!-- ========================= SCRIPT CUỐI BODY ========================= -->
+
+  <!-- 1. jQuery (cần cho DataTables và code $(document).ready) -->
+  <script
+    src="https://code.jquery.com/jquery-3.6.4.min.js"
+    type="text/javascript"
+  ></script>
+
+  <!-- 2. Bootstrap 5 JS Bundle (bao gồm Popper) -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    type="text/javascript"
+  ></script>
+
+  <!-- 3. DataTables JS & Bootstrap 5 integration -->
+  <script
+    src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"
+    type="text/javascript"
+  ></script>
+  <script
+    src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"
+    type="text/javascript"
+  ></script>
+
+  <!-- 4. Script AJAX / DataTable / Modal (jQuery & DataTables) -->
+  <script type="text/javascript">
+    $(document).ready(function () {
+      let reportsTable;
+      let currentReportData = null;
+
+      // Hàm khởi tạo DataTable (GET /work/api/admin/reports/)
+      function initReportsTable() {
+        reportsTable = $("#reportsTable").DataTable({
+          processing: true,
+          ajax: {
+            url: "/work/api/admin/reports/",
+            dataSrc: "",
+          },
+          columns: [
+            { data: "id", width: "8%" },
+            { data: "title", width: "30%" },
+            { data: "category", width: "15%" },
+            { data: "date", width: "15%" },
+            {
+              data: "status",
+              width: "12%",
+              render: function (data) {
+                if (data === "Chờ duyệt") {
+                  return '<span class="badge badge-pending">Chờ duyệt</span>';
+                } else if (data === "Đã duyệt") {
+                  return '<span class="badge badge-approved">Đã duyệt</span>';
+                } else {
+                  return '<span class="badge badge-rejected">Từ chối</span>';
+                }
+              },
+            },
+            {
+              data: null,
+              orderable: false,
+              width: "20%",
+              render: function (row) {
+                // Mọi người đều có nút “View”
+                let btns = `
+                  <button class="btn btn-sm btn-info viewBtn me-1" data-id="${row.id}">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                `;
+                // Nếu là author hoặc superuser mới có nút “Edit”
+                if (row.author === CURRENT_USERNAME || IS_SUPERUSER_VARIANT) {
+                  btns += `
+                    <button class="btn btn-sm btn-warning editBtn me-1" data-id="${row.id}">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  `;
+                }
+                return btns;
+              },
+            },
+          ],
+        });
+      }
+
+      // Hàm cập nhật summary cards (GET /work/api/admin/reports/summary/)
+      function updateSummaryCards() {
+        $.ajax({
+          url: "/work/api/admin/reports/summary/",
+          method: "GET",
+          success: function (data) {
+            $("#totalReports").text(data.total);
+            $("#pendingReports").text(data.pending);
+            $("#approvedReports").text(data.approved);
+            $("#rejectedReports").text(data.rejected);
+          },
+        });
+      }
+
+      // Hiển thị file đã chọn trong form
+      function displaySelectedFiles(inputSelector, listSelector) {
+        let files = $(inputSelector)[0].files;
+        let list = $(listSelector);
+        list.empty();
+        for (let i = 0; i < files.length; i++) {
+          list.append(
+            `<li>📄 ${files[i].name} (${Math.round(files[i].size / 1024)} KB)</li>`
+          );
+        }
+      }
+      function resetFileList(listSelector) {
+        $(listSelector).empty();
+      }
+
+      // Sự kiện chọn file mới
+      $("#reportFiles").on("change", function () {
+        displaySelectedFiles("#reportFiles", "#uploadedFileList");
+      });
+      $("#editReportFiles").on("change", function () {
+        displaySelectedFiles("#editReportFiles", "#editUploadedFileList");
+      });
+
+      // Tạo mới Báo Cáo (Form chính) – POST /work/api/admin/reports/
+      $("#adminReportForm").on("submit", function (e) {
+        e.preventDefault();
+        let formData = new FormData(this);
+        $.ajax({
+          url: "/work/api/admin/reports/",
+          method: "POST",
+          data: formData,
+          processData: false,
+          contentType: false,
+          beforeSend: function () {
+            $("#adminReportForm button[type=submit]")
+              .prop("disabled", true)
+              .prepend(
+                `<span class="spinner-border spinner-border-sm me-1"></span>`
+              );
+          },
+          success: function () {
+            $("#adminReportForm button[type=submit]")
+              .prop("disabled", false)
+              .find(".spinner-border")
+              .remove();
+            alert("Tạo báo cáo thành công!");
+            $("#adminReportForm")[0].reset();
+            resetFileList("#uploadedFileList");
+            reportsTable.ajax.reload();
+            updateSummaryCards();
+          },
+          error: function () {
+            $("#adminReportForm button[type=submit]")
+              .prop("disabled", false)
+              .find(".spinner-border")
+              .remove();
+            alert("Tạo báo cáo thất bại. Vui lòng thử lại.");
+          },
+        });
+      });
+
+      // Lọc Trạng thái & Ngày (Filter cột tương ứng)
+      $("#filterStatus").on("change", function () {
+        let status = $(this).val();
+        if (status) {
+          reportsTable.column(4).search(status).draw();
+        } else {
+          reportsTable.column(4).search("").draw();
+        }
+      });
+      $("#filterDate").on("change", function () {
+        let date = $(this).val();
+        if (date) {
+          reportsTable.column(3).search(date).draw();
+        } else {
+          reportsTable.column(3).search("").draw();
+        }
+      });
+      $("#clearFilters").on("click", function () {
+        $("#filterStatus").val("");
+        $("#filterDate").val("");
+        reportsTable.column(4).search("").draw();
+        reportsTable.column(3).search("").draw();
+      });
+
+      // Xem Chi Tiết Báo Cáo (GET /work/api/admin/reports/<id>/)
+      $("#reportsTable tbody").on("click", ".viewBtn", function () {
+        let id = $(this).data("id");
+        $.ajax({
+          url: "/work/api/admin/reports/" + id + "/",
+          method: "GET",
+          success: function (data) {
+            currentReportData = data;
+            $("#viewTitle").text(data.title);
+            $("#viewCategory").text(data.category);
+            $("#viewAuthor").text(data.author);
+            $("#viewDate").text(data.date);
+            $("#viewDescription").text(data.description || "–");
+            $("#viewInternalNotes").text(data.internalNotes || "–");
+
+            // Hiện phần feedback hiện có (nếu có)
+            $("#adminFeedbackInput").val(data.adminFeedback || "");
+
+            // Hiển thị file đính kèm
+            let fileList = $("#viewFileList");
+            fileList.empty();
+            if (data.files.length > 0) {
+              data.files.forEach((f) => {
+                fileList.append(
+                  `<li class="list-group-item d-flex justify-content-between align-items-center">
+                     <a href="${f.url}" target="_blank">${f.name}</a>
+                   </li>`
+                );
+              });
+            } else {
+              fileList.append(`<li class="list-group-item">–</li>`);
+            }
+
+            // Xử lý badge trạng thái
+            let statusBadge = $("#viewStatusBadge");
+            statusBadge
+              .removeClass("badge-pending badge-approved badge-rejected")
+              .addClass(
+                data.status === "Chờ duyệt"
+                  ? "badge-pending"
+                  : data.status === "Đã duyệt"
+                  ? "badge-approved"
+                  : "badge-rejected"
+              )
+              .text(data.status);
+
+            // Nếu người xem là superuser/có quyền staff, hiện textarea + nút duyệt/từ chối
+            if (IS_SUPERUSER_VARIANT) {
+              $("#adminFeedbackSection").show();
+              $("#approveReportBtn").show();
+              $("#rejectReportBtn").show();
+            } else {
+              $("#adminFeedbackSection").hide();
+              $("#approveReportBtn").hide();
+              $("#rejectReportBtn").hide();
+            }
+
+            $("#viewReportModal").modal("show");
+          },
+          error: function () {
+            alert("Không thể tải chi tiết Báo Cáo. Vui lòng thử lại.");
+          },
+        });
+      });
+
+      // Xử lý “Approve” (POST feedback + status = APPROVED)
+      $("#approveReportBtn").on("click", function () {
+        if (!currentReportData) return;
+        let feedbackText = $("#adminFeedbackInput").val().trim();
+        if (!confirm("Bạn chắc chắn muốn duyệt báo cáo này?")) return;
+
+        $.ajax({
+          url: "/work/api/admin/reports/" + currentReportData.id + "/approve/",
+          method: "POST",
+          data: {
+            adminFeedback: feedbackText,
+            csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+          },
+          success: function () {
+            alert("Đã duyệt và lưu phản hồi.");
+            $("#viewReportModal").modal("hide");
+            reportsTable.ajax.reload();
+            updateSummaryCards();
+          },
+          error: function () {
+            alert("Duyệt thất bại. Vui lòng thử lại.");
+          },
+        });
+      });
+
+      // Xử lý “Reject” (POST feedback + status = REJECTED)
+      $("#rejectReportBtn").on("click", function () {
+        if (!currentReportData) return;
+        let feedbackText = $("#adminFeedbackInput").val().trim();
+        if (!confirm("Bạn chắc chắn muốn từ chối báo cáo này?")) return;
+
+        $.ajax({
+          url: "/work/api/admin/reports/" + currentReportData.id + "/reject/",
+          method: "POST",
+          data: {
+            adminFeedback: feedbackText,
+            csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+          },
+          success: function () {
+            alert("Đã từ chối và lưu phản hồi.");
+            $("#viewReportModal").modal("hide");
+            reportsTable.ajax.reload();
+            updateSummaryCards();
+          },
+          error: function () {
+            alert("Từ chối thất bại. Vui lòng thử lại.");
+          },
+        });
+      });
+
+      // Chỉnh sửa Báo Cáo (GET để fill form, POST để submit update)
+      $("#reportsTable tbody").on("click", ".editBtn", function () {
+        let id = $(this).data("id");
+        $.ajax({
+          url: "/work/api/admin/reports/" + id + "/",
+          method: "GET",
+          success: function (data) {
+            currentReportData = data;
+            $("#editReportId").val(data.id);
+            $("#editReportTitle").val(data.title);
+            $("#editReportCategory").val(data.category);
+            $("#editReportDate").val(data.date);
+            $("#editReportDescription").val(data.description || "");
+            $("#editInternalNotes").val(data.internalNotes || "");
+
+            // Hiển thị file cũ
+            let editFileList = $("#editUploadedFileList");
+            editFileList.empty();
+            if (data.files.length > 0) {
+              data.files.forEach((f) => {
+                editFileList.append(
+                  `<li class="list-group-item d-flex justify-content-between align-items-center">
+                     <a href="${f.url}" target="_blank">${f.name}</a>
+                     <button class="btn btn-sm btn-danger deleteFileBtn" data-file-id="${f.id}">
+                       <i class="fas fa-trash"></i>
+                     </button>
+                   </li>`
+                );
+              });
+            } else {
+              editFileList.append(`<li class="list-group-item">–</li>`);
+            }
+
+            $("#editReportModal").modal("show");
+          },
+          error: function () {
+            alert("Không thể tải chi tiết để chỉnh sửa.");
+          },
+        });
+      });
+
+      // Xóa file cũ khi edit (DELETE /work/api/admin/reports/<id>/files/<file_id>/)
+      $(document).on("click", ".deleteFileBtn", function () {
+        let fileId = $(this).data("file-id");
+        let reportId = $("#editReportId").val();
+        if (
+          confirm(
+            "Bạn có chắc chắn muốn XÓA file này không?\nFile ID: " + fileId
+          )
+        ) {
+          $.ajax({
+            url: `/work/api/admin/reports/${reportId}/files/${fileId}/`,
+            method: "DELETE",
+            success: function () {
+              alert("Xóa file thành công.");
+              // Reload lại danh sách file trong modal
+              $.ajax({
+                url: `/work/api/admin/reports/${reportId}/`,
+                method: "GET",
+                success: function (data) {
+                  let editFileList = $("#editUploadedFileList");
+                  editFileList.empty();
+                  if (data.files.length > 0) {
+                    data.files.forEach((f) => {
+                      editFileList.append(
+                        `<li class="list-group-item d-flex justify-content-between align-items-center">
+                           <a href="${f.url}" target="_blank">${f.name}</a>
+                           <button class="btn btn-sm btn-danger deleteFileBtn" data-file-id="${f.id}">
+                             <i class="fas fa-trash"></i>
+                           </button>
+                         </li>`
+                      );
+                    });
+                  } else {
+                    editFileList.append(`<li class="list-group-item">–</li>`);
+                  }
+                },
+              });
+            },
+            error: function () {
+              alert("Xóa file thất bại. Vui lòng thử lại.");
+            },
+          });
+        }
+      });
+
+      // Lưu Thay Đổi (POST /work/api/admin/reports/<id>/)
+      $("#editReportForm").on("submit", function (e) {
+        e.preventDefault();
+        let reportId = $("#editReportId").val();
+        let formData = new FormData(this);
+        formData.append('csrfmiddlewaretoken', $("input[name=csrfmiddlewaretoken]").val());
+        $.ajax({
+          url: "/work/api/admin/reports/" + reportId + "/",
+          method: "POST",  // Owner edit bằng POST
+          data: formData,
+          processData: false,
+          contentType: false,
+          beforeSend: function () {
+            $("#editReportForm button[type=submit]")
+              .prop("disabled", true)
+              .prepend(
+                `<span class="spinner-border spinner-border-sm me-1"></span>`
+              );
+          },
+          success: function () {
+            $("#editReportForm button[type=submit]")
+              .prop("disabled", false)
+              .find(".spinner-border")
+              .remove();
+            alert("Cập nhật Báo Cáo thành công!");
+            $("#editReportModal").modal("hide");
+            reportsTable.ajax.reload();
+            updateSummaryCards();
+          },
+          error: function () {
+            $("#editReportForm button[type=submit]")
+              .prop("disabled", false)
+              .find(".spinner-border")
+              .remove();
+            alert("Cập nhật thất bại. Vui lòng thử lại.");
+          },
+        });
+      });
+
+      // Khởi tạo DataTable + summary cards khi document sẵn sàng
+      initReportsTable();
+      updateSummaryCards();
+    });
+  </script>
+</body>
+</html>
